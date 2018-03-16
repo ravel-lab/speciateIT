@@ -1,0 +1,96 @@
+
+#############################################################################
+#              Makefile for tree_stitcher
+#############################################################################
+
+# Copyright (C) 2017 Pawel Gajer pgajer@gmail.com and Jacques Ravel jravel@som.umaryland.edu
+
+# Permission to use, copy, modify, and distribute this software and its
+# documentation with or without modifications and for any purpose and
+# without fee is hereby granted, provided that any copyright notices
+# appear in all copies and that both those copyright notices and this
+# permission notice appear in supporting documentation, and that the
+# names of the contributors or copyright holders not be used in
+# advertising or publicity pertaining to distribution of the software
+# without specific prior permission.
+
+# THE CONTRIBUTORS AND COPYRIGHT HOLDERS OF THIS SOFTWARE DISCLAIM ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL THE
+# CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY SPECIAL, INDIRECT
+# OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+# OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+# OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE
+# OR PERFORMANCE OF THIS SOFTWARE.
+
+####### Compiler, tools and options
+
+CC            = gcc
+CXX           = g++
+FLAGS         = -g # -O2 -O0
+CFLAGS        = $(FLAGS) -Wall
+CXXFLAGS      = $(FLAGS) -Wall -std=gnu++11
+INCPATH       = -I../src
+LINK          = g++
+LIBS          = # -lm # -L../../lib -lkmerstats
+AR            = ar cq
+RANLIB        = ranlib -s
+TAR           = tar -cf
+COMPRESS      = gzip -9f
+COPY          = cp -f
+SED           = sed
+COPY_FILE     = cp -f
+COPY_DIR      = cp -f -R
+INSTALL_FILE  = $(COPY_FILE)
+INSTALL_DIR   = $(COPY_DIR)
+INSTALL_PROGRAM = $(COPY_FILE)
+DEL_FILE      = rm -f
+SYMLINK       = ln -sf
+DEL_DIR       = rmdir
+MOVE          = mv -f
+CHK_DIR_EXISTS= test -d
+MKDIR         = mkdir -p
+
+SRCDIR  = .
+BINDIR  = ../bin
+BUILDDIR= .build
+
+create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))
+
+OBJECTS = $(BUILDDIR)/tree_stitcher.o \
+          $(BUILDDIR)/Newick.o \
+          $(BUILDDIR)/IOCUtilities.o \
+          $(BUILDDIR)/IOCppUtilities.o \
+          $(BUILDDIR)/CppUtilities.o \
+          $(BUILDDIR)/CUtilities.o \
+          $(BUILDDIR)/strings.o
+
+tree_stitcher: $(OBJECTS)
+	$(CXX) $(FLAGS) $(INCPATH) $(OBJECTS) -o $(BINDIR)/tree_stitcher
+
+$(BUILDDIR)/tree_stitcher.o: tree_stitcher.cc
+	$(CXX) -c $(FLAGS) $(INCPATH) -I$(SRCDIR) -o $(BUILDDIR)/tree_stitcher.o tree_stitcher.cc
+
+$(BUILDDIR)/Newick.o: Newick.hh Newick.cc
+	$(CXX) -c $(FLAGS) $(INCPATH) -o $(BUILDDIR)/Newick.o Newick.cc
+
+$(BUILDDIR)/IOCUtilities.o: IOCUtilities.h IOCUtilities.c
+	$(CC) -c $(FLAGS) $(INCPATH) -o $(BUILDDIR)/IOCUtilities.o IOCUtilities.c
+
+$(BUILDDIR)/IOCppUtilities.o: IOCppUtilities.cc IOCppUtilities.hh
+	$(CXX) -c $(FLAGS) $(INCPATH) -o $(BUILDDIR)/IOCppUtilities.o IOCppUtilities.cc
+
+$(BUILDDIR)/CppUtilities.o: CppUtilities.cc CppUtilities.hh
+	$(CXX) -c $(FLAGS) $(INCPATH) -o $(BUILDDIR)/CppUtilities.o CppUtilities.cc
+
+$(BUILDDIR)/CUtilities.o: CUtilities.c CUtilities.h
+	$(CC) -c $(FLAGS) $(INCPATH) -o $(BUILDDIR)/CUtilities.o CUtilities.c
+
+$(BUILDDIR)/strings.o: strings.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/strings.o strings.cc
+
+clean:
+	rm -f $(BUILDDIR)/*.o
+
+clean-all:
+	rm -rf $(BUILDDIR) $(BINDIR)/readNewick
