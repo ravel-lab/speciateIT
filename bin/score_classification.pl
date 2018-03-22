@@ -172,7 +172,7 @@ my $clScoreFile = "$outDir/clScore.txt";
 my $clCompFile= "$outDir/cl_cmp.txt";
   open OUT, ">$clScoreFile" or die "Cannot open $clScoreFile for appending: $OS_ERROR";
   open OUT1, ">$clCompFile" or die "Cannot open $clCompFile for appending: $OS_ERROR";
-  print OUT1 "seqID\tclassified_lineage\tcorrect_lineage_sg\tcorrect_lineage_g\tcorrect_lineage_f\tcorrect_lineage_o\tcorrect_lineage_c\tcorrect_lineage_p\tcorrect_lineage_d\tcorrect_lineage_sp\n";
+  print OUT1 "seqID\tclassified_lineage\tcorrect_lineage_g\tcorrect_lineage_f\tcorrect_lineage_o\tcorrect_lineage_c\tcorrect_lineage_p\tcorrect_lineage_d\tcorrect_lineage_sp\n";
   foreach my $key (keys %clScore)
   {
     print OUT1 $key . "\t". $clTx{$key} ."\t". $testLineage{$key} . "\n";
