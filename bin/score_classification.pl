@@ -39,13 +39,7 @@
 
 =over
 
-=item B<--input-dir, -i>
-  Input directory containing all.fa, spp.tx, and spp.lineage files. 
-
-=item B<--output-dir, -o>
-  Output directory.
-
-=item B<--input-dir, -c>
+=item B<--input-dir, -p>
   PECAN output classification file.
 
 =item B<--output-dir, -l>
@@ -90,10 +84,8 @@ $OUTPUT_AUTOFLUSH = 1;
 ####################################################################
 
 GetOptions(
-  "input-dir|i=s"       => \my $inDir,
-  "output-dir|o=s"      => \my $outDir,
-  "lineage-file|l=s"    => \my $l,
-  "MC-file|c=s"         => \my $c,
+  "lineage-file|l=s"    => \my $lineageFile,
+  "PECAN-file|c=s"      => \my $pecanFile,
   "verbose|v"           => \my $verbose,
   "debug"               => \my $debug,
   "dry-run"             => \my $dryRun,
@@ -110,84 +102,53 @@ if ($help)
   exit 0;
 }
 
-if ( !$inDir && !$l && !$c)
+if (!$lineageFile || !$pecanFile) 
 {
-  warn "\n\n\tERROR: No input directory or files provided.";
-  pod2usage(verbose => 2,exitstatus => 0);
+  print "\nPlease provide a *_sppSeqID.lineage file (-l) and the PECAN classification file (-p)";
   exit 0;
 }
-elsif ( !$inDir && !$l )
-{
-  warn "\n\n\tERROR: No input directory or lineage file provided.";
-  pod2usage(verbose => 2,exitstatus => 0);
-  exit 0;
-}
-elsif ( !$inDir && !$c )
-{
-  warn "\n\n\tERROR: No input directory or classification file provided.";
-  pod2usage(verbose => 2,exitstatus => 0);
-  exit 0;
-}
-elsif ( !$inDir )
-{
-  print "\n\n\tNo input directory provided.";
-  print "\n\tUsing $l and $c files.";
-  $testLineageFile = $l;
-  $clTxFile = $c;
-}
-elsif (!$l && !$c) 
-{
-  $testLineageFile = $inDir . "/sppSeqID.lineage";
-  $clTxFile = $inDir . "/MC_order7_results.txt";
-}
-
-if ( $inDir && !$outDir )
-{
-  print "\n\n\tERROR: Missing out directory. Using input directory for output if provided.";
-  print "\n\n";
-  $outDir = $inDir;
-}
-elsif ( !$inDir && !$outDir )
-{
-  $outDir = getcwd;
-}
-
-
 
 ####################################################################
 ##                               MAIN
 ####################################################################
 
-my %testLineage = read2colTbl($testLineageFile);
-my %clTx = readTbl($clTxFile);
+my %testLineage = read2colTbl($lineageFile);
+my %clTx = readTbl($pecanFile);
 my @clIDs = keys %clTx;
 my $test = $clIDs[1];
 
 my %clScore = score_classification( \@clIDs, \%testLineage, \%clTx);
 my $clScore_sum = sum values %clScore;
-my $clScore_perc =  100 * $clScore_sum /  scalar keys %clScore; 
-print "\n\nThe classification score for ". scalar @clIDs . " sequences is: " . $clScore_perc . "\n";
-print "Here is a value of the clScore hash table: " . $clScore{$test} ."\n\n";
-my $clScoreFile = "$outDir/clScore.txt";
-my $clCompFile= "$outDir/cl_cmp.txt";
-  open OUT, ">$clScoreFile" or die "Cannot open $clScoreFile for appending: $OS_ERROR";
-  open OUT1, ">$clCompFile" or die "Cannot open $clCompFile for appending: $OS_ERROR";
-  print OUT1 "seqID\tclassified_lineage\tcorrect_lineage_g\tcorrect_lineage_f\tcorrect_lineage_o\tcorrect_lineage_c\tcorrect_lineage_p\tcorrect_lineage_d\tcorrect_lineage_sp\n";
-  foreach my $key (keys %clScore)
+my $clScore_perc =  100 * $clScore_sum /  scalar @clIDs; 
+print "Mean overall classification score: " . $clScore_perc;
+
+my $nCorrect = 0; 
+foreach my $s (values %clScore)
+{
+  if ($s == "1")
   {
-    print OUT1 $key . "\t". $clTx{$key} ."\t". $testLineage{$key} . "\n";
-    print OUT $key . "\t" . $clScore{$key} . "\n";
-
+    $nCorrect++;
   }
-  close OUT;
-  close OUT1;
+}
+my $clScore_spp = $nCorrect / scalar @clIDs; 
+print "\nSpecies-level classification score: " . $clScore_spp * 100;
+my $clScoreFile = "clScore.txt";
+my $clCompFile= "cl_cmp.txt";
 
-@clIDs = keys %clScore;
+open OUT, ">$clScoreFile" or die "Cannot open $clScoreFile for appending: $OS_ERROR";
+open OUT1, ">$clCompFile" or die "Cannot open $clCompFile for appending: $OS_ERROR";
+print OUT1 "seqID\tcorrect_lineage_g\tcorrect_lineage_f\tcorrect_lineage_o\tcorrect_lineage_c\tcorrect_lineage_p\tcorrect_lineage_d\tcorrect_lineage_sp\tclassified_lineage\n";
+foreach my $key (keys %clScore)
+{
+  print OUT1 $key . "\t". $clTx{$key} ."\t". $testLineage{$key} . "\n";
+  print OUT $key . "\t" . $clScore{$key} . "\n";
 
-print "\nClassification scores printed to $clScoreFile\n";
-print "Classification comparison to reference printed to $clCompFile\n\n";
-print "\nThe classification score for ". scalar @clIDs . " sequences is: " . $clScore_perc . "\n";
+}
+close OUT;
+close OUT1;
 
+print "\n---Per-sequence classification scores printed to $clScoreFile";
+print "\n---Per-sequence classification comparison to reference printed to $clCompFile\n";
 
 ####################################################################
 ##                               SUBS
@@ -245,16 +206,14 @@ sub score_classification{
 
   my %testLineage = %$rtestLineage;
   my %clTx = %$rclTx;
-
   my %clScore;
-
   my @clIDs = @$rclIDs;
   foreach my $s (@clIDs) ## For each classified sequence
   {
     chomp $s;
     ##print "\nHere is the lineage for $s: ". $testLineage{$s} . "\n";
 
-    ## t is equal to the classified taxa
+    ## t -> classified taxa
     my $t = $clTx{$s};
     if (!$t)
     {
@@ -267,67 +226,51 @@ sub score_classification{
     {
       ##print "The value of $s is $clTx{$s}.\n";
     }
-    ## a is equal to the reference lineage
-    my $a = $testLineage{$s};
-    if (!$a)
+    ## a -> reference lineage
+    my @a = split("\t", $testLineage{$s});
+    if (!@a)
     {
       if ($debug)
       {
-        print "\nWARNING: $s not found in testLineage hash table\n;"
+        print "\nWARNING: $s not found in refLineage hash table\n;"
       }
       next;
     }
-    #print "\nThe value of $s is $testLineage{$s}\n";
+    ## r -> reference species
+    my $r = $a[6];
     ## if the classified taxa is found in the reference lineage
     my $value = 0;
-    if ( grep /$t/, $a) 
+    if ( grep /$t/, @a) 
     {   
-      $value++;
-      if ($debug)
-      {
-        print "\n $t is part of $a.\n";
-      }
-      if ( $value > 0) ##If the classifed taxonomy is found in the array
-      {
-        if ($clTx{$s} =~ /^d_/) 
-        {
-          $clScore{$s} = 0;
-        }
-        elsif ($clTx{$s} =~ /^p_/) 
-        {
-          $clScore{$s} = 0.25;
-        }
-        elsif ($clTx{$s} =~ /^c_/) 
-        {
-          $clScore{$s} = 0.325;
-        }
-        elsif ($clTx{$s} =~ /^o_/) 
-        {
-          $clScore{$s} = 0.5;
-        }
-        elsif ($clTx{$s} =~ /^f_/) 
-        {
-          $clScore{$s} = 0.625;
-        }
-        elsif ($clTx{$s} =~ /^g_/) 
-        {
-          $clScore{$s} = 0.75;
-        }          
-        elsif ($clTx{$s} =~ /^sg_/) 
-        {
-          $clScore{$s} = 0.825;
-        }
-        else 
-        {
-          $clScore{$s} = 1;
-        }
-      }
-      elsif ($value = 0) ## And of course, these have to be correct with the lineage. If they are not correct, they get a zero.
+      if ($clTx{$s} =~ /^d_/) 
       {
         $clScore{$s} = 0;
-      }   
-      #print "\nThe score for $s is $clScore{$s}\n";
-    }
+      }
+      elsif ($clTx{$s} =~ /^p_/) 
+      {
+        $clScore{$s} = 0.25;
+      }
+      elsif ($clTx{$s} =~ /^c_/) 
+      {
+        $clScore{$s} = 0.325;
+      }
+      elsif ($clTx{$s} =~ /^o_/) 
+      {
+        $clScore{$s} = 0.5;
+      }
+      elsif ($clTx{$s} =~ /^f_/) 
+      {
+        $clScore{$s} = 0.625;
+      }
+      elsif ($clTx{$s} =~ /^g_/) 
+      {
+        $clScore{$s} = 0.75;
+      }          
+      elsif ($r =~ /$t/)
+      {
+        $clScore{$s} = 1;
+      }
+    } 
     else ## And of course, these have to be correct with the lineage. If they are not correct, they get a zero.
     {
       $clScore{$s} = 0;
