@@ -12,8 +12,7 @@
   associated taxonomy and altering the species annotation in the lineage file.
 
   1. For each sequence, determine if the PECAN and reference classification match. 
-      If they do not match, push to hash an array with reference species as the key, and an array containing a list of species
-      that the reference was misclassified to. ref -> mis1, mis2, mis3, ... , misN
+      -Use clScore.txt to get seqIDs w/score of 0
   2. For each key of the hash of arrays, call the array and for each item, attach it to a single label. 
   3. Grep the taxonomy file hash for values equal to the keys of the hash of arrays, and for each of them, re-associated the
       sequence ID to the new, concanated label.
@@ -105,7 +104,6 @@ $OUTPUT_AUTOFLUSH = 1;
 ##                             OPTIONS
 ####################################################################
 GetOptions(
-  "output-dir|o=s"      => \my $outDir,
   "lineage-file|l=s"    => \my $LineageFile,
   "taxonomy-file|t=s"   => \my $TxFile,
   "class-scores|c=s"    => \my $clScoreFile,
@@ -124,67 +122,36 @@ if ($help)
   exit 0;
 }
 
-elsif ( !$LineageFile && !$TxFile && !$clScoreFile && !$pecanFile && !$outDir )
+if ( !$LineageFile && !$TxFile && !$clScoreFile && !$pecanFile)
 {
-  warn "\n\n\tERROR: No input, output directories or files provided.";
-  pod2usage(verbose => 2,exitstatus => 0);
+  print "Please provide lineage (-l), taxonomy (-t), clScore (-c), and PECAN (-p) files\n";
   exit 0;
 }
-
-elsif ( !$outDir )
+elsif ( !$LineageFile )
 {
-  warn "\n\n\tERROR: No input directory provided. Results written to merge_out";
-  $outDir = "merge_out";
-}
-
-if ( !$LineageFile )
-{
-  warn "\n\n\tERROR: No input lineage file provided.";
-  pod2usage(verbose => 2,exitstatus => 0);
+  print "Please provide lineage (-l) file\n";
   exit 0;
 }
-
-if ( !$TxFile )
+elsif ( !$TxFile )
 {
-  warn "\n\n\tERROR: No input taxonomy file provided.";
-  pod2usage(verbose => 2,exitstatus => 0);
+  print "Please provide taxonomy (-t) files\n";
   exit 0;
 }
-
-if ( !$clScoreFile )
+elsif ( !$clScoreFile )
 {
   $clScoreFile = "clScore.txt";
 }
 
-if ( !$pecanFile)
+elsif ( !$pecanFile)
 {
   $pecanFile = "MC_order7_results.txt";
-}
-
-my $quietStr = "";
-if ( $quiet  )
-{
-  $quietStr = "--quiet";
-}
-
-my $debugStr = "";
-if ($debug)
-{
-  $debugStr = "--debug";
-  $quietStr = "";
-}
-
-my $verboseStr = "";
-if ($verbose)
-{
-  $verboseStr = "--verbose";
 }
 
 ####################################################################
 ##                               MAIN
 ####################################################################
-
-print "\n---Using $LineageFile for lineage file\n";
+my $outDir = "merge_out";
+print "---Using $LineageFile for lineage file\n";
 print "---Using $TxFile for taxonomy file\n";
 print "---Using $outDir for writing new files\n";
 
@@ -286,17 +253,23 @@ sub merge_models
   my %doneTaxa;
   my $count=0;
 
+  my $fixedTxFile = $outDir . "/spp_new.tx";
+  if (-e $fixedTxFile)
+  {
+    unlink $fixedTxFile;
+  }
+
 ## for all misclassified sequences, get their classified taxonomy, 
 ## push to a table that taxon and the sequence.
   foreach my $s (@seqs_to_merge) 
   {
     $tx = $pecan{$s};
-    push @{ $misTx{$tx} }, $s;
+    push @{ $misTx{$tx} }, $s;  ## %misTx: classified taxon => array of seqIDs
   }
   print "---Evaluating " . scalar @seqs_to_merge ." misclassified sequences for model merging.\n\n";
-  foreach my $tx ( sort { scalar(@{$misTx{$b}}) <=> scalar(@{$misTx{$a}}) } keys %misTx )
+  foreach my $tx ( sort { scalar(@{$misTx{$b}}) <=> scalar(@{$misTx{$a}}) } keys %misTx ) ## sort %misTx by the number of misclassified seq's 
   {
-    print "\nWorking on $tx (".scalar(values @{$misTx{$tx}})." sequences)\n";
+    print "\nWorking on $tx\n"; ## (".scalar(values @{$misTx{$tx}})." sequences misclassified to $tx)\n";
     my $count = 0;
     my @clSeqs;
     my $newsp;
@@ -314,43 +287,50 @@ sub merge_models
 
     $clsp = $tx;
     @clseqID = @{$misTx{$tx}};
-    if ($debug)
-    {
-      print "There are ". scalar(@clseqID) . " sequences misclassified to $tx\n";
-    }
-
+   
+    print "\tThere were ". scalar(@clseqID) . " sequences misclassified to $tx\n";
+    
+    ## Evaluate if clsp is anything but a species. 
     if ($clsp =~ /^g_/ || $clsp =~ /^f_/ || $clsp =~ /^o_/ || $clsp =~ /^c_/ || $clsp =~ /^p_/ || $clsp =~ /^d_/)
     {
       if ($debug)
       {
-        print "Skipping $clsp...\n";
+        print "\tSkipping $clsp...\n";
       }
       $count++;
       next;
     }
 
-    #get all of the sequences that misclassified to the taxon.
-    ## Occurance table
+    ## Occurance table %cmp: $refsp => nSeqs classified to clSp that are refsp
     foreach my $x (@clseqID) 
     {
       $refsp = $newtx{$x}; ## use the seqID to get its current reference species.
       chomp $refsp;
-      if ($refsp =~ /$clsp/) ## If the reference species == clsp, skip this sequence
+      if ($refsp =~ /$clsp/) ## If the reference species == clsp, skip this sequence SHOULD NEVER HAPPEN
       {
+        print "encountered refsp == clsp -- CHECK\n";
         next;
       }
       else
       {
-        $cmp{$refsp}++; ## If the reference species ne clsp, add refsp to cmp tbl as key, and increase value by 1.
+        $cmp{$refsp}++; ##  %cmp: $refsp => nSeqs classified to clSp that are refsp
       }
     }
     if ($debug && %cmp)
     {
-      print "cmp table for $clsp: \n";
+      print "Hash $clsp cmp:\n";
       print Dumper \%cmp;
     }
     foreach my $x (keys %cmp) ## for each ref sp that clsp belong to
     {
+      ### UPDATE TAXONOMY IF CHANGED DUE TO MODEL MERGING ##### 
+      if (-e $fixedTxFile)
+      {
+        print "---Writing merged taxonomy to $fixedTxFile\n";
+        open OUT, "<$fixedTxFile" or die "Cannot open $fixedTxFile for reading: $OS_ERROR";
+        my %newtx = readTbl($fixedTxFile);
+        close OUT;
+      }
       $refsp = $x; 
       if ($doneTaxa{$refsp}) ## update the refsp in case it changed in a previous round.
       {
@@ -362,76 +342,65 @@ sub merge_models
          print "clsp $clsp now $doneTaxa{$clsp}\n";
          $clsp = $doneTaxa{$clsp};
        }
-      @clseqs = grep {$newtx{$_} =~ /$refsp/} @clseqID; ## get all of the clSeqIDs of this refsp
-      
+      if ($refsp =~ /$clsp/ || $clsp =~ /$refsp/)
+      {
+        next;
+      }
+
+      ### GET ARRAYS OF SEQIDS FOR REFSP AND ALL REFSP SEQ'S MISCLASSIFIED TO CLSP ##### 
+      @clseqs = grep {$newtx{$_} =~ /$refsp/} @clseqID; ## for this refsp, get all seqIDs that misclassified to clSp
       if ($debug)
       {
-        print "clseqs array (should equal n $refsp refseqs classified to $clsp: \n";
+        print "Array $refsp clSeqs:\n";
         print Dumper \@clseqs;
       }
       
-      @refseqID = grep { $newtx{$_} =~ /$refsp/ } keys %newtx; ## get all of the seqIDs of the refsp
+      @refseqID = grep { $newtx{$_} =~ /$refsp/ } keys %newtx; ## get all of the seqIDs of this refsp from the reference taxonomy.
       $nrefseq = scalar(@refseqID);
       if ($debug)
       {
         print "\trefsp $refsp has $nrefseq sequence(s)\n";
       }
-      if ($refsp =~ /$clsp/)
-      {
-        next;
-      }
-      elsif ($cmp{$x} <= $nrefseq*0.5) ## if the ref. sp. exists in the occurrance table
+
+      ### COMPARE ARRAYS OF SEQIDS FOR REFSP AND ALL REFSP SEQ'S MISCLASSIFIED TO CLSP ##### 
+      if ($cmp{$x} <= $nrefseq*0.5) ## If n RefSeqs classified to clSp that are <= 50% of nRefSeqs 
       {
         foreach my $seq (@clseqs)
         {
-          $newtx{$seq} = $clsp;
-          if ($debug)
-          {
-            print "\t$seq is now $clsp\n";
-          }
+          $newtx{$seq} = $clsp; ## Just rename those misclassified seq's to the clSP
+          print "\t$seq is now $clsp\n";
         }
       }
-      elsif ($cmp{$x} > $nrefseq*0.5)
+      elsif ($cmp{$x} > $nrefseq*0.5) ## If n RefSeqs classified to clSp that are > 50% of nRefSeqs ... merge if genera are the same
       {
         my ($g1, $sp1) = split (/_/, $refsp);
         my ($g2, $sp2) = split (/_/, $clsp);
         if ($g1 =~ /$g2/)
         {
-          # if ($doneTaxa{$clsp}) ## update clsp in case it has been changed to have concatenation
-          # {
-          #   print "\tclsp $clsp now $doneTaxa{$clsp}\n";
-          #   $clsp = $doneTaxa{/$clsp/};
-          # }
-          $newsp = "$refsp"."_"."$clsp";
+          $newsp = "$refsp"."_"."$clsp"; ## Concatenate names
           chomp $newsp;
-          $lineage{$newsp}=$lineage{$tx};
-          # delete $doneTaxa{$refsp};
-          # delete $doneTaxa{$clsp};
-          if ($debug)
-          {
-            print "\t$refsp & $clsp now $newsp\n";
-          }
-          @actualseqID = grep { $newtx{$_} =~ /$clsp/ } keys %newtx;
-          @refseqID = grep { $newtx{$_} =~ /$refsp/ } keys %newtx;
-          
-          ## lineages not being transferred 
-          ## some things being repeated
+          $lineage{$newsp}=$lineage{$tx}; ## Produce lineage for concatenation
+          print "\t$refsp & $clsp => $newsp\n";
+
+          ### KEEP RECORD OF OLD NAMES AND NEW NAME
           $doneTaxa{$clsp} = $newsp ;
           $doneTaxa{$refsp} = $newsp ;
           if ($debug)
           {
+            print "Hash doneTaxa:\n";
             print Dumper \%doneTaxa;
           }
-          my $acount=0;
-          my $rcount=0;
-          my $ccount=0;
+
+          ### RENAME ALL SEQS OF EACH SPECIES TO THE NEWLY CONCATENATED NAME
+          @actualseqID = grep { $newtx{$_} =~ /$clsp/ } keys %newtx;
+          @refseqID = grep { $newtx{$_} =~ /$refsp/ } keys %newtx;
+          
+          my $count=0;
           foreach my $aseqID ( @actualseqID) ## Rename all sequences of the classified species
           {
             {
               $newtx{$aseqID} = $newsp;
               $count++;
-              $acount++;
-              #print "$newsp lineage becoming $l\n";
             }
           }
           foreach my $rseqID ( @refseqID) ## Rename all sequences of the reference species
@@ -439,32 +408,37 @@ sub merge_models
             {
               $newtx{$rseqID} = $newsp;
               $count++;
-              $rcount++;
-            }
-          }
-          foreach my $cseqID ( @clSeqs) ## Rename all sequences of the reference species
-          {
-            {
-              $newtx{$cseqID} = $newsp;
-              $count++;
-              $ccount++;
             }
           }
         }
         else
         {
+          print "Genera do not match... skipping\n";
           next;
         }
       }
     }
+    print "---Writing merged taxonomy to $fixedTxFile\n";
+    if (-e $fixedTxFile)
+    {
+      unlink $fixedTxFile;
+    }
+    open OUT, ">$fixedTxFile" or die "Cannot open $fixedTxFile for writing: $OS_ERROR";
+    for my $key (keys %newtx)
+    {
+      print OUT "$key\t$newtx{$key}\n";
+    }
+    close OUT;
   }
-  print "Taxonomy update for $count sequences\n";
+  print "Taxonomy updated for $count sequences\n";
 
-  my $fixedTxFile = $outDir . "/spp_new.tx";
-  print "---Writing merged taxonomy to $fixedTxFile\n";
+  print "---Writing final merged taxonomy to $fixedTxFile\n";
+  if (-e $fixedTxFile)
+  {
+    unlink $fixedTxFile;
+  }
   open OUT, ">$fixedTxFile" or die "Cannot open $fixedTxFile for writing: $OS_ERROR";
   my %finalLin;
-
   my $clusterFile = $outDir . "/spp_new_clusterTbl.txt";
   print "---Writing cluster table for long taxon names\n";
   open TBL, ">$clusterFile" or die "Cannot open $clusterFile for writing: $OS_ERROR";
