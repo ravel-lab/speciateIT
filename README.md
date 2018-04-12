@@ -6,8 +6,8 @@ PECAN, Per sEquenCe tAxonomic assigNer, is an algorithm capable of fast, accurat
 
 Compile classify script:  
  From top directory:   
-  cd src. 
-  make -f Makefile    
+  cd src   
+  make -f Makefile     
     
 Unarchive models:   
   From top directory:   
