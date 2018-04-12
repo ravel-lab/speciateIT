@@ -1,6 +1,9 @@
 # PECAN
 Per sEquenCe tAxonomic assigNer
 
+Summary:
+PECAN, Per sEquenCe tAxonomic assigNer, is an algorithm capable of fast, accurate individual sequence taxonomic classification. Using 7th order Markov Chain models to represent microbial species and a model guide tree, PECAN requires little computational resources, and can quickly process large sequencing datasets. Currently, PECAN models have been built from full length 16S rRNA gene sequences for the popular V1-V3, V3-V4, and V4 amplicon regions. PECAN models correctly classified 98, 97, and 94% of known sequences from the V1-V3, V3-V4, and V4 databases. 
+
 Compile classify script:
   From top directory: 
     cd src
