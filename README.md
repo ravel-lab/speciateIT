@@ -8,25 +8,27 @@ speciateIT is an algorithm capable of fast, accurate individual sequence taxonom
   cd src   
   make -f Makefile     
     
-### Unarchive models:   
-  #### From top directory:   
-    cd PECAN_models  
-    tar -xvzf V1V3.tar.gz  
-    OR  
-    tar -xvzf V3V4.tar.gz  
-    OR  
-    tar -xvzf V4.tar.gz  
-     
   Warning ==> Each model set requires ~30Gb storage space    
     
+### Build models:
+To build models & estimate error thresholds with V3V4, for example:
+
+  /bin/buildModelTree -l post_merge_reference_files/V3V4_spp_new.lineage -i  reference_sequences/V3V4_trimmed_noEuks_nr_Complete.fa -t post_merge_reference_files/V3V4_spp_new.tx -o V3V4
+
+  /bin/buildMC -t mcDir/spp_paths.txt -k 8 -d V3V4
+
+  /bin/est_error_thlds -d V3V4 -c 0.9 
+  
 ### Classify sequences:   
-  ~/bin/classify -d <model-directory> -i <input-fasta-file> -o <output-directory>  
+  /bin/classify -d <model-directory> -i <input-fasta-file> -o <output-directory> --skip-err-thld 
   Classifier will produce output directory if needed.   
-  Output file name always "MC_order7_results.txt"  
+  Output file name always "MC_order7_results.txt"
+  Output file contains 4 columns: "Sequence ID" "Classification" "posterior probability" "number of Decisions"
     
-  Ex. ~/bin/classify -d V4 -i my_V4_sample_sequences.fa -o my_V4_sample_sequences_classification  
+  Ex. /bin/classify -d V3V4 -i my_V3V4_sample_sequences.fa -o my_V3V4_sample_sequences_classification  
       cd my_V4_sample_sequences_classification  
       ls   
         MC_order7_results.txt  
+ 
         
     
