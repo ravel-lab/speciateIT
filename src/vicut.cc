@@ -44,7 +44,7 @@
 #include <queue>
 
 #include <boost/foreach.hpp>
-#include <boost/static_assert.hpp>
+//#include <boost/static_assert.hpp>
 //#include <tr1/unordered_map>
 
 using namespace std;
@@ -583,7 +583,7 @@ int main(int argc, char **argv)
           strcat(outFile,fileName);
 
           vector<sppProf_t*> sppProfs;
-          nt->getSppProfs( sppProfs, nodeCut, annIdx, minNA, idxToAnn, txTbl);
+          nt->getSppProfs( sppProfs, nodeCut, annIdx, minNA, idxToAnn); // txTbl
 
           vector<sppProf_t*> ancRootProfs;
           nt->getAncRoots( sppProfs, ancRootProfs);
@@ -800,7 +800,7 @@ double vicut(vector<int> &nodeCut, map<int, NewickNode_t *> &idx2node, int *annI
     // L(x) is the set of leaves in the subtree rooted at x, that have known annotation
     // and A(d) is the set of leaves (in the whole tree) that are known to have annotation d.
 
-    BOOST_STATIC_ASSERT(true) __attribute__((unused));
+    //BOOST_STATIC_ASSERT(true) __attribute__((unused));
 
 #define VICUT_DEBUG 0
 
@@ -900,7 +900,7 @@ double vicut(vector<int> &nodeCut, map<int, NewickNode_t *> &idx2node, int *annI
     NewickNode_t *node;
 
     //for( int i = -1; i >= minIdx; i-- )
-    int round = 0;
+    //int round = 0;
     int i = -1;
     while ( i >= minIdx )
     {
