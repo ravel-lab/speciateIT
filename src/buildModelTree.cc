@@ -34,7 +34,7 @@
 // - For each node of the model tree (except root) a fasta file of all ref seq's
 //    corresopnding to the node's subtree
 
-// - A file of absolute paths to just created fasta files 3. A file of taxonomic
+// - A file of absolute paths to just created fasta files. A file of taxonomic
 //    assignments of internal nodes
 
 // Pawel Gajer
@@ -225,7 +225,11 @@ int main(int argc, char **argv)
   {
     string cmd("mkdir -p ");
     cmd += string(inPar->outDir);
+    cmd += string("/fasta_files/");
     system(cmd.c_str());
+
+    if ( !inPar->quiet )
+      fprintf(stderr,"\n\tCreated output dir %s\n\n", cmd.c_str());
   }
   else
   {
@@ -262,8 +266,10 @@ int main(int argc, char **argv)
   int nRows, nCols;
   readCharTbl( txFile, &txTbl, &nRows, &nCols );
 
-  // printf("nRows: %d\n", nRows);
-  // printCharTbl(txTbl, 10, nCols); // test
+  #if 0
+  printf("nRows: %d\n", nRows);
+  printCharTbl(txTbl, 10, nCols); // test
+  #endif
 
   // ==================================================================
   if ( !inPar->quiet )
@@ -353,7 +359,7 @@ int main(int argc, char **argv)
   {
     if ( !inPar->quiet )
       printf("\r--- processing %s", (it3->first).c_str());
-    string outFile = string(outDir) + string("/") + it3->first + string(".fa");
+    string outFile = string(outDir) + string("/fasta_files/") + it3->first + string(".fa");
     FILE *out = fOpen(outFile.c_str(), "w");
 
     set<string> seqIDs = it3->second;
@@ -371,7 +377,7 @@ int main(int argc, char **argv)
   out = fOpen(pathsFile.c_str(), "w");
   for ( it3 = tx2seqIDs.begin(); it3 != tx2seqIDs.end(); it3++ )
   {
-    string outFile = string(outDir) + string("/") + it3->first + string(".fa");
+    string outFile = string(outDir) + string("/fasta_files/") + it3->first + string(".fa");
     char fullpath[PATH_MAX];
     realpath(outFile.c_str(), fullpath);
     fprintf(out, "%s\n", fullpath);
