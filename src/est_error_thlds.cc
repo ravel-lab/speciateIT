@@ -35,6 +35,8 @@
 #include <vector>
 #include <queue>
 #include <algorithm>
+#include <iostream>
+#include <cctype>
 
 #include "CUtilities.h"
 #include "IOCUtilities.h"
@@ -61,7 +63,7 @@ void printUsage( const char *s )
        << endl
        << "\tOptions:\n"
        << "\t-d <dir>           - directory containing MC model files and reference sequences fasta files\n"
-       << "\t--ofsfset-coef <x>  - offset = log10(x). Currently x=0.99\n"
+       << "\t--offset-coef <x>  - offset = log10(x). Currently x=0.99\n"
        << "\t--tx-size-thld <x> - currently 10\n"
 
        << "\n\tExample: \n"
@@ -103,7 +105,7 @@ public:
   int debug;
   double offsetCoef;
   int txSizeThld;
-  int maxFNrate;
+  double maxFNrate;
 
   void print();
 };
@@ -319,8 +321,15 @@ int main(int argc, char **argv)
   probModel->modelIds( modelStrIds );
   nt.modelIdx( modelStrIds );
 
+  // Converting offset coefficients into a string so we can use it as a suffix of the error_thlds file
 
-  string outFile = string(inPar->mcDir) + string("/error_thlds.txt");
+  string str = to_string(inPar->offsetCoef);
+  auto it = std::remove_if(str.begin(), str.end(), [](char const &c) {
+    return std::ispunct(c);
+  });
+  str.erase(it, str.end()); // Removing punctuation
+
+  string outFile = string(inPar->mcDir) + string("/error_thlds_") + str + string(".txt");
   FILE *outFH = fOpen( outFile.c_str(), "w");
   fprintf(outFH,"Taxon\tThreshold\n");
 
@@ -363,8 +372,8 @@ int main(int argc, char **argv)
     {
       if ( inPar->verbose )
       {
-	fprintf(stderr, "--- [%d] Processing %s\n", nodeCount, node->label.c_str());
-	nodeCount++;
+        fprintf(stderr, "--- [%d] Processing %s\n", nodeCount, node->label.c_str());
+        nodeCount++;
       }
 
       string faFile = string(inPar->mcDir) + string("/") + node->label + string(".fa");
@@ -377,101 +386,101 @@ int main(int argc, char **argv)
       int i = 0;
       for ( itr = seqRecs.begin(); itr != seqRecs.end(); ++itr )
       {
-	refLpp[i] = probModel->normLog10prob(itr->second.c_str(), (int)itr->second.size(), node->model_idx );
-	if ( refLpp[i] < refMinLpp )
-	  refMinLpp = refLpp[i];
-	i++;
+        refLpp[i] = probModel->normLog10prob(itr->second.c_str(), (int)itr->second.size(), node->model_idx );
+        if ( refLpp[i] < refMinLpp )
+          refMinLpp = refLpp[i];
+        i++;
       }
 
       double errorThld;
       if ( nRefSeqs >= txSizeThld )
       {
-	errorThld = offset + refMinLpp;
+        errorThld = offset + refMinLpp;
       }
       else
       {
-	double medianLpp = medianInPlace( refLpp );
-	double lpp05 = lpp05_lm_slope*medianLpp + lpp05_lm_yintt;
-	errorThld = offset + min(lpp05, refMinLpp);
+        double medianLpp = medianInPlace( refLpp );
+        double lpp05 = lpp05_lm_slope*medianLpp + lpp05_lm_yintt;
+        errorThld = offset + min(lpp05, refMinLpp);
       }
 
       if ( numChildren==0 ) // the node is a species
       {
-	// Identify siblings of node
-	pnode = node->parent_m;
-	vector<NewickNode_t *> siblings;
-	int n = pnode->children_m.size();
-	for (int i = 0; i < n; i++)
-	  if ( pnode->children_m[i] != node )
-	    siblings.push_back(pnode->children_m[i]);
+        // Identify siblings of node
+        pnode = node->parent_m;
+        vector<NewickNode_t *> siblings;
+        int n = pnode->children_m.size();
+        for (int i = 0; i < n; i++)
+          if ( pnode->children_m[i] != node )
+            siblings.push_back(pnode->children_m[i]);
 
-	int nSiblings = (int)siblings.size();
+        int nSiblings = (int)siblings.size();
 
-        #if 0
-	//debug
-	fprintf(stderr, "\tIdentifying siblings of %s\n", node->label.c_str());
-	fprintf(stderr, "\tSiblings:\n");
-	for (int i = 0; i < (int)siblings.size(); ++i )
-	  fprintf(stderr, "\t\t%s\n", siblings[i]->label.c_str());
-	fprintf(stderr, "\n");
-        #endif
+#if 0
+        //debug
+        fprintf(stderr, "\tIdentifying siblings of %s\n", node->label.c_str());
+        fprintf(stderr, "\tSiblings:\n");
+        for (int i = 0; i < (int)siblings.size(); ++i )
+          fprintf(stderr, "\t\t%s\n", siblings[i]->label.c_str());
+        fprintf(stderr, "\n");
+#endif
 
-	double sibMaxLpp = -100.0;
-	map<NewickNode_t*, vector<double> > sibLpp; // hash table of sibling's log pp's w/r 'node'
-	for (int i = 0; i < nSiblings; i++)
-	{
-	  sibnode = siblings[i];
+        double sibMaxLpp = -100.0;
+        map<NewickNode_t*, vector<double> > sibLpp; // hash table of sibling's log pp's w/r 'node'
+        for (int i = 0; i < nSiblings; i++)
+        {
+          sibnode = siblings[i];
 
-	  faFile = string(inPar->mcDir) + string("/") + sibnode->label + string(".fa");
-	  seqRecs.clear();
-	  readFasta( faFile.c_str(), seqRecs);
+          faFile = string(inPar->mcDir) + string("/") + sibnode->label + string(".fa");
+          seqRecs.clear();
+          readFasta( faFile.c_str(), seqRecs);
 
-	  for ( itr = seqRecs.begin(); itr != seqRecs.end(); ++itr )
-	  {
-	    lpp = probModel->normLog10prob(itr->second.c_str(), (int)itr->second.size(), node->model_idx );
-	    sibLpp[sibnode].push_back(lpp);
-	    if ( lpp > sibMaxLpp ) // now we need to check that the node's model is the one with the maximal log pp
-	      sibMaxLpp = lpp;
-	  }
-	}
+          for ( itr = seqRecs.begin(); itr != seqRecs.end(); ++itr )
+          {
+            lpp = probModel->normLog10prob(itr->second.c_str(), (int)itr->second.size(), node->model_idx );
+            sibLpp[sibnode].push_back(lpp);
+            if ( lpp > sibMaxLpp ) // now we need to check that the node's model is the one with the maximal log pp
+              sibMaxLpp = lpp;
+          }
+        }
 
-	if ( sibMaxLpp > refMinLpp )
-	{
-	  sort(refLpp.begin(), refLpp.end());
+        if ( sibMaxLpp > refMinLpp )
+        {
+          sort(refLpp.begin(), refLpp.end());
 
-	  // computing say 5th percentile
-	  int refMaxFNPerc = (int)floor( inPar->maxFNrate * nRefSeqs );
+          // computing say 5th percentile
+          int refMaxFNPerc = (int)floor( inPar->maxFNrate * nRefSeqs );
 
-	  if ( sibMaxLpp > refLpp[refMaxFNPerc] )
-	  {
-	    errorThld = refLpp[refMaxFNPerc];
+          if ( sibMaxLpp > refLpp[refMaxFNPerc] )
+          {
+            errorThld = refLpp[refMaxFNPerc];
 
-	    // identifying siblings such that the percentage of their pp' above errorThld is > inPar->maxFNrate
-	    // that is their 1-inPar->maxFNrate percentile is > errorThld
-	    // in that case mark the pair (node, sib) for merging
-	    // if sib is not a species but some higher taxonomic rank
-	    // merge all species of sib with node
+            // identifying siblings such that the percentage of their pp' above errorThld is > inPar->maxFNrate
+            // that is their 1-inPar->maxFNrate percentile is > errorThld
+            // in that case mark the pair (node, sib) for merging
+            // if sib is not a species but some higher taxonomic rank
+            // merge all species of sib with node
 
-	    set<string> mergeCltr;
-	    map<NewickNode_t*, vector<double> >::iterator sibItr;
-	    for ( sibItr = sibLpp.begin(); sibItr != sibLpp.end(); ++sibItr )
-	    {
-	      sort(sibItr->second.begin(), sibItr->second.end());
-	      int FPidx = (int)floor( (1 - inPar->maxFNrate) * sibItr->second.size() );
-	      if ( sibItr->second[FPidx] > errorThld )
-	      {
-		// node and sib's leaves need to be merged
-		vector<string> leaves;
-		nt.leafLabels(sibItr->first, leaves);
-		vector<string>::iterator vItr;
-		for ( vItr = leaves.begin(); vItr != leaves.end(); ++vItr )
-		  mergeCltr.insert( *vItr );
-	      }
-	    }
+            set<string> mergeCltr;
+            map<NewickNode_t*, vector<double> >::iterator sibItr;
+            for ( sibItr = sibLpp.begin(); sibItr != sibLpp.end(); ++sibItr )
+            {
+              sort(sibItr->second.begin(), sibItr->second.end());
+              int FPidx = (int)floor( (1 - inPar->maxFNrate) * sibItr->second.size() );
+              if ( sibItr->second[FPidx] > errorThld )
+              {
+                // node and sib's leaves need to be merged
+                vector<string> leaves;
+                nt.leafLabels(sibItr->first, leaves);
+                vector<string>::iterator vItr;
+                for ( vItr = leaves.begin(); vItr != leaves.end(); ++vItr )
+                  mergeCltr.insert( *vItr );
+              }
+            }
 
-	    mergeCltrs.push_back(mergeCltr);
-	  }
-	}
+            mergeCltrs.push_back(mergeCltr);
+          }
+        }
       }
 
       fprintf(outFH,"%s\t%f\n", node->label.c_str(), errorThld);
@@ -482,15 +491,14 @@ int main(int argc, char **argv)
     {
       for (int i = 0; i < numChildren; i++)
       {
-	bfs.push(node->children_m[i]);
+        bfs.push(node->children_m[i]);
       }
     }
   } // end of while ( !bfs.empty() ) loop
 
   fclose(outFH);
 
-
-  string outFile2 = string(inPar->mcDir) + string("/merge_cltrs.txt");
+  string outFile2 = string(inPar->mcDir) + string("/merge_cltrs_") + str + string(".txt");
   FILE *out = fOpen( outFile2.c_str(), "w");
   for ( int i = 0; i < (int)mergeCltrs.size(); i++ )
   {
@@ -534,100 +542,98 @@ void parseArgs( int argc, char ** argv, inPar_t *p )
   };
 
   while ((c = getopt_long(argc, argv,"b:c:d:e:f:i:k:vp:r:s:t:h",longOptions, NULL)) != -1)
-    switch (c)
-    {
+    switch (c) {
       case 'b':
-	p->maxNumAmbCodes = atoi(optarg);
-	break;
+        p->maxNumAmbCodes = atoi(optarg);
+        break;
 
       case 'c':
-	p->offsetCoef = atof(optarg);
-	break;
+        p->offsetCoef = atof(optarg);
+        break;
 
       case 'f':
-	p->maxFNrate = atof(optarg);
-	break;
+        p->maxFNrate = atof(optarg);
+        break;
 
       case 's':
-	p->txSizeThld = atoi(optarg);
-	break;
+        p->txSizeThld = atoi(optarg);
+        break;
 
       case 'r':
-	p->treeFile = strdup(optarg);
-	break;
+        p->treeFile = strdup(optarg);
+        break;
 
       case 'p':
-	{
-	  int pc = atoi(optarg);
-	  if ( pc == -1 )
-	  {
-	    p->pseudoCountType = zeroOffset0;
-	  }
-	  else if ( pc == 0 )
-	  {
-	    p->pseudoCountType = zeroOffset1;
-	  }
-	  else if ( pc == 1 )
-	  {
-	    p->pseudoCountType = zeroOffset1;
-	  }
-	  else if ( pc == 2 )
-	  {
-	    p->pseudoCountType = recPdoCount;
-	  }
-	  else
-	  {
-	    cerr << "ERROR in " << __FILE__ << " at line " << __LINE__ << ": Undefined pseudo-count type" << endl;
-	    exit(1);
-	  }
-	}
-	break;
+        {
+          int pc = atoi(optarg);
+          if ( pc == -1 )
+            {
+              p->pseudoCountType = zeroOffset0;
+            }
+          else if ( pc == 0 )
+            {
+              p->pseudoCountType = zeroOffset1;
+            }
+          else if ( pc == 1 )
+            {
+              p->pseudoCountType = zeroOffset1;
+            }
+          else if ( pc == 2 )
+            {
+              p->pseudoCountType = recPdoCount;
+            }
+          else
+            {
+              cerr << "ERROR in " << __FILE__ << " at line " << __LINE__ << ": Undefined pseudo-count type" << endl;
+              exit(1);
+            }
+        }
+        break;
 
       case 'd':
-	p->mcDir = strdup(optarg);
-	break;
+        p->mcDir = strdup(optarg);
+        break;
 
       case 't':
-	p->trgFile = strdup(optarg);
-	break;
+        p->trgFile = strdup(optarg);
+        break;
 
       case 'k':
-	parseCommaList(optarg, p->kMerLens);
-	break;
+        parseCommaList(optarg, p->kMerLens);
+        break;
 
       case 'v':
-	p->verbose = true;
-	break;
-
+        p->verbose = true;
+        break;
 
       case 'h':
-	printHelp(argv[0]);
-	exit (EXIT_SUCCESS);
-	break;
+        printHelp(argv[0]);
+        exit (EXIT_SUCCESS);
+        break;
 
       case 0:
-	break;
+        break;
 
       default:
-	cerr << "\n"
-	     << "=========================================\n"
-	     << " ERROR: Unrecognized option " << (char)c << "\n" << endl;
+        cerr << "\n"
+             << "=========================================\n"
+             << " ERROR: Unrecognized option " << (char)c << "\n" << endl;
 
-	for ( int i=0; i < argc; ++i )
-	  cerr << argv[i] << " ";
-	cerr << endl;
+        for ( int i=0; i < argc; ++i )
+          cerr << argv[i] << " ";
+        cerr << endl;
 
-	cerr << "==========================================\n" << endl;
-	++errflg;
-	break;
-    }
+        cerr << "==========================================\n" << endl;
+        ++errflg;
+        break;
+      }
 
   if ( errflg )
-  {
-    printUsage(argv[0]);
-    cerr << "Try '" << argv[0] << " -h' for more information" << endl;
-    exit (EXIT_FAILURE);
-  }
+    {
+      printUsage(argv[0]);
+      cerr << "Try '" << argv[0] << " -h' for more information" << endl;
+      exit (EXIT_FAILURE);
+    }
 
   for ( ; optind < argc; ++ optind )
     p->trgFiles.push_back( strdup(argv[optind]) );
