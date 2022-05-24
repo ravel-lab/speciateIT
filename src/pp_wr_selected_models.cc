@@ -509,7 +509,9 @@ int main(int argc, char **argv)
   int count = 0;
   //int depthCount;
   string currentLabel;
-  double x[nModels]; // stores conditional probabilities p(x | M) for children of each node. the root node has 3 children
+  //double x[nModels]; // stores conditional probabilities p(x | M) for children of each node. the root node has 3 children
+  double *x;
+  MALLOC(x, double*, nModels * sizeof(double));
 
   FILE *out = fOpen(inPar->outFile, "w");
   FILE *in = fOpen(inPar->inFile, "r");
@@ -604,6 +606,7 @@ int main(int argc, char **argv)
   //fprintf(stderr,"\nNumber of errors: %d / %d (%.2f%%)\n\n", errorCount, nRecs, 100.0*errorCount / (double)nRecs );
 
 
+  free(x);
   free(seq);
   free(data);
 
