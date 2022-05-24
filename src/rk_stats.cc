@@ -433,7 +433,7 @@ int main(int argc, char **argv)
       // Recording the highest and the second highest log posterior probabilities
       // for each reference sequence of 'node'
       //
-      string faFile = string(inPar->mcDir) + string("/") + node->label + string(".fa");
+      string faFile = string(inPar->mcDir) + string("/fasta_files/") + node->label + string(".fa");
       seqRecs.clear();
       readFasta( faFile.c_str(), seqRecs);
 

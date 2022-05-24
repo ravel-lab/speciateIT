@@ -350,7 +350,7 @@ int main(int argc, char **argv)
 	// pp loop
 	for (int i = 0; i < nChildren; i++)
 	{
-	  string faFile = string(inPar->mcDir) + string("/") + node->children_m[i]->label + string(".fa");
+	  string faFile = string(inPar->mcDir) + string("/fasta_files/") + node->children_m[i]->label + string(".fa");
 	  seqRecs.clear();
 	  readFasta( faFile.c_str(), seqRecs);
 

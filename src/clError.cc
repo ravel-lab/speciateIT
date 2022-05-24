@@ -567,7 +567,7 @@ int main(int argc, char **argv)
 
 
       #if 0
-      string faFile = string(inPar->faDir) + string("/") + node->label + string(".fa");
+      string faFile = string(inPar->faDir) + string("/fasta_files/") + node->label + string(".fa");
       map<string, string> refSeqs;
       readFasta( faFile.c_str(), refSeqs);
 
@@ -598,8 +598,8 @@ int main(int argc, char **argv)
 
 	// fprintf(stderr, "\ri: %d  sibnode->label: %s\n", i, sibnode->label.c_str());
 
-        #if 0
-	faFile = string(inPar->faDir) + string("/") + sibnode->label + string(".fa");
+    #if 0
+	faFile = string(inPar->faDir) + string("/fasta_files/") + sibnode->label + string(".fa");
 	refSeqs.clear();
 	readFasta( faFile.c_str(), refSeqs);
 

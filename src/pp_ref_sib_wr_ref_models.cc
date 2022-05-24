@@ -422,7 +422,7 @@ int main(int argc, char **argv)
 	nodeCount++;
       }
 
-      string faFile = string(inPar->mcDir) + string("/") + node->label + string(".fa");
+      string faFile = string(inPar->mcDir) + string("/fasta_files/") + node->label + string(".fa");
       seqRecs.clear();
       readFasta( faFile.c_str(), seqRecs);
 
@@ -468,7 +468,7 @@ int main(int argc, char **argv)
       {
 	sibnode = siblings[i];
 
-	faFile = string(inPar->mcDir) + string("/") + sibnode->label + string(".fa");
+	faFile = string(inPar->mcDir) + string("/fasta_files/") + sibnode->label + string(".fa");
 	seqRecs.clear();
 	readFasta( faFile.c_str(), seqRecs);
 
@@ -509,7 +509,7 @@ int main(int argc, char **argv)
 	{
 	  sibnode = siblings[i];
 
-	  faFile = string(inPar->mcDir) + string("/") + sibnode->label + string(".fa");
+	  faFile = string(inPar->mcDir) + string("/fasta_files/") + sibnode->label + string(".fa");
 	  seqRecs.clear();
 	  readFasta( faFile.c_str(), seqRecs);
 
@@ -524,7 +524,7 @@ int main(int argc, char **argv)
 	}
 
 	#if 0
-	faFile = string(inPar->mcDir) + string("/") + maxSibName + string(".fa");
+	faFile = string(inPar->mcDir) + string("/fasta_files/") + maxSibName + string(".fa");
 	seqRecs.clear();
 	readFasta( faFile.c_str(), seqRecs);
 	string sFile = string(inPar->outDir) + string("/") + node->label + string("__") + maxSibName + string(".postProbs");

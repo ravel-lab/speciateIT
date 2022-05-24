@@ -442,7 +442,7 @@ int main(int argc, char **argv)
       // For each model, we classify its reference sequences using the model and
       // all its siblings models counting the number of times a reference sequence
       // has the highest pp w/r one of the siblings.
-      string faFile = string(inPar->mcDir) + string("/") + node->label + string(".fa");
+      string faFile = string(inPar->mcDir) + string("/fasta_files/") + node->label + string(".fa");
       seqRecs.clear();
       readFasta( faFile.c_str(), seqRecs);
       int nRef = (int)seqRecs.size();
@@ -483,7 +483,7 @@ int main(int argc, char **argv)
       {
 	sibnode = siblings[i];
 
-	faFile = string(inPar->mcDir) + string("/") + sibnode->label + string(".fa");
+	faFile = string(inPar->mcDir) + string("/fasta_files/") + sibnode->label + string(".fa");
 	seqRecs.clear();
 	readFasta( faFile.c_str(), seqRecs);
 	nSibs[i] = (int)seqRecs.size();

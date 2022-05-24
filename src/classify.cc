@@ -661,7 +661,7 @@ int main(int argc, char **argv)
           map<string, string>::iterator itr;
           map<string, string> seqRecs; // fasta file sequence records
 
-          string faFile = string(inPar->mcDir) + string("/") + node->label + string(".fa");
+          string faFile = string(inPar->mcDir) + string("/fasta_files/") + node->label + string(".fa");
           seqRecs.clear();
           readFasta( faFile.c_str(), seqRecs);
           int nRefSeqs = seqRecs.size();

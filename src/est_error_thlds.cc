@@ -376,7 +376,7 @@ int main(int argc, char **argv)
         nodeCount++;
       }
 
-      string faFile = string(inPar->mcDir) + string("/") + node->label + string(".fa");
+      string faFile = string(inPar->mcDir) + string("/fasta_files/") + node->label + string(".fa");
       seqRecs.clear();
       readFasta( faFile.c_str(), seqRecs);
       int nRefSeqs = seqRecs.size();
@@ -431,7 +431,7 @@ int main(int argc, char **argv)
         {
           sibnode = siblings[i];
 
-          faFile = string(inPar->mcDir) + string("/") + sibnode->label + string(".fa");
+          faFile = string(inPar->mcDir) + string("/fasta_files/") + sibnode->label + string(".fa");
           seqRecs.clear();
           readFasta( faFile.c_str(), seqRecs);
 
