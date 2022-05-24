@@ -25,13 +25,14 @@
 
 ####### Compiler, tools and options
 
-CC            = gcc #/opt/local/bin/gcc-mp-4.7 #gcc-4.0
-CXX           = g++ #/opt/local/bin/g++-mp-4.7 #g++-4.0
-FLAGS         = -g # -O2 # -g -O2
-CFLAGS        = $(FLAGS) -Wall -D__SIM_SSE3 -O2 -D_GNU_SOURCE -dynamic -msse3 -fomit-frame-pointer -funroll-loops # -D_USE_PTHREADS
-CXXFLAGS      = $(FLAGS) -std=gnu++11 -Wall -D__SIM_SSE3 -O2 -D_GNU_SOURCE -dynamic -msse3 -fomit-frame-pointer -funroll-loops # -D_USE_PTHREADS
+CC            = clang #gcc #gcc-4.0
+CXX           = clang #g++ #g++-4.0
+LINK          = clang #g++
+LDFLAGS       = -std=c++11 -lc++abi -lstdc++
+FLAGS         = -g -Wall -D__SIM_SSE3 -msse3 -O2 -D_GNU_SOURCE -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -O2 # -g -O2  -Wunused-parameter
+CFLAGS        = $(FLAGS)
+CXXFLAGS      = $(FLAGS)
 INCPATH       = -Isrc
-LINK          = g++
 LIBS          = -lm # -L../../lib -lkmerstats
 AR            = ar cq
 RANLIB        = ranlib -s
@@ -53,13 +54,12 @@ MKDIR         = mkdir -p
 
 ####### Files
 
-create-build-dir := $(shell $(CHK_DIR_EXISTS) .build || $(MKDIR) .build)
-
 SRCDIR  = .
 BINDIR  = ../bin
 BUILDDIR= .build
 
 create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))
+create-bin-dir := $(shell $(CHK_DIR_EXISTS) $(BINDIR) || $(MKDIR) $(BINDIR))
 
 OBJECTS = $(BUILDDIR)/est_error_thlds.o \
           $(BUILDDIR)/IOCUtilities.o \
@@ -69,15 +69,15 @@ OBJECTS = $(BUILDDIR)/est_error_thlds.o \
           $(BUILDDIR)/CppUtilities.o \
           $(BUILDDIR)/strings.o \
           $(BUILDDIR)/CStatUtilities.o \
-	  $(BUILDDIR)/CppStatUtilities.o \
+          $(BUILDDIR)/CppStatUtilities.o \
           $(BUILDDIR)/StatUtilities.o \
           $(BUILDDIR)/DNAsequence.o \
-	  $(BUILDDIR)/Newick.o \
+          $(BUILDDIR)/Newick.o \
 
 ####### Build rules
 
 est_error_thlds: $(OBJECTS)
-	$(CXX) $(FLAGS) $(OBJECTS) -o $(BINDIR)/est_error_thlds
+	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/est_error_thlds
 
 $(BUILDDIR)/est_error_thlds.o: $(SRCDIR)/est_error_thlds.cc
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/est_error_thlds.o $(SRCDIR)/est_error_thlds.cc

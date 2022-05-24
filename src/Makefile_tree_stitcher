@@ -25,13 +25,14 @@
 
 ####### Compiler, tools and options
 
-CC            = gcc
-CXX           = g++
-FLAGS         = -g # -O2 -O0
-CFLAGS        = $(FLAGS) -Wall
-CXXFLAGS      = $(FLAGS) -Wall -std=gnu++11
+CC            = clang #gcc #gcc-4.0
+CXX           = clang #g++ #g++-4.0
+LINK          = clang #g++
+LDFLAGS       = -std=c++11 -lc++abi -lstdc++
+FLAGS         = -g -Wall -D__SIM_SSE3 -msse3 -O2 -D_GNU_SOURCE -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -O2 # -g -O2  -Wunused-parameter
+CFLAGS        = $(FLAGS)
+CXXFLAGS      = $(FLAGS)
 INCPATH       = -I../src
-LINK          = g++
 LIBS          = # -lm # -L../../lib -lkmerstats
 AR            = ar cq
 RANLIB        = ranlib -s
@@ -56,6 +57,7 @@ BINDIR  = ../bin
 BUILDDIR= .build
 
 create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))
+create-bin-dir := $(shell $(CHK_DIR_EXISTS) $(BINDIR) || $(MKDIR) $(BINDIR))
 
 OBJECTS = $(BUILDDIR)/tree_stitcher.o \
           $(BUILDDIR)/Newick.o \
@@ -66,7 +68,7 @@ OBJECTS = $(BUILDDIR)/tree_stitcher.o \
           $(BUILDDIR)/strings.o
 
 tree_stitcher: $(OBJECTS)
-	$(CXX) $(FLAGS) $(INCPATH) $(OBJECTS) -o $(BINDIR)/tree_stitcher
+	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/tree_stitcher
 
 $(BUILDDIR)/tree_stitcher.o: tree_stitcher.cc
 	$(CXX) -c $(FLAGS) $(INCPATH) -I$(SRCDIR) -o $(BUILDDIR)/tree_stitcher.o tree_stitcher.cc

@@ -1,11 +1,14 @@
 
-CC            = gcc
-CXX           = g++
-FLAGS         = -g # -O2 -O0
-CFLAGS        = $(FLAGS) -Wall
-CXXFLAGS      = $(FLAGS) -Wall -std=gnu++11
+####### Compiler, tools and options
+
+CC            = clang #gcc #gcc-4.0
+CXX           = clang #g++ #g++-4.0
+LINK          = clang #g++
+LDFLAGS       = -std=c++11 -lc++abi -lstdc++
+FLAGS         = -g -Wall -D__SIM_SSE3 -msse3 -O2 -D_GNU_SOURCE -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -O2 # -g -O2  -Wunused-parameter
+CFLAGS        = $(FLAGS)
+CXXFLAGS      = $(FLAGS)
 INCPATH       = -I../src
-LINK          = g++
 LIBS          = # -lm # -L../../lib -lkmerstats
 AR            = ar cq
 RANLIB        = ranlib -s
@@ -25,11 +28,14 @@ MOVE          = mv -f
 CHK_DIR_EXISTS= test -d
 MKDIR         = mkdir -p
 
+####### Files
+
 SRCDIR  = .
 BINDIR  = ../bin
 BUILDDIR= .build
 
 create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))
+create-bin-dir := $(shell $(CHK_DIR_EXISTS) $(BINDIR) || $(MKDIR) $(BINDIR))
 
 OBJECTS = $(BUILDDIR)/buildModelTree.o \
           $(BUILDDIR)/Newick2.o \
@@ -40,7 +46,7 @@ OBJECTS = $(BUILDDIR)/buildModelTree.o \
           $(BUILDDIR)/strings.o
 
 buildModelTree: $(OBJECTS)
-	$(CXX) $(FLAGS) $(INCPATH) $(OBJECTS) -o $(BINDIR)/buildModelTree
+	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/buildModelTree
 
 $(BUILDDIR)/buildModelTree.o: buildModelTree.cc
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -I$(SRCDIR) -o $(BUILDDIR)/buildModelTree.o buildModelTree.cc

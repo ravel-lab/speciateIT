@@ -25,13 +25,14 @@
 
 ####### Compiler, tools and options
 
-CC            = gcc
-CXX           = g++
-FLAGS         = -g # -fopenmp # -O2 # -g -O2
-CFLAGS        = $(FLAGS) -Wall -D__SIM_SSE3 -msse3 -D_GNU_SOURCE -dynamic -O2 -fomit-frame-pointer -funroll-loops -D__AVX # -D_USE_PTHREADS
-CXXFLAGS      = $(FLAGS) -std=gnu++11 -Wall -D__SIM_SSE3 -O2 -D_GNU_SOURCE -dynamic -msse3 -fomit-frame-pointer -funroll-loops -D__AVX # -D_USE_PTHREADS
-INCPATH       = -Isrc -I/usr/local/Cellar/boost/1.64.0_1/include
-LINK          = g++
+CC            = clang #gcc #gcc-4.0
+CXX           = clang #g++ #g++-4.0
+LINK          = clang #g++
+LDFLAGS       = -std=c++11 -lc++abi -lstdc++
+FLAGS         = -g -Wall -D__SIM_SSE3 -msse3 -O2 -D_GNU_SOURCE -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -O2 # -g -O2  -Wunused-parameter
+CFLAGS        = $(FLAGS)
+CXXFLAGS      = $(FLAGS)
+INCPATH       = -Isrc -I/Users/pgajer/devel/boost_1_79_0
 LIBS          = -lm # -pthread -L../../lib -lkmerstats
 AR            = ar cq
 RANLIB        = ranlib -s
@@ -60,6 +61,7 @@ BINDIR  = ../bin
 BUILDDIR= .build
 
 create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))
+create-bin-dir := $(shell $(CHK_DIR_EXISTS) $(BINDIR) || $(MKDIR) $(BINDIR))
 
 OBJECTS = $(BUILDDIR)/vicut.o \
 	  	  $(BUILDDIR)/IOUtilities.o \
@@ -71,7 +73,7 @@ OBJECTS = $(BUILDDIR)/vicut.o \
 
 
 vicut: $(OBJECTS)
-	$(CXX) $(FLAGS) $(OBJECTS) -o $(BINDIR)/vicut
+	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/vicut
 
 $(BUILDDIR)/vicut.o: vicut.cc $(SRCDIR)/IOUtilities.c $(SRCDIR)/IOCppUtilities.cc
 	$(CXX) -c $(FLAGS) -I$(SRCDIR) $(INCPATH) -o $(BUILDDIR)/vicut.o vicut.cc

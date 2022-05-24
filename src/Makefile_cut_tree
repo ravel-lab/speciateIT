@@ -25,14 +25,14 @@
 
 ####### Compiler, tools and options
 
-
-CC            = gcc
-CXX           = g++
-FLAGS         = -g # -O2 -O0
-CFLAGS        = $(FLAGS) -Wall
-CXXFLAGS      = $(FLAGS) -Wall
+CC            = clang #gcc #gcc-4.0
+CXX           = clang #g++ #g++-4.0
+LINK          = clang #g++
+LDFLAGS       = -std=c++11 -lc++abi -lstdc++
+FLAGS         = -g -Wall -D__SIM_SSE3 -msse3 -O2 -D_GNU_SOURCE -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -O2 # -g -O2  -Wunused-parameter
+CFLAGS        = $(FLAGS)
+CXXFLAGS      = $(FLAGS)
 INCPATH       = #-Isrc
-LINK          = g++
 LIBS          = # -lm # -L../../lib -lkmerstats
 AR            = ar cq
 RANLIB        = ranlib -s
@@ -52,26 +52,27 @@ MOVE          = mv -f
 CHK_DIR_EXISTS= test -d
 MKDIR         = mkdir -p
 
+####### Files
+
 SRCDIR  = .
 BINDIR  = ../bin
 BUILDDIR= .build
 
 create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))
-
-OBJECTS =   $(BUILDDIR)/IOCppUtilities.o
+create-bin-dir := $(shell $(CHK_DIR_EXISTS) $(BINDIR) || $(MKDIR) $(BINDIR))
 
 OBJECTS = $(BUILDDIR)/cut_tree.o \
-	  $(BUILDDIR)/Newick.o \
+       	  $(BUILDDIR)/Newick.o \
           $(BUILDDIR)/IOCUtilities.o \
           $(BUILDDIR)/IOCppUtilities.o \
           $(BUILDDIR)/CppUtilities.o \
           $(BUILDDIR)/CUtilities.o \
-	  $(BUILDDIR)/strings.o \
+          $(BUILDDIR)/strings.o \
 
 ####### Build rules
 
 cut_tree: $(OBJECTS)
-	$(CXX) $(FLAGS) $(INCPATH) $(OBJECTS) -o $(BINDIR)/cut_tree
+	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/cut_tree
 
 $(BUILDDIR)/cut_tree.o: cut_tree.cc Newick.hh Newick.cc IOCUtilities.h IOCUtilities.c IOCppUtilities.cc
 	$(CXX) -c $(FLAGS) $(INCPATH) -I$(SRCDIR) -o $(BUILDDIR)/cut_tree.o cut_tree.cc
