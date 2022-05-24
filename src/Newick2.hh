@@ -103,64 +103,64 @@ public:
   void incrementLeafCount() { nLeaves_m++; }
 
   void saveCltrMemb( const char *outFile,
-		     vector<int> &nodeCut,
-		     int *annIdx,
-		     map<int, string> &idxToAnn);
+                     vector<int> &nodeCut,
+                     int *annIdx,
+                     map<int, string> &idxToAnn);
 
   void saveCltrMemb2( const char *outFile,
-		      vector<int> &nodeCut,
-		      int *annIdx,
-		      map<int, string> &idxToAnn);
+                      vector<int> &nodeCut,
+                      int *annIdx,
+                      map<int, string> &idxToAnn);
   void saveCltrAnnStats( const char *outFile,
-			 vector<int> &nodeCut,
-			 int *annIdx,
-			 map<int, string> &idxToAnn);
+                         vector<int> &nodeCut,
+                         int *annIdx,
+                         map<int, string> &idxToAnn);
 
   vector<string> saveNAcltrAnnStats( const char *outFile,
-				     vector<int> &nodeCut,
-				     int *annIdx,
-				     map<int, string> &idxToAnn);
+                                     vector<int> &nodeCut,
+                                     int *annIdx,
+                                     map<int, string> &idxToAnn);
 
   void saveNAcltrAnnStats( const char *outFileA, // file to with cluster stats of clusters with at least minNA query sequences
-			   const char *outFileB, // file to with cluster stats of clusters with less than minNA query sequences
-			   const char *outFileC, // file with reference IDs of sequences for clusters in outFileA
-			   const char *outFileD, // file with taxons, for clusters in outFileA, with the number of sequences >= minAnn
-			   vector<int> &nodeCut,
-			   int *annIdx,
-			   map<int, string> &idxToAnn,
-			   int minNA,
-			   int minAnn);
+                           const char *outFileB, // file to with cluster stats of clusters with less than minNA query sequences
+                           const char *outFileC, // file with reference IDs of sequences for clusters in outFileA
+                           const char *outFileD, // file with taxons, for clusters in outFileA, with the number of sequences >= minAnn
+                           vector<int> &nodeCut,
+                           int *annIdx,
+                           map<int, string> &idxToAnn,
+                           int minNA,
+                           int minAnn);
 
   void saveNAtaxonomy( const char *outFile,
-		       const char *logFile,
-		       const char *genusOTUsFile,
-		       vector<int> &nodeCut,
-		       int *annIdx,
-		       map<int, string> &idxToAnn,
-		       int minNA,
-		       map<string, string> &txParent);
+                       const char *logFile,
+                       const char *genusOTUsFile,
+                       vector<int> &nodeCut,
+                       int *annIdx,
+                       map<int, string> &idxToAnn,
+                       int minNA,
+                       map<string, string> &txParent);
 
   void printGenusTrees( const char *outDir,
-			vector<int> &nodeCut,
-			int *annIdx,
-			int minNA,
-			map<int, string> &idxToAnn,
-			map<string, string> &txParent);
+                        vector<int> &nodeCut,
+                        int *annIdx,
+                        int minNA,
+                        map<int, string> &idxToAnn,
+                        map<string, string> &txParent);
 
   void getSppProfs( vector<sppProf_t*> &sppProfs,
                     vector<int> &nodeCut,
-		    int *annIdx,
-		    int minNA,
-		    map<int, string> &idxToAnn,
-		    map<string, string> &txParent);
+                    int *annIdx,
+                    int minNA,
+                    map<int, string> &idxToAnn);
+                    //map<string, string> &txParent);
 
   void getAncRoots(vector<sppProf_t*> &sppProfs,
-		   vector<sppProf_t*> &ancRootNodes);
+                   vector<sppProf_t*> &ancRootNodes);
 
   void rmTxErrors( vector<sppProf_t*> &ancRootProfs,
-		   int depth,
-		   int *annIdx,
-		   map<int, string> &idxToAnn);
+                   int depth,
+                   int *annIdx,
+                   map<int, string> &idxToAnn);
 
   void printTx( const char *outFile,
                 vector<sppProf_t*> &ancRootProfs);
@@ -179,21 +179,21 @@ private:
   string strMap2Str(map<string,int> &sppFreq);
 
   void readTaxtable(const char *taxtableFile,
-		    map<string, string> &txParent);
+                    map<string, string> &txParent);
 
   int cltrSpp(NewickNode_t *_node,
-	      int *annIdx,
-	      map<int, string> &idxToAnn,
-	      map<string,int> &sppFreq);
+              int *annIdx,
+              map<int, string> &idxToAnn,
+              map<string,int> &sppFreq);
 
   string maxAnn( NewickNode_t *node,
-		 int *annIdx,
-		 map<int, string> &idxToAnn);
+                 int *annIdx,
+                 map<int, string> &idxToAnn);
 
   NewickNode_t* findAnnNode(std::string label);
 
   bool hasSelSpp(NewickNode_t *_node,
-		 vector<NewickNode_t*> &v);
+                 vector<NewickNode_t*> &v);
 
   NewickNode_t * root_m;
   int nLeaves_m; // number of leaves

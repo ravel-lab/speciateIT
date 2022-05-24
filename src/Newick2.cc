@@ -2526,11 +2526,11 @@ void NewickTree_t::leafLabels(NewickNode_t *_node, set<string> &leaves)
 
 //--------------------------------------------- getSppProfs -----
 void NewickTree_t::getSppProfs( vector<sppProf_t*> &sppProfs,
-				vector<int> &nodeCut,
-				int *annIdx,
-				int minNA,
-				map<int, string> &idxToAnn,
-				map<string, string> &txParent)
+                                vector<int> &nodeCut,
+                                int *annIdx,
+                                int minNA,
+                                map<int, string> &idxToAnn)
+                                //map<string, string> &txParent)
 /*
   Given nodeCut + some other parameters
   populate a vector of pointers to sppProf_t's
