@@ -54,9 +54,9 @@ int * parseAnnotation(const char *inFile, char **rowIds, int nIds,
 void parseQueryIDs(const char *inFile, map<string, bool> &queryIDs);
 
 void queryIDsToAnnIdx ( map<string, bool> &queryIDs,
-			char **leafIds, int nIds,
-			map<string,int> &annToIdx,
-			int *annIdx);
+                        char **leafIds, int nIds,
+                        map<string,int> &annToIdx,
+                        int *annIdx);
 
 void read2cols(const char *inFile, map<string,string> &tbl);
 
@@ -99,8 +99,8 @@ bool getNextFastaRecord( FILE *fp, char *&id, char *data, size_t alloc, char *se
 
 /// read first sequence record of fasta file
 bool readFastaRecord(const char *file, char *&id,
-		     char *&header, char *&seq,
-		     int &seqLen);
+                     char *&header, char *&seq,
+                     int &seqLen);
 
 /// parses comma separated list of ints
 void parseCommaList( char *listStr, vector<int> &list );
@@ -110,24 +110,24 @@ void printCharList( char **list, int len, const char *name );
 
 /// write fragStartPos\tprobs to out file handle
 void writeProbs( FILE *out,
-		 int fragStartPos,
-		 double *probs, int nProbs);
+                 int fragStartPos,
+                 double *probs, int nProbs);
 
 void writeProbs( FILE *out,
-		 const char *seqId,
-		 double *probs, int nProbs);
+                 const char *seqId,
+                 double *probs, int nProbs);
 
 void writeClassification( FILE *out,
-			  const char *seqId,
-			  vector< pair<string, double> > &score,
-			  map<string, vector<string> > &fullTx);
+                          const char *seqId,
+                          vector< pair<string, double> > &score,
+                          map<string, vector<string> > &fullTx);
 
 void writeALogOdds( FILE *out,
-		    const char *seqId,
-		    double *x, int n,
-		    int m,
-		    vector<string> &path,
-		    string &nodeLabel);
+                    const char *seqId,
+                    double *x, int n,
+                    int m,
+                    //vector<string> &path,
+                    string &nodeLabel);
 
 /// write header of the fragment probability table
 void writeHeader( FILE *out, vector<char *> &chromoIds );
@@ -143,71 +143,71 @@ void printDblTbl(double **tbl, int nRows, int nCols);
 
 /// print vector of class T elements to stdout
 template<typename T>
-void printVector(vector<T> &v, const char *sep="\t", int width = 0)
+  void printVector(vector<T> &v, const char *sep="\t", int width = 0)
 {
-  cout.precision(10);
-  if ( width > 0 )
-    cout.width(width);
+    cout.precision(10);
+    if ( width > 0 )
+      cout.width(width);
 
-  int n = v.size();
-  for ( int i = 0; i < n; ++i )
-    cout << v[i] << sep;
-  cout << endl;
+    int n = v.size();
+    for ( int i = 0; i < n; ++i )
+      cout << v[i] << sep;
+    cout << endl;
 
-  if ( width > 0 )
-    cout.width(1);
+    if ( width > 0 )
+      cout.width(1);
 }
 
 template<typename T>
-void printVector(const char *outFile, vector<T> &v, const char *header=NULL)
+  void printVector(const char *outFile, vector<T> &v, const char *header=NULL)
 {
-  ofstream fout( outFile, ios::out );
-  fout.precision(15);
+    ofstream fout( outFile, ios::out );
+    fout.precision(15);
 
-  if ( header )
-    fout << header << endl;
+    if ( header )
+      fout << header << endl;
 
-  int n = v.size();
-  for ( int i = 0; i < n; ++i )
-    fout << v[i] << endl;
-  fout << endl;
-  fout.close();
+    int n = v.size();
+    for ( int i = 0; i < n; ++i )
+      fout << v[i] << endl;
+    fout << endl;
+    fout.close();
 }
 
 /// print vector of class T elements to stdout
 template<typename T>
-void printArray(T *a, int n)
+  void printArray(T *a, int n)
 {
-  cout.precision(10);
-  for ( int i = 0; i < n; ++i )
-    cout << a[i] << " ";
-  cout << endl;
+    cout.precision(10);
+    for ( int i = 0; i < n; ++i )
+      cout << a[i] << " ";
+    cout << endl;
 }
 
 /// check if a class, T, instant is a member of a vector<T>
 template<typename T>
-int exists_in_vector( vector<T> &v, T a )
+  int exists_in_vector( vector<T> &v, T a )
 {
-  typename vector<T>::iterator it = find ( v.begin(), v.end(), a );
+    typename vector<T>::iterator it = find ( v.begin(), v.end(), a );
 
-  int ret = 1;
-  if ( it == v.end() )
-    ret = 0;
+    int ret = 1;
+    if ( it == v.end() )
+      ret = 0;
 
-  return ret;
+    return ret;
 }
 
 /// check if a class, T, instant is a member of a map<T, S>
 template<typename T, typename S>
-int exists_in_map( map<T, S> &m, T a )
+  int exists_in_map( map<T, S> &m, T a )
 {
-  typename map<T, S>::iterator it = m.find( a );
+    typename map<T, S>::iterator it = m.find( a );
 
-  int ret = 1;
-  if ( it == m.end() )
-    ret = 0;
+    int ret = 1;
+    if ( it == m.end() )
+      ret = 0;
 
-  return ret;
+    return ret;
 }
 
 

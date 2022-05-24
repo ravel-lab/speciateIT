@@ -112,18 +112,20 @@ void childrenMap( char ***tbl, int nRows, int nCols, map<string, set<string> > &
   // order of taxonomic ranks in tbl
   // BVAB1	g_Shuttleworthia	f_Lachnospiraceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
 
-  int nCols1 = nCols - 1;
-  for ( int i = 0; i < nRows; ++i )
-    for ( int j = nCols1; j > 0; j-- )
+    int nCols1 = nCols - 1;
+    for ( int i = 0; i < nRows; ++i )
     {
-      children[ string(tbl[i][j]) ].insert( string(tbl[i][j-1]) );
-
-      if ( string(tbl[i][j]) == "_" )
+      for ( int j = nCols1; j > 0; j-- )
       {
-	fprintf(stderr, "parent=_\ni=%d\n\n",i);
-	for ( int j = 0; j < nCols; j++ )
-	  fprintf(stderr,"%s  ",tbl[i][j]);
-	  fprintf(stderr,"\n\n");
+        children[ string(tbl[i][j]) ].insert( string(tbl[i][j-1]) );
+
+        if ( string(tbl[i][j]) == "_" )
+        {
+          fprintf(stderr, "parent=_\ni=%d\n\n",i);
+          for ( int j = 0; j < nCols; j++ )
+            fprintf(stderr,"%s  ",tbl[i][j]);
+          fprintf(stderr,"\n\n");
+        }
       }
     }
 }
@@ -475,11 +477,11 @@ void writeClassification( FILE *out,
 
 // -------------------------------- writeALogOdds ------------------------
 void writeALogOdds( FILE *out,
-		    const char *seqId,
-		    double *x, int n,
-		    int m,
-		    vector<string> &path,
-		    string &nodeLabel)
+                    const char *seqId,
+                    double *x, int n,
+                    int m,
+                    //vector<string> &path,
+                    string &nodeLabel)
 {
   fprintf(out,"%s\t%s\t",seqId, nodeLabel.c_str());
 
@@ -499,13 +501,13 @@ void writeALogOdds( FILE *out,
 }
 
 // -------------------------------- writeALogOdds ------------------------
-void writeALogOdds( FILE *out,
-		    const char *seqId,
-		    double x,
-		    string &nodeLabel)
-{
-  fprintf(out,"%s\t%s\t%.1f\n",seqId, nodeLabel.c_str(), x);
-}
+// void writeALogOdds( FILE *out,
+//                     const char *seqId,
+//                     double x,
+//                     string &nodeLabel)
+// {
+//     fprintf(out,"%s\t%s\t%.1f\n",seqId, nodeLabel.c_str(), x);
+// }
 
 // -------------------------------- writeHeader ------------------------
 /// write header of the fragment probability table
