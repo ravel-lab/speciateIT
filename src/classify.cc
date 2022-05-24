@@ -491,7 +491,6 @@ int main(int argc, char **argv)
   char *id;
   int count = 0;
   string currentLabel;
-  double x[nModels]; // stores conditional probabilities p(x | M) for children of each node. the root node has 3 children
 
   int seqLen;
   size_t alloc = 1024*1024;
@@ -499,6 +498,11 @@ int main(int argc, char **argv)
   MALLOC(data, char*, alloc * sizeof(char));
   MALLOC(seq, char*, alloc * sizeof(char));
   MALLOC(rcseq, char*, alloc * sizeof(char));
+
+  //double x[nModels]; // stores conditional probabilities p(x | M) for children of each node. the root node has 3 children
+  double *x;
+  MALLOC(x, double*, nModels * sizeof(double));
+
 
   if ( inPar->verbose )
     cerr << "--- Number of sequences in " << inPar->inFile << ": " << nRecs << endl;
@@ -703,6 +707,7 @@ int main(int argc, char **argv)
   fclose(in);
   fclose(out);
 
+  free(x);
   free(seq);
   free(data);
 
