@@ -208,11 +208,14 @@ void inPar_t::print()
   else
     cerr << "MISSING" << endl;
 
-  cerr << "trgFiles:\t";
-  int n = trgFiles.size();
-  for ( int i = 0; i < n; ++i )
-    cerr << trgFiles[i] << "\t";
-  cerr << endl;
+  int n = (int)trgFiles.size();
+  if ( n < 10 ) {
+
+    cerr << "trgFiles:\t";
+    for ( int i = 0; i < n; ++i )
+      cerr << trgFiles[i] << "\t";
+    cerr << endl;
+  }
 
   cerr << "kMerLens:";
   n = kMerLens.size();
@@ -449,7 +452,7 @@ int main(int argc, char **argv)
       cerr << "done" << endl;
 
       cout << "modelIds.size()=" << modelIds.size() << "\nmodelIds:\t";
-      printVector(modelIds);
+      //printVector(modelIds);
 
       cout << "words[0]:\t";
       vector<vector<char *> > words = probModel.wordStrgs();
