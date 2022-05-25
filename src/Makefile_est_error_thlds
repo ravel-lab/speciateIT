@@ -29,7 +29,7 @@ CC            = clang #gcc #gcc-4.0
 CXX           = clang #g++ #g++-4.0
 LINK          = clang #g++
 LDFLAGS       = -std=c++11 -lc++abi -lstdc++
-FLAGS         = -g -Wall -D__SIM_SSE3 -msse3 -O2 -D_GNU_SOURCE -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -O2 # -g -O2  -Wunused-parameter
+FLAGS         = -std=c++1z -g -Wall -D__SIM_SSE3 -msse3 -O2 -D_GNU_SOURCE -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -O2 # -g -O2  -Wunused-parameter
 CFLAGS        = $(FLAGS)
 CXXFLAGS      = $(FLAGS)
 INCPATH       = -Isrc
