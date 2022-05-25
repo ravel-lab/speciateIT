@@ -338,28 +338,28 @@ int main(int argc, char **argv)
   string symblink = string(inPar->mcDir) + string("/error_thlds.txt");
   // delete symbolic link if it exists
   struct stat buf;
-  lstat( symblink.c_str(), &buf );
+  if ( lstat(symblink.c_str(), &buf) != -1 && S_ISLNK(buf.st_mode) ) {
 
-  if ( S_ISLNK(buf.st_mode) ) {
-    fprintf(stderr, "\tDetected the limbolic link file using lstat()\n");
-
-    fprintf(stderr, "\tDeleting the limbolic link\n");
+    //fprintf(stderr, "\tDetected the symbolic link file using lstat()\n");
+    //fprintf(stderr, "\tDeleting the symbolic link\n");
     unlink(symblink.c_str());
-    lstat( symblink.c_str(), &buf);
-    if ( S_ISLNK(buf.st_mode) ) {
-      fprintf(stderr, "\tDeletion didn't work\n");
-      //exit(1);
-    } else {
-      fprintf(stderr, "\tSuccess!\n");
-    }
-  } else {
-    fprintf(stderr, "\tThe limbolic link file not detected with lstat()\n");
-    exit(1);
-  }
 
-  fprintf(stderr, "Creating the limbolic link\n");
+    if ( lstat( symblink.c_str(), &buf) != -1 ) {
+      fprintf(stderr, "\tDeletion of the symbolic link %s failed!\n", symblink.c_str());
+    }
+
+  }
+  //else {
+  //perror("lstat");
+  //  fprintf(stderr, "\tThe symbolic link file not detected with lstat()\n");
+  //  exit(EXIT_FAILURE);
+  //}
+
+  if ( inPar->verbose )
+    fprintf(stderr, "Creating the symbolic link %s => %s ... ", symblink.c_str(), outFile.c_str());
   filesystem::create_symlink(outFile.c_str(), symblink.c_str());
-  fprintf(stderr, "DONE\n");
+  if ( inPar->verbose )
+    fprintf(stderr, "DONE\n");
 
   // Setting up traversal the reference tree using breath first search
   NewickNode_t *node;
