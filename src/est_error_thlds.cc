@@ -28,15 +28,15 @@
 
 */
 
-
+#include <algorithm>
+#include <cctype>
 #include <getopt.h>
-#include <string.h>
+#include <iostream>
+#include <queue>
 #include <string>
 #include <vector>
-#include <queue>
-#include <algorithm>
-#include <iostream>
-#include <cctype>
+#include <filesystem>
+#include <cassert>
 
 #include "CUtilities.h"
 #include "IOCUtilities.h"
@@ -321,8 +321,8 @@ int main(int argc, char **argv)
   probModel->modelIds( modelStrIds );
   nt.modelIdx( modelStrIds );
 
-  // Converting offset coefficients into a string so we can use it as a suffix of the error_thlds file
 
+  // Converting offset coefficients into a string so we can use it as a suffix of the error_thlds file
   string str = to_string(inPar->offsetCoef);
   auto it = std::remove_if(str.begin(), str.end(), [](char const &c) {
     return std::ispunct(c);
@@ -333,7 +333,35 @@ int main(int argc, char **argv)
   FILE *outFH = fOpen( outFile.c_str(), "w");
   fprintf(outFH,"Taxon\tThreshold\n");
 
-  // traverse the reference tree using breath first search
+  // Creating a symbolic link error_thlds.tx to the above defined error_thlds_
+  // file so it can be used by classify and other programs that assume that name.
+  string symblink = string(inPar->mcDir) + string("/error_thlds.txt");
+  // delete symbolic link if it exists
+  struct stat buf;
+  lstat( symblink.c_str(), &buf );
+
+  if ( S_ISLNK(buf.st_mode) ) {
+    fprintf(stderr, "\tDetected the limbolic link file using lstat()\n");
+
+    fprintf(stderr, "\tDeleting the limbolic link\n");
+    unlink(symblink.c_str());
+    lstat( symblink.c_str(), &buf);
+    if ( S_ISLNK(buf.st_mode) ) {
+      fprintf(stderr, "\tDeletion didn't work\n");
+      //exit(1);
+    } else {
+      fprintf(stderr, "\tSuccess!\n");
+    }
+  } else {
+    fprintf(stderr, "\tThe limbolic link file not detected with lstat()\n");
+    exit(1);
+  }
+
+  fprintf(stderr, "Creating the limbolic link\n");
+  filesystem::create_symlink(outFile.c_str(), symblink.c_str());
+  fprintf(stderr, "DONE\n");
+
+  // Setting up traversal the reference tree using breath first search
   NewickNode_t *node;
   NewickNode_t *sibnode;
   NewickNode_t *pnode;
