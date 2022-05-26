@@ -32,11 +32,12 @@
 #include <cctype>
 #include <getopt.h>
 #include <iostream>
+#include <limits.h> /* PATH_MAX */
 #include <queue>
 #include <string>
 #include <vector>
 #include <filesystem>
-#include <cassert>
+//#include <cassert>
 
 #include "CUtilities.h"
 #include "IOCUtilities.h"
@@ -333,8 +334,9 @@ int main(int argc, char **argv)
   FILE *outFH = fOpen( outFile.c_str(), "w");
   fprintf(outFH,"Taxon\tThreshold\n");
 
-  // Creating a symbolic link error_thlds.tx to the above defined error_thlds_
-  // file so it can be used by classify and other programs that assume that name.
+  // Creating a symbolic link error_thlds.tx to the full path of the above
+  // defined error_thlds_ file so it can be used by classify and other programs
+  // that assume that name.
   string symblink = string(inPar->mcDir) + string("/error_thlds.txt");
   // delete symbolic link if it exists
   struct stat buf;
@@ -346,18 +348,23 @@ int main(int argc, char **argv)
 
     if ( lstat( symblink.c_str(), &buf) != -1 ) {
       fprintf(stderr, "\tDeletion of the symbolic link %s failed!\n", symblink.c_str());
+      perror("lstat");
+      exit(EXIT_FAILURE);
     }
 
   }
-  //else {
-  //perror("lstat");
-  //  fprintf(stderr, "\tThe symbolic link file not detected with lstat()\n");
-  //  exit(EXIT_FAILURE);
-  //}
+
+  // Extracting full path to outFile.c_str()
+  char fullpath [PATH_MAX]; // PATH_MAX incudes the \0 so +1 is not required
+  char *res = realpath(outFile.c_str(), fullpath);
+  if (!res) {
+    perror("realpath");
+    exit(EXIT_FAILURE);
+  }
 
   if ( inPar->verbose )
-    fprintf(stderr, "Creating the symbolic link %s => %s ... ", symblink.c_str(), outFile.c_str());
-  filesystem::create_symlink(outFile.c_str(), symblink.c_str());
+    fprintf(stderr, "Creating the symbolic link %s => %s ... ", symblink.c_str(), fullpath);
+  filesystem::create_symlink(fullpath, symblink.c_str());
   if ( inPar->verbose )
     fprintf(stderr, "DONE\n");
 
