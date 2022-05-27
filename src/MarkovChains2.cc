@@ -65,112 +65,103 @@ using namespace std;
 //--------------------------------------------------------- MarkovChains2_t ----
 /// MarkovChains2_t attempts to read relative k-mer frequencies
 MarkovChains2_t::MarkovChains2_t(int order,
-				 vector<char *> &trgFiles,
-				 char *dir,
-				 int maxNumAmbCodes,
-				 int pseudoCountType)
+                                 vector<char *> &trgFiles,
+                                 char *dir,
+                                 int maxNumAmbCodes,
+                                 int pseudoCountType)
   : order_m(order), dir_m(dir),  maxNumAmbCodes_m(maxNumAmbCodes), pseudoCountType_m(pseudoCountType)
 {
-  int maxWordLen = order_m+1;
+    #define DEBUG_MARKOVCHAINS2 0
 
-  getAllKmers( 1, nucs_m );
+    int maxWordLen = order_m+1;
 
-  // wordStrgs_m is needed only for the header of cProbFile_m's
-  wordStrgs_m.resize(maxWordLen);
-  for ( int k = 1; k <= maxWordLen; ++k )
-    getAllKmers(k, wordStrgs_m[k-1]);
+    getAllKmers( 1, nucs_m );
 
-  //MALLOC(cProb_m, double*, nAllWords_m * sizeof(double)); // pp_ref_sib_wr_ref_models(15223,0x7fff7f0b4300) malloc: *** mach_vm_map(size=18446744072073781248) failed (error code=3)
-  #if 0
-  cerr << "in MarkovChains2_t::MarkovChains2_t() order_m=" << order_m
-       << "\tmaxWordLen=" << maxWordLen
-       << endl;
-  cerr << "wordStrgs_m[0]:" << endl;
-  printVector(wordStrgs_m[0]);
+    // wordStrgs_m is needed only for the header of cProbFile_m's
+    wordStrgs_m.resize(maxWordLen);
+    for ( int k = 1; k <= maxWordLen; ++k )
+      getAllKmers(k, wordStrgs_m[k-1]);
 
-  cerr << "wordStrgs_m[1]:" << endl;
-  printVector(wordStrgs_m[1]);
-  #endif
+    int nTrgFiles = trgFiles.size();
 
-  char *file;
-  int nTrgFiles = trgFiles.size();
-  for ( int i = 0; i < nTrgFiles; ++i )
-  {
-    STRDUP(file, trgFiles[i]);
-    trgFiles_m.push_back(file);
-  }
+    #if DEBUG_MARKOVCHAINS2
+    cerr << "in MarkovChains2_t::MarkovChains2_t() order_m=" << order_m
+         << "\tmaxWordLen=" << maxWordLen
+         << "\tnTrgFiles=" << nTrgFiles
+         << endl;
+    cerr << "wordStrgs_m[0]:" << endl;
+    printVector(wordStrgs_m[0]);
 
-  if ( dir_m )
-  {
-    setupIOfiles();
+    cerr << "wordStrgs_m[1]:" << endl;
+    printVector(wordStrgs_m[1]);
+    #endif
 
-    if ( !readModelIds() && !nTrgFiles )
+    char *file;
+    for ( int i = 0; i < nTrgFiles; ++i )
     {
-      cerr << "Error in MarkovChains2_t::MarkovChains2_t(): cannot read model ids" << endl;
-      exit(1);
+      STRDUP(file, trgFiles[i]);
+      trgFiles_m.push_back(file);
     }
-    else if ( !readModelIds() && nTrgFiles )
+
+    if ( dir_m )
+    {
+      setupIOfiles();
+
+      if ( !readModelIds() && !nTrgFiles )
+      {
+        cerr << "Error in MarkovChains2_t::MarkovChains2_t(): cannot read model ids" << endl;
+        exit(1);
+      }
+      else if ( !readModelIds() && nTrgFiles )
+      {
+        createModelIds();
+      }
+
+      createMooreMachine();
+
+      MALLOC(cProb_m, double*, nAllWords_m * sizeof(double));
+
+      initIUPACambCodeHashVals();
+
+      bool ok = false;
+      if ( !(ok=readLog10condProbTbl(0, cProbFile_m[0].c_str())) && nTrgFiles ) // if MC order 0 cprobs are missing create all models
+      {
+        for ( int i = 0; i < maxWordLen; ++i )
+          log10condProbs( i );
+      } else {
+        for ( int i = 1; i < maxWordLen; ++i )
+        {
+          ok = readLog10condProbTbl(i, cProbFile_m[i].c_str());
+          if ( !ok ){
+            cerr << "ERROR in MarkovChains2_t::MarkovChains2_t(): cannot read order " << i << " table" << endl;
+            exit(1);
+           }
+        }
+      }
+    }
+    else
     {
       createModelIds();
+      createMooreMachine();
+      MALLOC(cProb_m, double*, nAllWords_m * sizeof(double));
+      initIUPACambCodeHashVals();
+
+      for ( int i = 0; i < maxWordLen; ++i )
+        log10condProbs( i );
     }
-
-    createMooreMachine();
-
-    MALLOC(cProb_m, double*, nAllWords_m * sizeof(double));
-
-    initIUPACambCodeHashVals();
-    bool ok = false;
-
-    if ( !(ok=readLog10condProbTbl(0, cProbFile_m[0].c_str())) && nTrgFiles )
-    {
-      log10condProbs( 0 );
-    }
-
-    if ( 0 & !ok )
-    {
-      cerr << "Error in MarkovChains2_t::MarkovChains2_t(): cannot read " << cProbFile_m[0].c_str()
-	   << "\nand cannot create Log10condProbTbl" << endl;
-      exit(1);
-    }
-
-    for ( int i = 1; i < maxWordLen; ++i )
-    {
-      if ( !(ok=readLog10condProbTbl(i, cProbFile_m[i].c_str())) && nTrgFiles )
-      {
-	log10condProbs( i );
-      }
-      #if 0
-      if ( !ok )
-      {
-	cerr << "Error in " << __FILE__ << " at line " << __LINE__ << ": cannot read and cannot create Log10condProbTbl" << endl;
-	exit(1);
-      }
-      #endif
-    }
-  }
-  else
-  {
-    createModelIds();
-    createMooreMachine();
-    MALLOC(cProb_m, double*, nAllWords_m * sizeof(double));
-    initIUPACambCodeHashVals();
-
-    for ( int i = 0; i < maxWordLen; ++i )
-      log10condProbs( i );
-  }
 }
 
 
 //--------------------------------------------------------- MarkovChains2_t ----
 /// MarkovChains2_t version for leave-one-out validation setup (dir is NULL)
 MarkovChains2_t::MarkovChains2_t(int order,
-				 const char *seqID, // seq ID of a sequence to be excluded from model building (it will be used for leave-one-out validation)
-				 char *&seq,        // sequence with seqID
-				 int &seqLen,
-				 vector<char *> &trgFiles,
-				 char *dir,
-				 int maxNumAmbCodes,
-				 int pseudoCountType)
+                                 const char *seqID, // seq ID of a sequence to be excluded from model building (it will be used for leave-one-out validation)
+                                 char *&seq,        // sequence with seqID
+                                 int &seqLen,
+                                 vector<char *> &trgFiles,
+                                 char *dir,
+                                 int maxNumAmbCodes,
+                                 int pseudoCountType)
   : order_m(order), dir_m(dir),  maxNumAmbCodes_m(maxNumAmbCodes), pseudoCountType_m(pseudoCountType)
 {
   int maxWordLen = order_m+1;
@@ -410,10 +401,10 @@ void MarkovChains2_t::createMooreMachine( )
     {
       for ( int i = 0; i < nNucs; ++i )
       {
-	tr_m[v][i] = v + p4*(1 + i);
-	#if DEBUG_MOORE
-	cerr << "tr_m[" << v << "][" << i << "]=" << tr_m[v][i] << endl;
-	#endif
+        tr_m[v][i] = v + p4*(1 + i);
+        #if DEBUG_MOORE
+        cerr << "tr_m[" << v << "][" << i << "]=" << tr_m[v][i] << endl;
+        #endif
       }
     }
   }
@@ -611,72 +602,32 @@ struct kmerState_t
 /// with the code being replaced by the corresponding nucleotides
 double MarkovChains2_t::log10probIUPAC( const char *frag, int fragLen, int modelIdx )
 {
-  int k = 0, i;
-  int codeSize;
-  vector<int> codes;
-  kmerState_t kmerState;
-  vector<kmerState_t> thread; /// each ambiguity code changes thread.size() to m*thread.size()
-  /// where m is the number of bases corresponding to the ambiguous code
-  /// for example R = A or G, has m=2.
+    int k = 0, i;
+    int codeSize;
+    vector<int> codes;
+    kmerState_t kmerState;
+    vector<kmerState_t> thread; /// each ambiguity code changes thread.size() to m*thread.size()
+    /// where m is the number of bases corresponding to the ambiguous code
+    /// for example R = A or G, has m=2.
 
-  int nAmbCodes = 0;
+    int nAmbCodes = 0;
 
-  //-- skip the first k bases to avoid lower MC probability calculations
-  if ( (i=intACGTLookup[int(frag[k])]) > -1 )
-  {
-    kmerState.kmerIdx   = i+1;
-    kmerState.log10prob = 0;
-    thread.push_back(kmerState);
-  }
-  else if ( (codeSize=getIUPACambCodeHashVals(frag[k], codes)) )
-  {
-    nAmbCodes++;
-
-    for ( i = 0; i < codeSize; ++i )
+    //-- skip the first k bases to avoid lower MC probability calculations
+    if ( (i=intACGTLookup[int(frag[k])]) > -1 )
     {
-      kmerState.kmerIdx = codes[i]+1;
+      kmerState.kmerIdx   = i+1;
       kmerState.log10prob = 0;
       thread.push_back(kmerState);
     }
-  }
-  else
-  {
-    return 1; // log10 of probability has to be <= 0, so returned value 1 means error
-  }
-
-  k++;
-  int rank = order_m+1;
-
-  while ( k < rank )
-  {
-    if ( nAmbCodes > maxNumAmbCodes_m )
-    {
-      //printf("\nfrag=%s\tnAmbCodes=%d\n",frag,nAmbCodes);
-      return 1;
-    }
-
-    int n = thread.size();
-
-    if ( (i=intACGTLookup[int(frag[k])]) > -1 )
-    {
-      for ( int j = 0; j < n; ++j )
-	thread[j].kmerIdx = tr_m[thread[j].kmerIdx][i];
-    }
     else if ( (codeSize=getIUPACambCodeHashVals(frag[k], codes)) )
     {
       nAmbCodes++;
 
-      for ( int j = 0; j < n; ++j )
-	thread[j].kmerIdx = tr_m[thread[j].kmerIdx][codes[0]];
-
-      for ( i = 1; i < codeSize; ++i )
+      for ( i = 0; i < codeSize; ++i )
       {
-	for ( int j = 0; j < n; ++j )
-	{
-	  kmerState.kmerIdx = tr_m[thread[j].kmerIdx][codes[i]];
-	  kmerState.log10prob = 0;
-	  thread.push_back(kmerState);
-	}
+        kmerState.kmerIdx = codes[i]+1;
+        kmerState.log10prob = 0;
+        thread.push_back(kmerState);
       }
     }
     else
@@ -685,64 +636,104 @@ double MarkovChains2_t::log10probIUPAC( const char *frag, int fragLen, int model
     }
 
     k++;
-  }
+    int rank = order_m+1;
 
-  //-- process the remaining k-mers
-  while ( k < fragLen )
-  {
-    if ( nAmbCodes > maxNumAmbCodes_m )
+    while ( k < rank )
     {
-      //printf("\nfrag=%s\tnAmbCodes=%d\n",frag,nAmbCodes);
-      return 1;
+      if ( nAmbCodes > maxNumAmbCodes_m )
+      {
+        //printf("\nfrag=%s\tnAmbCodes=%d\n",frag,nAmbCodes);
+        return 1;
+      }
+
+      int n = thread.size();
+
+      if ( (i=intACGTLookup[int(frag[k])]) > -1 )
+      {
+        for ( int j = 0; j < n; ++j )
+          thread[j].kmerIdx = tr_m[thread[j].kmerIdx][i];
+      }
+      else if ( (codeSize=getIUPACambCodeHashVals(frag[k], codes)) )
+      {
+        nAmbCodes++;
+
+        for ( int j = 0; j < n; ++j )
+          thread[j].kmerIdx = tr_m[thread[j].kmerIdx][codes[0]];
+
+        for ( i = 1; i < codeSize; ++i )
+        {
+          for ( int j = 0; j < n; ++j )
+          {
+            kmerState.kmerIdx = tr_m[thread[j].kmerIdx][codes[i]];
+            kmerState.log10prob = 0;
+            thread.push_back(kmerState);
+          }
+        }
+      }
+      else
+      {
+        return 1; // log10 of probability has to be <= 0, so returned value 1 means error
+      }
+
+      k++;
     }
 
+    //-- process the remaining k-mers
+    while ( k < fragLen )
+    {
+      if ( nAmbCodes > maxNumAmbCodes_m )
+      {
+        //printf("\nfrag=%s\tnAmbCodes=%d\n",frag,nAmbCodes);
+        return 1;
+      }
+
+      int n = thread.size();
+
+      if ( (i=intACGTLookup[int(frag[k])]) > -1 )
+      {
+        for ( int j = 0; j < n; ++j )
+        {
+          thread[j].kmerIdx = tr_m[thread[j].kmerIdx][i];
+          thread[j].log10prob += log10cProb_m[modelIdx][thread[j].kmerIdx];
+        }
+      }
+      else if ( (codeSize=getIUPACambCodeHashVals(frag[k], codes)) )
+      {
+        nAmbCodes++;
+
+        for ( int j = 0; j < n; ++j )
+        {
+          thread[j].kmerIdx = tr_m[thread[j].kmerIdx][codes[0]];
+          thread[j].log10prob += log10cProb_m[modelIdx][thread[j].kmerIdx];
+        }
+
+        for ( i = 1; i < codeSize; ++i )
+        {
+          for ( int j = 0; j < n; ++j )
+          {
+            kmerState.kmerIdx = tr_m[thread[j].kmerIdx][codes[i]];
+            kmerState.log10prob = thread[j].log10prob + log10cProb_m[modelIdx][kmerState.kmerIdx];
+            thread.push_back(kmerState);
+          }
+        }
+      }
+      else
+      {
+        return 1; // log10 of probability has to be <= 0, so returned value 1 means error
+      }
+
+      k++;
+    }
+
+    //-- compute the mean of all thread log10 values
     int n = thread.size();
+    double meanLog10prob = 0;
+    for ( i = 0; i < n; ++i )
+      meanLog10prob += thread[i].log10prob;
 
-    if ( (i=intACGTLookup[int(frag[k])]) > -1 )
-    {
-      for ( int j = 0; j < n; ++j )
-      {
-	thread[j].kmerIdx = tr_m[thread[j].kmerIdx][i];
-	thread[j].log10prob += log10cProb_m[modelIdx][thread[j].kmerIdx];
-      }
-    }
-    else if ( (codeSize=getIUPACambCodeHashVals(frag[k], codes)) )
-    {
-      nAmbCodes++;
+    //cerr << "in log10probIUPAC() thread.size()=" << n << endl;
 
-      for ( int j = 0; j < n; ++j )
-      {
-	thread[j].kmerIdx = tr_m[thread[j].kmerIdx][codes[0]];
-	thread[j].log10prob += log10cProb_m[modelIdx][thread[j].kmerIdx];
-      }
-
-      for ( i = 1; i < codeSize; ++i )
-      {
-	for ( int j = 0; j < n; ++j )
-	{
-	  kmerState.kmerIdx = tr_m[thread[j].kmerIdx][codes[i]];
-	  kmerState.log10prob = thread[j].log10prob + log10cProb_m[modelIdx][kmerState.kmerIdx];
-	  thread.push_back(kmerState);
-	}
-      }
-    }
-    else
-    {
-      return 1; // log10 of probability has to be <= 0, so returned value 1 means error
-    }
-
-    k++;
-  }
-
-  //-- compute the mean of all thread log10 values
-  int n = thread.size();
-  double meanLog10prob = 0;
-  for ( i = 0; i < n; ++i )
-    meanLog10prob += thread[i].log10prob;
-
-  //cerr << "in log10probIUPAC() thread.size()=" << n << endl;
-
-  return meanLog10prob / n;
+    return meanLog10prob / n;
 }
 
 // ---------------------------------------------------- log10prob -----------
@@ -755,8 +746,14 @@ double MarkovChains2_t::log10probIUPAC( const char *frag, int fragLen, int model
 /// mutations in the initial fragment of the sequence)
 double MarkovChains2_t::log10prob( const char *frag, int fragLen, int modelIdx )
 {
+  #define DEBUG_LOG10PROB 0
+
   double log10probVal = 0;
   int k = 0, v, i;
+
+  #if DEBUG_LOG10PROB
+  fprintf(stderr, "log10prob(): Before init if\n");
+  #endif
 
   //-- skip the first k bases to avoid lower MC probability calculations
   if ( (v=intACGTLookup[int(frag[k])]) > -1 )
@@ -771,6 +768,10 @@ double MarkovChains2_t::log10prob( const char *frag, int fragLen, int modelIdx )
 
   int rank = order_m+1;
 
+  #if DEBUG_LOG10PROB
+  fprintf(stderr, "log10prob(): After init if v=%d k=%d rank=%d\n", v, k, rank);
+  #endif
+
   while ( k < rank )
   {
     if ( (i=intACGTLookup[int(frag[k])]) > -1 )
@@ -785,6 +786,17 @@ double MarkovChains2_t::log10prob( const char *frag, int fragLen, int modelIdx )
     k++;
   }
 
+  #if DEBUG_LOG10PROB
+  fprintf(stderr, "log10prob(): After init while v=%d k=%d log10probVal=%.10lf\n", v, k, log10probVal);
+  #endif
+
+
+  #if DEBUG_LOG10PROB
+  modelIdx = 1375;
+  for ( int i = 0; i < 100; i++ )
+    fprintf(stderr, "log10cProb_m[modelIdx][%d]=%.10lf\n", i, log10cProb_m[modelIdx][i]);
+  #endif
+
   //-- process the remaining k-mers
   while ( k < fragLen )
   {
@@ -792,6 +804,11 @@ double MarkovChains2_t::log10prob( const char *frag, int fragLen, int modelIdx )
     {
       v = tr_m[v][i];
       log10probVal += log10cProb_m[modelIdx][v];
+
+      #if DEBUG_LOG10PROB
+      fprintf(stderr, "k=%d v=%d modelIdx=%d log10probVal=%.10lf\n", k, v, modelIdx, log10probVal);
+      exit(0);
+      #endif
     }
     else
     {
@@ -799,6 +816,11 @@ double MarkovChains2_t::log10prob( const char *frag, int fragLen, int modelIdx )
     }
     k++;
   }
+
+  #if DEBUG_LOG10PROB
+  fprintf(stderr, "FINAL k=%d log10probVal=%.10lf\n", k, log10probVal);
+  exit(0);
+  #endif
 
   return log10probVal;
 }
@@ -854,13 +876,13 @@ double MarkovChains2_t::log10probR( char *frag, int fragLen, int modelIdx )
 {
   #define LOG10CPROBR_DEBUG 0
   #if LOG10CPROBR_DEBUG
-   cerr << "in MarkovChains2_t::log10prob()\tmodelIdx=" << modelIdx
-       << "\tfragLen=" << fragLen << endl;
-   cerr << "intACGTLookup[A]=" << intACGTLookup[int('A')] // 0
-	<< "intACGTLookup[C]=" << intACGTLookup[int('C')] // 1
-	<< "intACGTLookup[G]=" << intACGTLookup[int('G')] // 2
-	<< "intACGTLookup[T]=" << intACGTLookup[int('T')] // 3
-	<< endl;
+    cerr << "in MarkovChains2_t::log10prob()\tmodelIdx=" << modelIdx
+         << "\tfragLen=" << fragLen << endl;
+    cerr << "intACGTLookup[A]=" << intACGTLookup[int('A')] // 0
+         << "intACGTLookup[C]=" << intACGTLookup[int('C')] // 1
+         << "intACGTLookup[G]=" << intACGTLookup[int('G')] // 2
+         << "intACGTLookup[T]=" << intACGTLookup[int('T')] // 3
+         << endl;
   #endif
 
   double log10probVal = 0;
@@ -881,9 +903,9 @@ double MarkovChains2_t::log10probR( char *frag, int fragLen, int modelIdx )
 
     #if LOG10CPROBR_DEBUG
     cerr << "k=" << k
-	 << "\tnuc=" << nuc
-	 << "\tv=hashFn(nuc)=" << v
-	 << "\tlog10cProb[v]=" << log10cProb[v] << endl;
+         << "\tnuc=" << nuc
+         << "\tv=hashFn(nuc)=" << v
+         << "\tlog10cProb[v]=" << log10cProb[v] << endl;
     #endif
 
     while ( k < fragLen && (i=intACGTLookup[int(frag[k])]) > -1 )
@@ -893,10 +915,10 @@ double MarkovChains2_t::log10probR( char *frag, int fragLen, int modelIdx )
 
       #if LOG10CPROBR_DEBUG
       cerr << "k=" << k
-	   << "\tfrag[k]=" << (char)frag[k]
-	   << "\ti=idx[frag[k]]=" << i
-	   << "\ttr_m[v][i]=" << v
-	   << "\tlog10cProb_m[modelIdx][v]=" << log10cProb_m[modelIdx][v] << endl;
+           << "\tfrag[k]=" << (char)frag[k]
+           << "\ti=idx[frag[k]]=" << i
+           << "\ttr_m[v][i]=" << v
+           << "\tlog10cProb_m[modelIdx][v]=" << log10cProb_m[modelIdx][v] << endl;
       #endif
 
       k++;
@@ -922,80 +944,86 @@ double MarkovChains2_t::log10probR( char *frag, int fragLen, int modelIdx )
 ///
 bool MarkovChains2_t::readLog10condProbTbl( int kIdx, const char *inFile )
 {
-  FILE *fp = fopen(inFile, "r");
+    #define DEBUG_RLCPT 0
 
-  if ( !fp )
-  {
-    string cmd = string("rm -f ") + string(inFile);
-    system(cmd.c_str());
-    return false;
-  }
+    #if DEBUG_RLCPT
+    fprintf(stderr, "Entering readLog10condProbTbl(%d, %s)\n", kIdx, inFile);
+    #endif
 
-  //-- Read the header
-  size_t alloc = 1024*1024;
-  char *data;
-  MALLOC(data, char*, alloc * sizeof(char));
+    FILE *fp = fopen(inFile, "r");
 
-  if ( !ReadLine(fp, data, alloc) )
-  {
-    cerr << "Error: MarkovChains2_t::readLog10condProbTbl() at line " << __LINE__
-	 << " could not read the data"  << endl;
-    return false;
-  }
-
-  //-- Parse k-mers from the header
-  char *brkt;
-  char *word = strtok_r(data, "\t", &brkt);
-  //char *kmer;
-
-  for ( word = strtok_r(NULL, "\t", &brkt);// starting from second field
-	word;                              // to get rid of chromoId label
-	word = strtok_r(NULL, "\t", &brkt))
-  {
-    //STRDUP(kmer,chomp(word));
-    //wordStrgs_m[kIdx].push_back(kmer);
-  }
-
-  int nModels = modelIds_m.size();
-  int modelIdx = 0;
-  int lL = hashUL_m[kIdx];  // lower bound for hash val's of words of size kIdx+1
-  int lU = hashUL_m[kIdx+1];// upper bound for hash val's of words of size kIdx+2
-
-  while ( ReadLine(fp, data, alloc) )
-  {
-    if ( modelIdx == nModels )
+    if ( !fp )
     {
-      nModels += 100;
-      REALLOC(log10cProb_m, double**, nModels * sizeof(double*));
+      string cmd = string("rm -f ") + string(inFile);
+      system(cmd.c_str());
+      return false;
     }
 
-    //-- parse data; extract chromoId and log10 frequencies
-    word = strtok_r(data, "\t", &brkt);
+    //-- Read the header
+    size_t alloc = 1024*1024;
+    char *data;
+    MALLOC(data, char*, alloc * sizeof(char));
 
-    int i = lL;
-    for ( word = strtok_r(NULL, "\t", &brkt);
-	  word;
-	  word = strtok_r(NULL, "\t", &brkt), ++i)
+    if ( !ReadLine(fp, data, alloc) )
     {
-      if ( i == lU )
+      fprintf(stderr, "ERROR: MarkovChains2_t::readLog10condProbTbl() in file %s at line %d: Could not read the data\n", __FILE__, __LINE__);
+      return false;
+    }
+
+    //-- Parse k-mers from the header
+    char *brkt;
+    char *word = strtok_r(data, "\t", &brkt);
+    //char *kmer;
+
+    for ( word = strtok_r(NULL, "\t", &brkt);// starting from second field
+          word;                              // to get rid of chromoId label
+          word = strtok_r(NULL, "\t", &brkt))
+    {
+      //STRDUP(kmer,chomp(word));
+      //wordStrgs_m[kIdx].push_back(kmer);
+    }
+
+    int nModels = modelIds_m.size();
+    int modelIdx = 0;
+    int lL = hashUL_m[kIdx];  // lower bound for hash val's of words of size kIdx+1
+    int lU = hashUL_m[kIdx+1];// upper bound for hash val's of words of size kIdx+2
+
+    while ( ReadLine(fp, data, alloc) )
+    {
+      if ( modelIdx == nModels )
       {
-	cerr << "Error: MarkovChains2_t::readLog10condProbTbl() at line " << __LINE__
-	     << " i == nWords; i=" << i
-	     << "\tnWords=" << (lU-lL)  << endl;
-	return false;
+        nModels += 100;
+        REALLOC(log10cProb_m, double**, nModels * sizeof(double*));
       }
 
-      log10cProb_m[modelIdx][i] = strtod(word, (char **)NULL);
+      //-- parse data; extract chromoId and log10 frequencies
+      word = strtok_r(data, "\t", &brkt);
+
+      int i = lL;
+      for ( word = strtok_r(NULL, "\t", &brkt);
+            word;
+            word = strtok_r(NULL, "\t", &brkt), ++i)
+      {
+        if ( i == lU )
+        {
+          fprintf(stderr, "ERROR: MarkovChains2_t::readLog10condProbTbl() in file %s at line %d: i == nWords; i=%d\tnWords=%d\n",
+                  __FILE__, __LINE__, i, (lU-lL));
+          return false;
+        }
+
+        log10cProb_m[modelIdx][i] = strtod(word, (char **)NULL);
+      }
+      modelIdx++;
     }
-    modelIdx++;
-  }
 
-  //cerr << "Done parsing " << inFile << endl;
+    #if DEBUG_RLCPT
+    fprintf(stderr, "Done parsing %s\n", inFile);
+    #endif
 
-  fclose(fp);
-  free(data);
+    fclose(fp);
+    free(data);
 
-  return true;
+    return true;
 }
 
 
@@ -1051,8 +1079,8 @@ void MarkovChains2_t::log10condProbs( int kIdx, const char *seqID )
 /// pseudo-count is added to each word count
 /// when ambiguity code is encountered, code's alternative k-mers are counted
 void MarkovChains2_t::wordCounts( int kIdx,
-				  const char *file,
-				  int modelIdx )
+                                  const char *file,
+                                  int modelIdx )
 {
   int wordLen = kIdx+1;
   int lL = hashUL_m[wordLen-1];
@@ -1551,41 +1579,41 @@ void MarkovChains2_t::printWordCountsTbl( const char *file, int kIdx, int modelI
 /// it is assumed that word counts of appropriate length are already computed
 void MarkovChains2_t::log10condProbs( int kIdx, int modelIdx )
 {
-  int wordLen = kIdx+1;
-  int lL = hashUL_m[wordLen-1];// lower bound for hash val's of words of size l
-  int lU = hashUL_m[wordLen];  // upper bound for hash val's of words of size l
-  double sum = 0;
-  int nNucs  = 4;
+    int wordLen = kIdx+1;
+    int lL = hashUL_m[wordLen-1];// lower bound for hash val's of words of size l
+    int lU = hashUL_m[wordLen];  // upper bound for hash val's of words of size l
+    double sum = 0;
+    int nNucs  = 4;
 
-  if ( kIdx == 0 )
-  {
-    for ( int i = lL; i < lU; ++i )
-      sum += counts_m[modelIdx][i];
-
-    double log10sum = log10(sum);
-    for ( int i = lL; i < lU; ++i )
-      log10cProb_m[modelIdx][i] = log10(counts_m[modelIdx][i]) - log10sum;
-  }
-  else
-  {
-    wordLen--;
-    lL = hashUL_m[wordLen-1];
-    lU = hashUL_m[wordLen];
-
-    for ( int v = lL; v < lU; ++v )
+    if ( kIdx == 0 )
     {
-      sum = 0;
-      for ( int i = 0; i < nNucs; ++i )
-	sum += counts_m[modelIdx][tr_m[v][i]];
+      for ( int i = lL; i < lU; ++i )
+        sum += counts_m[modelIdx][i];
 
-      sum = log10(sum);
-      for ( int i = 0; i < nNucs; ++i )
+      double log10sum = log10(sum);
+      for ( int i = lL; i < lU; ++i )
+        log10cProb_m[modelIdx][i] = log10(counts_m[modelIdx][i]) - log10sum;
+    }
+    else
+    {
+      wordLen--;
+      lL = hashUL_m[wordLen-1];
+      lU = hashUL_m[wordLen];
+
+      for ( int v = lL; v < lU; ++v )
       {
-	int w = tr_m[v][i];
-	log10cProb_m[modelIdx][w] = log10(counts_m[modelIdx][w]) - sum;
+        sum = 0;
+        for ( int i = 0; i < nNucs; ++i )
+          sum += counts_m[modelIdx][tr_m[v][i]];
+
+        sum = log10(sum);
+        for ( int i = 0; i < nNucs; ++i )
+        {
+          int w = tr_m[v][i];
+          log10cProb_m[modelIdx][w] = log10(counts_m[modelIdx][w]) - sum;
+        }
       }
     }
-  }
 }
 
 
