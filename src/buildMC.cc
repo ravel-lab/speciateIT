@@ -244,6 +244,9 @@ int main(int argc, char **argv)
   //-- parsing input parameters
   parseArgs(argc, argv, inPar);
 
+  if ( inPar->verbose )
+    inPar->print();
+
   if ( inPar->trgFile )
   {
     readLines(inPar->trgFile, inPar->trgFiles); // path(s) from inPar->trgFile are loaded into inPar->trgFiles
@@ -268,9 +271,6 @@ int main(int argc, char **argv)
       fclose(file);
     }
   }
-
-  if ( inPar->verbose )
-    inPar->print();
 
   if ( !inPar->mcDir && !inPar->trgFiles.size() && !inPar->trgFile )
   {
