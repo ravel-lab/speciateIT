@@ -185,10 +185,11 @@ int numRecordsInFasta( const char *file )
 //-------------------------------------------------- getNextFastaRecord ----
 /// Memory allocation is moved ouside of the routine
 ///
-/// Reads a record from a fasta file. Returns true on
-/// success, otherwise false.
+/// Reads a record from a fasta file. Returns true on success, otherwise false.
 ///
+/// fp     - input fasta file handle
 /// id     - sequence identifier
+/// data   - buffer used only to read the sequence ID
 /// seq    - sequence string
 /// seqLen - sequence length
 /// header - fasta header
@@ -237,8 +238,8 @@ bool getNextFastaRecord( FILE *fp, char *&id, char *data, size_t alloc, char *se
 }
 
 //-------------------------------------------------- getNextFastaRecord ----
-/// Reads a record from a fasta file. Returns true on
-/// success, otherwise false.
+/// Reads a record from a fasta file. Returns true on success, otherwise false.
+/// Here memory allocation is within the routine which is suboptimal.
 ///
 /// id     - sequence identifier
 /// seq    - sequence string
@@ -329,8 +330,11 @@ void readFasta( const char *file, map<string,string> &seqTbl)
 ///
 /// Addapted from Adam Phyllipy's Sequence_t class readFastaRecord()
 ///
-bool readFastaRecord( const char *file, char *&id,
-	        char *&header, char *&seq, int &seqLen)
+bool readFastaRecord( const char *file,
+                      char *&id,
+                      char *&header,
+                      char *&seq,
+                      int &seqLen)
 {
   FILE *fp = fOpen(file, "r");
   int ch;
