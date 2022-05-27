@@ -97,7 +97,7 @@ void printUsage( const char *s )
 void printHelp( const char *s )
 {
     cout << endl
-	 << "Given a directory of MC model files, reference tree and a fasta file of query sequences,\n"
+	 << "Given a fasta file of query sequences, a directory of MC model files and the reference tree\n"
 	 << "classify each sequence of the fasta file to a taxonomic rank corresponding to model\n"
 	 << "with the highest probability given that the | log( p(x | M_L) / p(x | M_R) | > thld (obsolete) \n\n";
 
@@ -109,7 +109,7 @@ void printHelp( const char *s )
 typedef struct
 {
   double **errTbl; ///
-  int nrow;
+  int    nrow;
   double thld;  /// the first element of x
   double *x;    /// the first column of errTbl
   double xmax;  /// the max of x
@@ -258,405 +258,421 @@ bool dComp (double i, double j) { return (i>j); }
 //============================== main ======================================
 int main(int argc, char **argv)
 {
-  #define DEBUGMAIN 0
-  #define DEBUGMAIN1 0
+    #define DEBUG_CLASSIFY 0
 
-  struct timeval  tvStart, tvCurrent;
-  gettimeofday(&tvStart, NULL);
+    struct timeval  tvStart, tvCurrent;
+    gettimeofday(&tvStart, NULL);
 
-  //-- setting up init parameters
-  inPar_t *inPar = new inPar_t();
+    //-- setting up init parameters
+    inPar_t *inPar = new inPar_t();
 
-  //-- parsing input parameters
-  parseArgs(argc, argv, inPar);
+    //-- parsing input parameters
+    parseArgs(argc, argv, inPar);
 
-  if ( inPar->verbose )
-    inPar->print();
+    if ( inPar->verbose )
+      inPar->print();
 
-  if ( inPar->trgFile )
-  {
-    readLines(inPar->trgFile, inPar->trgFiles); // path(s) from inPar->trgFile are loaded into inPar->trgFiles
-    free( inPar->trgFile );
-  }
-
-  if ( !inPar->inFile )
-  {
-    cout << endl << "ERROR in "<< __FILE__ << " at line " << __LINE__ << ": Input fasta file is missing. Please specify it with the -i flag." << endl;
-    printHelp(argv[0]);
-    exit(1);
-  }
-
-  if ( inPar->outDir )
-  {
-    string cmd("mkdir -p ");
-    cmd += string(inPar->outDir);
-    system(cmd.c_str());
-  }
-  else
-  {
-    cout << endl << "ERROR in "<< __FILE__ << " at line " << __LINE__ << ": Output directory is missing. Please specify it with the -o flag." << endl;
-    printHelp(argv[0]);
-    exit(1);
-  }
-
-
-  // creating spID => vector of higher taxonomic ranks tbl
-  // Ex
-  // BVAB1	g_Shuttleworthia	f_Lachnospiraceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
-  // corresponds to
-  // fullTx[BVAB1] = (g_Shuttleworthia, f_Lachnospiraceae, o_Clostridiales, c_Clostridia, p_Firmicutes, d_Bacteria)
-  map<string, vector<string> > fullTx;
-
-  if ( inPar->fullTxFile )
-  {
-    char ***tbl;
-    int nRows, nCols;
-    readCharTbl( inPar->fullTxFile, &tbl, &nRows, &nCols );
-
-    for ( int i = 0; i < nRows; ++i )
-      for ( int j = 1; j < nCols; ++j )
-      {
-	fullTx[ string(tbl[i][0]) ].push_back( string(tbl[i][j]) );
-      }
-  }
-
-
-  int nModels = 0;
-
-  if ( inPar->trgFiles.size() )
-  {
-    nModels = inPar->trgFiles.size();
-  }
-
-  //map<string, errTbl_t *> modelErrTbl;
-  map<string, double> thldTbl;
-  if ( inPar->mcDir ) // extracting number of models and k-mer size
-  {
-    string inFile(inPar->mcDir);
-    inFile += "/modelIds.txt";
-    FILE *in = fopen(inFile.c_str(), "r");
-    if ( in )
+    if ( inPar->trgFile )
     {
-      vector<char *> modelIds;
-      readLines(inFile.c_str(), modelIds);
-      nModels = modelIds.size();
-
-      if ( !inPar->skipErrThld )
-      {
-        // reading ncProbThlds.txt file
-        string file = string(inPar->mcDir) + string("/error_thlds.txt");
-        double **thlds;
-        int nrow, ncol;
-        char **rowNames;
-        char **colNames;
-        readTable( file.c_str(), &thlds, &nrow, &ncol, &rowNames, &colNames );
-        for ( int i = 0; i < nrow; i++ )
-          thldTbl[string(rowNames[i])] = thlds[i][0];
-#if 0
-        map<string, double>::iterator it;
-        cerr << "thldTbl" << endl;
-        for ( it = thldTbl.begin(); it != thldTbl.end(); it++ )
-          cerr << it->first << "\t" << it->second << endl;
-        cerr << endl;
-        exit(1);
-#endif
-      }
-
-      for ( int i = 0; i < nModels; ++i )
-        free(modelIds[i]);
-
-      int k = 0;
-      char countStr[5];
-      sprintf(countStr,"%d",k);
-      string file = string(inPar->mcDir) + string("/MC") + string(countStr) + string(".log10cProb");
-
-      while ( exists( file.c_str() ) )
-      {
-        k++;
-        sprintf(countStr,"%d",k);
-        file = string(inPar->mcDir) + string("/MC") + string(countStr) + string(".log10cProb");
-      }
-
-      if ( (inPar->kMerLens.size() && inPar->kMerLens[0] > k) )
-      {
-        inPar->kMerLens[0] = k;
-      }
-      else if ( !inPar->kMerLens.size() )
-      {
-        //inPar->kMerLens.clear();
-        inPar->kMerLens.push_back(k);
-      }
-    } // end of if ( in )
-    fclose(in);
-  }
-  else if ( !inPar->mcDir && !inPar->trgFile )
-  {
-    cout << endl << "ERROR in "<< __FILE__ << " at line " << __LINE__ << ": Please specify a directory with MC model files using -d flag." << endl;
-    printHelp(argv[0]);
-    exit(1);
-  }
-
-  NewickTree_t *nt;
-  if ( inPar->treeFile ) // load ref tree
-  {
-    nt = readNewickTree( inPar->treeFile );
-    if ( !nt )
-    {
-      fprintf(stderr,"ERROR in %s at line %d: Could not load Newick tree from %s\n", __FILE__, __LINE__, inPar->treeFile);
-      exit(EXIT_FAILURE);
+      readLines(inPar->trgFile, inPar->trgFiles); // path(s) from inPar->trgFile are loaded into inPar->trgFiles
+      free( inPar->trgFile );
     }
-  }
-  else
-  {
-    // Lets see if we can find a model tree in mcDir
-    string trFile = string(inPar->mcDir) + "/model.tree";
-    STRDUP(inPar->treeFile, trFile.c_str());
 
-    nt = readNewickTree( inPar->treeFile );
-    if ( !nt )
+    if ( !inPar->inFile )
     {
-      fprintf(stderr,"ERROR in %s at line %d: Could not load Newick tree from %s\n", __FILE__, __LINE__, inPar->treeFile);
-      exit(EXIT_FAILURE);
+      cout << endl << "ERROR in "<< __FILE__ << " at line " << __LINE__ << ": Input fasta file is missing. Please specify it with the -i flag." << endl;
+      printHelp(argv[0]);
+      exit(1);
     }
-  }
 
-  if ( 0 && inPar->verbose )
-  {
-    // fprintf(stderr,"leafLables\n");
-    // for ( int i = 0; i < nLeaves; i++ )
-    //   fprintf(stderr, "i: %d, %s\n",i, leafLabel[i]);
-    // fprintf(stderr,"\n\n");
-
-    nt->printTree(1);
-  }
-
-
-  int depth = nt->getDepth();
-  if ( inPar->verbose )
-    cerr << "--- Depth of the model tree: " << depth << endl;
-
-  if ( inPar->kMerLens.size() == 0 )
-  {
-    int kMers[] = {3};
-    cerr << endl << "WARNING: Setting k-mer size to " << kMers[0] << endl;
-    int n = sizeof(kMers) / sizeof(int);
-    for ( int i = 0; i < n; ++i )
-      inPar->kMerLens.push_back(kMers[i]);
-  }
-
-  if ( inPar->verbose )
-    cerr << "--- Number of Models: " << nModels << endl;
-
-  int wordLen = inPar->kMerLens[0];
-
-  if ( inPar->verbose )
-  {
-    cerr << "\r--- Rank of MC models: " << wordLen << "\n";
-
-    if ( inPar->mcDir && !inPar->trgFiles.size() )
-      cerr << "\r--- Reading conditional probabilities tables from " << inPar->mcDir << " ... ";
+    if ( inPar->outDir )
+    {
+      string cmd("mkdir -p ");
+      cmd += string(inPar->outDir);
+      system(cmd.c_str());
+    }
     else
-      cerr << "\r--- Generating k-mer frequency tables for k=1:" << wordLen << " ... ";
-  }
-
-  MarkovChains2_t *probModel;
-  probModel = new MarkovChains2_t( wordLen-1,
-				   inPar->trgFiles,
-				   inPar->mcDir,
-				   inPar->maxNumAmbCodes,
-				   inPar->pseudoCountType );
-  if ( inPar->verbose )
-    cerr << "done" << endl;
-
-  vector<char *> modelIds = probModel->modelIds();
-  vector<string> modelStrIds;
-  probModel->modelIds( modelStrIds );
-
-  nt->modelIdx( modelStrIds );
-
-  char str[10];
-  sprintf(str,"%d",(wordLen-1));
-
-  // ==== computing probabilities of each sequence of inFile to come from each of the MC models ====
-  string outFile = string(inPar->outDir) + string("/") + string("MC_order") + string(str) + string("_results.txt");
-  FILE *out      = fOpen(outFile.c_str(), "w");
-
-  FILE *in = fOpen(inPar->inFile, "r");
-  int nRecs = numRecordsInFasta( inPar->inFile );
-  int q01 = 0;
-
-  if ( nRecs > 1000 )
-    q01 = int(0.01 * nRecs);
-
-  char *id;
-  int count = 0;
-  string currentLabel;
-
-  int seqLen;
-  size_t alloc = 1024*1024;
-  char *data, *seq, *rcseq;
-  MALLOC(data, char*, alloc * sizeof(char));
-  MALLOC(seq, char*, alloc * sizeof(char));
-  MALLOC(rcseq, char*, alloc * sizeof(char));
-
-  //double x[nModels]; // stores conditional probabilities p(x | M) for children of each node. the root node has 3 children
-  double *x;
-  MALLOC(x, double*, nModels * sizeof(double));
-
-
-  if ( inPar->verbose )
-    cerr << "--- Number of sequences in " << inPar->inFile << ": " << nRecs << endl;
-
-  FILE *dOut = NULL;      // file handler for decision/classification paths (reported with --pp-embedded on
-  map<string, bool> seen; // hash table used in --pp-embedding mode to mark the first visit to a node
-  if ( inPar->ppEmbedding )
-  {
-    string dFile = string(inPar->mcDir) + string("/") + string("classification_paths.txt");
-    dOut = fOpen(dFile.c_str(), "w");
-
-    // initializing seen to false for all nodes
-    queue<NewickNode_t *> bfs;
-    bfs.push(nt->root());
-    NewickNode_t *node;
-
-    while ( !bfs.empty() )
     {
-      node = bfs.front();
-      seen[node->label] = false;
-      bfs.pop();
+      cout << endl << "ERROR in "<< __FILE__ << " at line " << __LINE__ << ": Output directory is missing. Please specify it with the -o flag." << endl;
+      printHelp(argv[0]);
+      exit(1);
+    }
 
-      int nChildren = node->children_m.size();
-      if ( nChildren )
+
+    // creating spID => vector of higher taxonomic ranks tbl
+    // Ex
+    // BVAB1	g_Shuttleworthia	f_Lachnospiraceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
+    // corresponds to
+    // fullTx[BVAB1] = (g_Shuttleworthia, f_Lachnospiraceae, o_Clostridiales, c_Clostridia, p_Firmicutes, d_Bacteria)
+    map<string, vector<string> > fullTx;
+
+    if ( inPar->fullTxFile )
+    {
+      char ***tbl;
+      int nRows, nCols;
+      readCharTbl( inPar->fullTxFile, &tbl, &nRows, &nCols );
+
+      for ( int i = 0; i < nRows; ++i )
+        for ( int j = 1; j < nCols; ++j )
+        {
+          fullTx[ string(tbl[i][0]) ].push_back( string(tbl[i][j]) );
+        }
+    }
+
+
+    int nModels = 0;
+
+    if ( inPar->trgFiles.size() )
+    {
+      nModels = inPar->trgFiles.size();
+    }
+
+    //map<string, errTbl_t *> modelErrTbl;
+    map<string, double> thldTbl;
+    if ( inPar->mcDir ) // extracting number of models and k-mer size
+    {
+      string inFile(inPar->mcDir);
+      inFile += "/modelIds.txt";
+      FILE *in = fopen(inFile.c_str(), "r");
+      if ( in )
       {
-	for (int i = 0; i < nChildren; i++)
-	{
-	  bfs.push(node->children_m[i]);
-	}
+        vector<char *> modelIds;
+        readLines(inFile.c_str(), modelIds);
+        nModels = modelIds.size();
+
+        if ( !inPar->skipErrThld )
+        {
+          // Reading error thresholds file
+          string file = string(inPar->mcDir) + string("/error_thlds.txt");
+          double **thlds;
+          int nrow, ncol;
+          char **rowNames;
+          char **colNames;
+          readTable( file.c_str(), &thlds, &nrow, &ncol, &rowNames, &colNames );
+          for ( int i = 0; i < nrow; i++ )
+            thldTbl[string(rowNames[i])] = thlds[i][0];
+#if 0
+          map<string, double>::iterator it;
+          cerr << "thldTbl" << endl;
+          for ( it = thldTbl.begin(); it != thldTbl.end(); it++ )
+            cerr << it->first << "\t" << it->second << endl;
+          cerr << endl;
+          exit(1);
+#endif
+        }
+
+        for ( int i = 0; i < nModels; ++i )
+          free(modelIds[i]);
+
+        int k = 0;
+        char countStr[5];
+        sprintf(countStr,"%d",k);
+        string file = string(inPar->mcDir) + string("/MC") + string(countStr) + string(".log10cProb");
+
+        while ( exists( file.c_str() ) )
+        {
+          k++;
+          sprintf(countStr,"%d",k);
+          file = string(inPar->mcDir) + string("/MC") + string(countStr) + string(".log10cProb");
+        }
+
+        if ( (inPar->kMerLens.size() && inPar->kMerLens[0] > k) )
+        {
+          inPar->kMerLens[0] = k;
+        }
+        else if ( !inPar->kMerLens.size() )
+        {
+          //inPar->kMerLens.clear();
+          inPar->kMerLens.push_back(k);
+        }
+      } // END OF if ( in ); READING modelIds.txt, error_thlds.txt
+      fclose(in);
+    }
+    else if ( !inPar->mcDir && !inPar->trgFile )
+    {
+      cout << endl << "ERROR in "<< __FILE__ << " at line " << __LINE__ << ": Please specify a directory with MC model files using -d flag." << endl;
+      printHelp(argv[0]);
+      exit(1);
+    }
+
+    NewickTree_t *nt;
+    if ( inPar->treeFile ) // load ref tree
+    {
+      nt = readNewickTree( inPar->treeFile );
+      if ( !nt )
+      {
+        fprintf(stderr,"ERROR in %s at line %d: Could not load Newick tree from %s\n", __FILE__, __LINE__, inPar->treeFile);
+        exit(EXIT_FAILURE);
       }
     }
-  }
-
-  int runTime;
-  int timeMin = 0;
-  int timeSec = 0;
-  int perc;
-  int nDecissions = 0; // for each sequence count the number of decisions the
-		       // classifier has to make to get to this tree.
-
-  //cerr << "-> Just before the main loop\ninPar->revComp: " << inPar->revComp << endl;
-
-  while ( getNextFastaRecord( in, id, data, alloc, seq, seqLen) )
-  {
-    if ( inPar->verbose && q01 && (count % q01) == 0 )
+    else
     {
-      perc = (int)( (100.0*count) / nRecs);
+      // Lets see if we can find a model tree in mcDir
+      string trFile = string(inPar->mcDir) + "/model.tree";
+      STRDUP(inPar->treeFile, trFile.c_str());
 
-      gettimeofday(&tvCurrent, NULL);
-      runTime = tvCurrent.tv_sec  - tvStart.tv_sec;
-
-      if ( runTime > 60 )
+      nt = readNewickTree( inPar->treeFile );
+      if ( !nt )
       {
-        timeMin = runTime / 60;
-        timeSec = runTime % 60;
+        fprintf(stderr,"ERROR in %s at line %d: Could not load Newick tree from %s\n", __FILE__, __LINE__, inPar->treeFile);
+        exit(EXIT_FAILURE);
       }
+    }
+
+    #if 0
+    if ( 0 && inPar->verbose )
+    {
+      // fprintf(stderr,"leafLables\n");
+      // for ( int i = 0; i < nLeaves; i++ )
+      //   fprintf(stderr, "i: %d, %s\n",i, leafLabel[i]);
+      // fprintf(stderr,"\n\n");
+
+      nt->printTree(1);
+    }
+    #endif
+
+    int depth = nt->getDepth();
+    if ( inPar->verbose )
+      fprintf(stderr,"--- Depth of the model tree: %d\n", depth);
+
+    if ( inPar->kMerLens.size() == 0 )
+    {
+      int kMers[] = {3};
+      fprintf(stderr,"\nWARNING: Setting k-mer size to %d\n", kMers[0]);
+      int n = sizeof(kMers) / sizeof(int);
+      for ( int i = 0; i < n; ++i )
+        inPar->kMerLens.push_back(kMers[i]);
+    }
+
+    if ( inPar->verbose )
+      fprintf(stderr,"--- Number of Models: %d\n", nModels);
+
+    int wordLen = inPar->kMerLens[0];
+
+    if ( inPar->verbose )
+    {
+      fprintf(stderr,"\r--- Rank of MC models: %d\n", wordLen);
+
+      if ( inPar->mcDir && !inPar->trgFiles.size() )
+        fprintf(stderr,"\r--- Reading conditional probabilities tables from %s ...", inPar->mcDir);
       else
-      {
-        timeSec = runTime;
-      }
-      fprintf(stderr,"\r%d:%02d  %d [%02d%%]", timeMin, timeSec, count, perc);
+        fprintf(stderr,"\r--- Generating k-mer frequency tables for k=1: ... %d", wordLen);
     }
-    count++;
+    MarkovChains2_t *probModel;
+    probModel = new MarkovChains2_t(wordLen-1,
+                                    inPar->trgFiles,
+                                    inPar->mcDir,
+                                    inPar->maxNumAmbCodes,
+                                    inPar->pseudoCountType );
+    if ( inPar->verbose )
+      fprintf(stderr,"done\n");
 
+    vector<char *> modelIds = probModel->modelIds();
+    vector<string> modelStrIds;
+    probModel->modelIds( modelStrIds );
+
+    nt->modelIdx( modelStrIds );
+
+
+    // ==== computing probabilities of each sequence of inFile to come from each of the MC models ====
+
+    // the output (classification results) file
+    char str[10];
+    sprintf(str,"%d",(wordLen-1));
+    string outFile = string(inPar->outDir) + string("/") + string("MC_order") + string(str) + string("_results.txt");
+    FILE *out      = fOpen(outFile.c_str(), "w");
+
+    // input fasta file
+    FILE *in = fOpen(inPar->inFile, "r");
+
+    // This is used only to report progress of the main loop every q01 number of sequences
+    int count = 0;
+    int nRecs = numRecordsInFasta( inPar->inFile );
+    int q01 = 0;
+    if ( nRecs > 1000 )
+      q01 = int(0.01 * nRecs);
+
+    // This is for reading fasta records
+    char *id;
+    int seqLen;
+    size_t alloc = 1024*1024;
+    char *data, *seq, *rcseq;
+    MALLOC(data, char*, alloc * sizeof(char));
+    MALLOC(seq, char*, alloc * sizeof(char));
+
+    // This is used only when sequences are reverse complemented
     if ( inPar->revComp )
+      MALLOC(rcseq, char*, alloc * sizeof(char));
+
+    //double lpp[nModels]; // stores conditional log10 posterior probabilities p(x | M) for children of each node. The root node has 3 children
+    double *lpp;
+    MALLOC(lpp, double*, nModels * sizeof(double));
+
+    if ( inPar->verbose )
+      cerr << "--- Number of sequences in " << inPar->inFile << ": " << nRecs << endl;
+
+    FILE *dOut = NULL;      // file handler for decision/classification paths (reported with --pp-embedded on
+    map<string, bool> seen; // hash table used in --pp-embedding mode to mark the first visit to a node
+    if ( inPar->ppEmbedding )
     {
-      for ( int j = 0; j < seqLen; ++j )
-        rcseq[j] = Complement(seq[seqLen-1-j]);
-      rcseq[seqLen] = '\0';
+      string dFile = string(inPar->mcDir) + string("/") + string("classification_paths.txt");
+      dOut = fOpen(dFile.c_str(), "w");
+
+      // initializing seen to false for all nodes
+      queue<NewickNode_t *> bfs;
+      bfs.push(nt->root());
+      NewickNode_t *node;
+
+      while ( !bfs.empty() )
+      {
+        node = bfs.front();
+        seen[node->label] = false;
+        bfs.pop();
+
+        int nChildren = node->children_m.size();
+        if ( nChildren )
+        {
+          for (int i = 0; i < nChildren; i++)
+          {
+            bfs.push(node->children_m[i]);
+          }
+        }
+      }
     }
 
-    //fprintf(stderr,"\ncount: %d  seqID: %s\n", count, id);
-    //fprintf(stderr,"seq: %s\n", seq);
+    // this is only for time reporting (should be inside some el_time() routine )
+    int runTime;
+    int timeMin = 0;
+    int timeSec = 0;
+    int perc;
 
-    //
-    // Traverse the model tree and at each node select a model with the highest
-    // posterior probability of the sequence coming from the model, given the
-    // posterior probability is above the error threshold of the model.
-    //
-    NewickNode_t *node = nt->root();
-    int nChildren = node->children_m.size();
-    int breakLoop = 0;
-    double finalPP = 0.0; // posterior probability of the sequence w/r to the winner model
-    nDecissions = 0;
+    int nDecissions = 0; // for each sequence count the number of decisions the
+    // classifier has to make to get to the final node.
 
-    if ( inPar->ppEmbedding ) // start of decition path of the given sequence
-      fprintf(dOut,"%s", id);
-
-    //fprintf(stderr,"Before entering model tree\nNumber of root's children: %d\n", nChildren);
-
-    //int depthCount = 1;
-    while ( nChildren && !breakLoop )
+    while ( getNextFastaRecord(in, id, data, alloc, seq, seqLen) )
     {
-      nDecissions += nChildren;
-
-      // compute model probabilities for seq and rcseq
-      // NOTE: after a few iterations only seq or rcseq should be processed !!!
-      for ( int i = 0; i < nChildren; i++ )
+      if ( inPar->verbose && q01 && (count % q01) == 0 )
       {
+        perc = (int)( (100.0*count) / nRecs);
+        gettimeofday(&tvCurrent, NULL);
+        runTime = tvCurrent.tv_sec  - tvStart.tv_sec;
 
-        //fprintf(stderr, "Processing child %d\t%s\t", i, (node->children_m[i])->label.c_str());
-
-        if ( inPar->revComp )
+        if ( runTime > 60 )
         {
-          x[i] = probModel->normLog10prob(rcseq, seqLen, (node->children_m[i])->model_idx );
+          timeMin = runTime / 60;
+          timeSec = runTime % 60;
         }
         else
         {
-          x[i] = probModel->normLog10prob(seq, seqLen, (node->children_m[i])->model_idx );
+          timeSec = runTime;
         }
+        fprintf(stderr,"\r%d:%02d  %d [%02d%%]", timeMin, timeSec, count, perc);
+      }
+      count++;
 
-        //fprintf(stderr, "x[%d]: %.6f\n", i, x[i] );
+      if ( inPar->revComp )
+      {
+        for ( int j = 0; j < seqLen; ++j )
+          rcseq[j] = Complement(seq[seqLen-1-j]);
+        rcseq[seqLen] = '\0';
       }
 
-      if ( 0 && inPar->ppEmbedding )
+      #if DEBUG_CLASSIFY
+      fprintf(stderr,"\ncount: %d  seqID: %s\n", count, id);
+      //fprintf(stderr,"seq: %s\n", seq);
+      #endif
+
+      // Traverse the model tree and at each node select a model with the highest
+      // posterior probability of the sequence coming from the model, given the
+      // posterior probability is above the error threshold of the model.
+      //
+      NewickNode_t *node = nt->root();
+      int nChildren = node->children_m.size();
+      int breakLoop = 0;
+      double finalPP = 0.0; // posterior probability of the sequence w/r to the winner model
+      nDecissions = 0;
+
+      if ( inPar->ppEmbedding ) // start of decition path of the given sequence
+        fprintf(dOut,"%s", id);
+
+      #if DEBUG_CLASSIFY
+      fprintf(stderr,"Before entering model tree\nNumber of root's children: %d\n", nChildren);
+      #endif
+
+      //int depthCount = 1;
+      while ( nChildren && !breakLoop )
       {
-        // log pp's
-        string ppFile = string(inPar->mcDir) + string("/") + node->label + string("__lpps.txt");
-        FILE *ppOut;
-        if ( seen[node->label] )
-          ppOut = fOpen( ppFile.c_str(), "a");
-        else
+        nDecissions += nChildren;
+
+        // Computing model log10 posterior probabilities for seq (or rcseq)
+        for ( int i = 0; i < nChildren; i++ )
         {
-          seen[node->label] = true;
-          ppOut = fOpen( ppFile.c_str(), "w");
-          // header
-          fprintf(ppOut,"seqIDs\tcltr");
+          #if DEBUG_CLASSIFY
+          fprintf(stderr, "Processing child %d\t%s\n", i, (node->children_m[i])->label.c_str());
+          //fprintf(stderr, "seq: %s\n", seq);
+          fprintf(stderr, "model_idx: %d\n", (node->children_m[i])->model_idx);
+          #endif
+
+          if ( !inPar->revComp )
+          {
+            lpp[i] = probModel->normLog10prob(seq, seqLen, (node->children_m[i])->model_idx );
+          }
+          else
+          {
+            lpp[i] = probModel->normLog10prob(rcseq, seqLen, (node->children_m[i])->model_idx );
+          }
+
+          #if DEBUG_CLASSIFY
+          fprintf(stderr, "lpp[%d]: %f\n", i, lpp[i] );
+          #endif
+        }
+
+#if 0
+        if ( 0 && inPar->ppEmbedding )
+        {
+          // log pp's
+          string ppFile = string(inPar->mcDir) + string("/") + node->label + string("__lpps.txt");
+          FILE *ppOut;
+          if ( seen[node->label] )
+            ppOut = fOpen( ppFile.c_str(), "a");
+          else
+          {
+            seen[node->label] = true;
+            ppOut = fOpen( ppFile.c_str(), "w");
+            // header
+            fprintf(ppOut,"seqIDs\tcltr");
+            for (int j = 0; j < nChildren; j++)
+              fprintf(ppOut,"\t%s",node->children_m[j]->label.c_str());
+            fprintf(ppOut,"\n");
+            // end of header
+          }
+          fprintf(ppOut,"%s\t%d", id, -1);
           for (int j = 0; j < nChildren; j++)
-            fprintf(ppOut,"\t%s",node->children_m[j]->label.c_str());
+            fprintf(ppOut,"\t%f", lpp[j]);
           fprintf(ppOut,"\n");
-          // end of header
+          fclose(ppOut);
         }
-        fprintf(ppOut,"%s\t%d", id, -1);
-        for (int j = 0; j < nChildren; j++)
-          fprintf(ppOut,"\t%f", x[j]);
-        fprintf(ppOut,"\n");
-        fclose(ppOut);
-      }
+#endif
 
-      int imax = which_max( x, nChildren );
-      finalPP = pow(10, x[imax]);
-      node = node->children_m[imax];
+        int imax = which_max(lpp, nChildren);
+        finalPP = pow(10, lpp[imax]);
+        node = node->children_m[imax];
 
-      if ( inPar->ppEmbedding ) // decision path
-        fprintf(dOut,",%s  %.3f %.3f", node->label.c_str(), pow(10, x[imax]), pow(10, thldTbl[ node->label ]));
+        #if DEBUG_CLASSIFY
+        fprintf(stderr,"maxModel: %s\tlpp: %f\tthld: %.4f\n",
+                node->label.c_str(), lpp[imax], thldTbl[ node->label ]);
+        #endif
 
-      if ( !inPar->skipErrThld && node->children_m.size()==0 )
-      {
-        if ( x[imax] < thldTbl[ node->label ] )
+
+        if ( inPar->ppEmbedding ) // decision path
+          fprintf(dOut,",%s  %.3f %.3f", node->label.c_str(), pow(10, lpp[imax]), pow(10, thldTbl[ node->label ]));
+
+        if ( !inPar->skipErrThld && node->children_m.size()==0 && lpp[imax] < thldTbl[ node->label ] )
         {
 #if 0
           fprintf(stderr,"\n---- Processing %s\n",id) ;
-          fprintf(stderr,"maxModel: %s\tlpp: %.4f\tthld: %.4f\t",
-                  node->label.c_str(), x[imax], thldTbl[ node->label ]);
+          fprintf(stderr,"maxModel: %s\tlpp: %f\tthld: %.4f\t",
+                  node->label.c_str(), lpp[imax], thldTbl[ node->label ]);
 
           map<string, string>::iterator itr;
           map<string, string> seqRecs; // fasta file sequence records
@@ -677,7 +693,7 @@ int main(int argc, char **argv)
             i++;
           }
 
-          fprintf(stderr,"min lpp: %.4f\n", minLpp);
+          fprintf(stderr,"min lpp: %f\n", minLpp);
 #endif
 
           node = node->parent_m;
@@ -685,31 +701,34 @@ int main(int argc, char **argv)
 
           if ( node->label=="d_Bacteria" )
             break;
-        }
 
-#if DEBUGMAIN1
-        fprintf(debugout,"maxModel: %s\tlpp: %.4f\tthld: %.4f\n",
-                node->label.c_str(), x[imax], thldTbl[ node->label ]);
-#endif
-      }
+        } // END OF if ( !inPar->skipErrThld && node->children_m.size()==0 && lpp[imax] < thldTbl[ node->label ] )
 
       nChildren = node->children_m.size();
-    }
+    } // END OF while ( nChildren && !breakLoop )
 
 
     if ( inPar->ppEmbedding ) // end of the given seq's decition path
       fprintf(dOut,"\n");
 
-    fprintf(out,"%s\t%s\t%.2f\t%d\n", id, node->label.c_str(), finalPP, nDecissions);
+    fprintf(out,"%s\t%s\t%f\t%d\n", id, node->label.c_str(), finalPP, nDecissions);
+
+    #if DEBUG_CLASSIFY
+    fprintf(stderr,"%s\t%s\t%f\t%d\n", id, node->label.c_str(), finalPP, nDecissions);
+    exit(0);
+    #endif
 
   } // end of   while ( getNextFastaRecord( in, id, data, alloc, seq, seqLen) )
 
   fclose(in);
   fclose(out);
 
-  free(x);
+  free(lpp);
   free(seq);
   free(data);
+
+  if ( inPar->revComp )
+    free(rcseq);
 
   // It may be a nice idea to report the number of species found
 
@@ -741,13 +760,10 @@ int main(int argc, char **argv)
     fprintf(stderr,"\n        count_tbl.pl -i %s -o %s/spp_count_tbl.txt\n\n", outFile.c_str(), inPar->outDir);
   }
 
-  #if DEBUGMAIN
+#if 0
   fprintf(stderr,"\n\nDEBUGING Output written to %s\n\n\n", debugFile.c_str());
-  #endif
-
-  #if SPPDEBUG
   fprintf(stderr,"\n\nDEBUGING Output written to spp_pprob.csv\n\n");
-  #endif
+#endif
 
   return EXIT_SUCCESS;
 }
@@ -763,7 +779,6 @@ void parseArgs( int argc, char ** argv, inPar_t *p )
 
   static struct option longOptions[] = {
     {"print-counts"       ,no_argument, &p->printCounts,    1},
-    //{"skip-err-thld"      ,no_argument, &p->skipErrThld,    1},
     {"max-num-amb-codes"  ,required_argument, 0, 'b'},
     {"rev-comp"           ,no_argument,       0, 'c'},
     {"pp-embedding"       ,no_argument,       0, 'e'},
@@ -782,113 +797,113 @@ void parseArgs( int argc, char ** argv, inPar_t *p )
     switch (c)
     {
       case 'b':
-	p->maxNumAmbCodes = atoi(optarg);
-	break;
+        p->maxNumAmbCodes = atoi(optarg);
+        break;
 
       case 'c':
-	p->revComp = true;
-	break;
+        p->revComp = true;
+        break;
 
       case 'd':
-	p->mcDir = strdup(optarg);
-	break;
+        p->mcDir = strdup(optarg);
+        break;
 
       case 'e':
-	p->ppEmbedding = true;
-	break;
+        p->ppEmbedding = true;
+        break;
 
       case 'f':
-	p->fullTxFile = strdup(optarg);
-	break;
+        p->fullTxFile = strdup(optarg);
+        break;
 
       case 'g':
-	p->faDir = strdup(optarg);
-	break;
+        p->faDir = strdup(optarg);
+        break;
 
       case 'h':
-	printHelp(argv[0]);
-	exit (EXIT_SUCCESS);
-	break;
+        printHelp(argv[0]);
+        exit (EXIT_SUCCESS);
+        break;
 
       case 'i':
-	p->inFile = strdup(optarg);
-	break;
+        p->inFile = strdup(optarg);
+        break;
 
       case 'k':
-	parseCommaList(optarg, p->kMerLens);
-	break;
+        parseCommaList(optarg, p->kMerLens);
+        break;
 
       case 'o':
-	p->outDir = strdup(optarg);
-	break;
+        p->outDir = strdup(optarg);
+        break;
 
       case 'p':
-	{
-	  int pc = atoi(optarg);
-	  if ( pc == -1 )
-	  {
-	    p->pseudoCountType = zeroOffset0;
-	  }
-	  else if ( pc == 0 )
-	  {
-	    p->pseudoCountType = zeroOffset1;
-	  }
-	  else if ( pc == 1 )
-	  {
-	    p->pseudoCountType = zeroOffset1;
-	  }
-	  else if ( pc == 2 )
-	  {
-	    p->pseudoCountType = recPdoCount;
-	  }
-	  else
-	  {
-	    cerr << "ERROR in " << __FILE__ << " at line " << __LINE__ << ": Undefined pseudo-count type" << endl;
-	    exit(1);
-	  }
-	}
-	break;
+        {
+          int pc = atoi(optarg);
+          if ( pc == -1 )
+          {
+            p->pseudoCountType = zeroOffset0;
+          }
+          else if ( pc == 0 )
+          {
+            p->pseudoCountType = zeroOffset1;
+          }
+          else if ( pc == 1 )
+          {
+            p->pseudoCountType = zeroOffset1;
+          }
+          else if ( pc == 2 )
+          {
+            p->pseudoCountType = recPdoCount;
+          }
+          else
+          {
+            cerr << "ERROR in " << __FILE__ << " at line " << __LINE__ << ": Undefined pseudo-count type" << endl;
+            exit(1);
+          }
+        }
+        break;
 
       case 'q':
-	p->quiet = true;
-	break;
+        p->quiet = true;
+        break;
 
       case 'r':
-	p->treeFile = strdup(optarg);
-	break;
+        p->treeFile = strdup(optarg);
+        break;
 
       case 't':
-	p->trgFile = strdup(optarg);
-	break;
+        p->trgFile = strdup(optarg);
+        break;
 
       case 'v':
-	p->verbose = true;
-	break;
+        p->verbose = true;
+        break;
 
       case 'x':
-	p->skipErrThld = 1;
-	//cerr << "Setting p->skipErrThld to " << p->skipErrThld << endl;
-	break;
+        p->skipErrThld = 1;
+        //cerr << "Setting p->skipErrThld to " << p->skipErrThld << endl;
+        break;
 
       case 'y':
-	p->coreErrRFile = strdup(optarg);
-	break;
+        p->coreErrRFile = strdup(optarg);
+        break;
 
       case 0:
-	break;
+        break;
 
       default:
-	cerr << "\n"
-	     << "=========================================\n"
-	     << " ERROR: Unrecognized option " << (char)c << "\n" << endl;
+        cerr << "\n"
+             << "=========================================\n"
+             << " ERROR: Unrecognized option " << (char)c << "\n" << endl;
 
-	for ( int i=0; i < argc; ++i )
-	  cerr << argv[i] << " ";
-	cerr << endl;
+        for ( int i=0; i < argc; ++i )
+          cerr << argv[i] << " ";
+        cerr << endl;
 
-	cerr << "==========================================\n" << endl;
-	++errflg;
-	break;
+        cerr << "==========================================\n" << endl;
+        ++errflg;
+        break;
     }
 
   if ( errflg )
