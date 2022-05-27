@@ -30,20 +30,20 @@ To build models & estimate error thresholds with V3V4, for example:
   est_error_thlds -v -d V3V4 -c 0.9
 
 ### Classify sequences:
-  /bin/classify -d <model-directory> -i <input-fasta-file> -o <output-directory> --skip-err-thld
+
+  classify -d <model-directory> -i <input-fasta-file> -o <output-directory> --skip-err-thld
+
   Classifier will produce output directory if needed.
   Output file name always "MC_order7_results.txt"
   Output file contains 4 columns: "Sequence ID" "Classification" "posterior probability" "number of Decisions"
 
-  Ex. /bin/classify -d V3V4 -i my_V3V4_sample_sequences.fa -o my_V3V4_sample_sequences_classification
-      cd my_V4_sample_sequences_classification
-      ls
-        MC_order7_results.txt
+  Example
+
+  classify -v -i test10k_V3V4.fa -d V3V4_vag_mcDir -o txclass_test10k_V3V4
+
+  classify -v -i test10k_V3V4.fa -d V3V4_vaginal_Mar2021/V3V4_vag_mcDir -o txclass_test10k_V3V4
 
 
 
 
-
-##
-
-buildModelTree -l post_merge_reference_files/V3V4_spp_new.lineage -i  reference_sequences/V3V4_trimmed_noEuks_nr_Complete.fa -t post_merge_reference_files/V3V4_spp_new.tx -o mcDir
+  The classification results are in txclass_test10k_V3V4/MC_order7_results.txt
