@@ -1,4 +1,4 @@
-#! /usr/bin/perl
+#!/usr/bin/perl
 
 =head1 NAME
 
@@ -52,6 +52,7 @@ use Pod::Usage;
 use English qw( -no_match_vars );
 use Getopt::Long qw(:config no_ignore_case no_auto_abbrev pass_through);
 use File::Basename;
+use List::Util qw(min);
 
 $OUTPUT_AUTOFLUSH = 1;
 
@@ -113,55 +114,59 @@ my $nTx = keys %txTbl;
 ##my $newSample = 0;
 for my $readId (keys %txTbl)
 {
-  if ($counter % 500 == 0)
-  {
-    $endRun = time();
-    $runTime = $endRun - $startRun;
-    if ( $runTime > 60 )
-    {
-	$timeMin = int($runTime / 60);
-	$timeSec = sprintf("%02d", $runTime % 60);
-	$timeStr = "$timeMin:$timeSec";
-    }
-    else
-    {
-      $runTime = sprintf("%02d", $runTime);
-      $timeStr = "$timeMin:$runTime";
-    }
-    my $perc = sprintf("%.1f%%", 100 * $counter / $nTx);
-    print "\r$timeStr [$perc]";
-  }
-  $counter++;
+   if ($counter % 500 == 0)
+   {
+      $endRun = time();
+      $runTime = $endRun - $startRun;
+      if ( $runTime > 60 )
+      {
+         $timeMin = int($runTime / 60);
+         $timeSec = sprintf("%02d", $runTime % 60);
+         $timeStr = "$timeMin:$timeSec";
+      }
+      else
+      {
+         $runTime = sprintf("%02d", $runTime);
+         $timeStr = "$timeMin:$runTime";
+      }
+      my $perc = sprintf("%.1f%%", 100 * $counter / $nTx);
+      print "\r$timeStr [$perc]";
+   }
+   $counter++;
 
-  my ($id) = split ":", $readId;
-  my ($sampleID, $index) = ( $id =~ /(.+)_(\d+$)/ );
+   # my ($id) = split ":", $readId;
+   # my ($sampleID, $index) = ( $id =~ /(.+)_(\d+$)/ );
 
-  # if ( !exists $sampleTbl{$sampleID} )
-  # {
-  #   $newSample++;
-  #   print "\n\nsample $newSample\treadID: $readId\n";
-  #   print "sampleID: $sampleID\tindex: $index\n";
-  # }
+   # if ( !exists $sampleTbl{$sampleID} )
+   # {
+   #   $newSample++;
+   #   print "\n\nsample $newSample\treadID: $readId\n";
+   #   print "sampleID: $sampleID\tindex: $index\n";
+   # }
 
-  my $otu = $txTbl{$readId};
-  print "ERROR: otu undefined for $readId\n" if !$otu;
+   my $otu = $txTbl{$readId};
+   print "ERROR: otu undefined for $readId\n" if !$otu;
 
-  $otuTbl{$otu} = 0;
-  $rankTbl{$otu}++;
+   # print "$readId => $otu\n";
 
-  if ($sampleID)
-  {
-    $sampleTbl{$sampleID}++;
-    $sampleTxTbl{$sampleID}{$otu}++;
-  }
-  else
-  {
-    print "\n\n==== ERROR: in " . __FILE__ . " at line " . __LINE__ . ": $OS_ERROR\n";
-    print "\nreadId: $readId\n";
-    print "id: $id\n\n";
-  }
+   $otuTbl{$otu} = 0;
+   $rankTbl{$otu}++;
 
-  $rcount++;
+   my $sampleID = $readId;
+
+   if ($sampleID)
+   {
+      $sampleTbl{$sampleID}++;
+      $sampleTxTbl{$sampleID}{$otu}++;
+   }
+   else
+   {
+      print "\n\n==== ERROR: in " . __FILE__ . " at line " . __LINE__ . ": $OS_ERROR\n";
+      print "\nreadId: $readId\n";
+      ##print "id: $id\n\n";
+   }
+
+   $rcount++;
 }
 
 ## compute column sums for sorting OTUs
@@ -173,14 +178,14 @@ my $ntIds = @tIds;
 my $i = 0;
 foreach my $tid (@tIds)
 {
-  print "\r$i\t$tid";
-  $i++;
-  my $sum = 0;
-  foreach my $sid (keys %sampleTxTbl)
-  {
-    $sum += $sampleTxTbl{$sid}{$tid} if exists $sampleTxTbl{$sid}{$tid};
-  }
-  $colSums{$tid} = $sum;
+   print "\r$i\t$tid";
+   $i++;
+   my $sum = 0;
+   foreach my $sid (keys %sampleTxTbl)
+   {
+      $sum += $sampleTxTbl{$sid}{$tid} if exists $sampleTxTbl{$sid}{$tid};
+   }
+   $colSums{$tid} = $sum;
 }
 print "\r                              \n";
 
@@ -190,7 +195,7 @@ my @otus = sort { $colSums{$b} <=> $colSums{$a} } @tIds;
 
 ## computing max string length of the first $n elements of @otus
 
-my $n = 20;
+my $n = min(scalar(@tIds), 20);
 my $n1 = $n - 1;
 print "\r\tFrequencies of the $n most abundant phylotypes\n\n";
 
@@ -205,23 +210,23 @@ my @otusR = @otus[0..$n1];
 my @fTbl;
 foreach my $rID (@otusR)
 {
-  my %row;
-  $row{"riboID"} = $rID;
-  $row{"count"}  = commify($rankTbl{$rID});
-  $row{"perc"}   = sprintf("%.2f", (100*$rankTbl{$rID}/$rcount));
-  push @fTbl, \%row;
-  foreach my $key (keys %maximums)
-  {
-    my $col_length = length($row{$key});
-    $maximums{$key} = $col_length if ($col_length > $maximums{$key});
-  }
+   my %row;
+   $row{"riboID"} = $rID;
+   $row{"count"}  = commify($rankTbl{$rID});
+   $row{"perc"}   = sprintf("%.2f", (100*$rankTbl{$rID}/$rcount));
+   push @fTbl, \%row;
+   foreach my $key (keys %maximums)
+   {
+      my $col_length = length($row{$key});
+      $maximums{$key} = $col_length if ($col_length > $maximums{$key});
+   }
 }
 
 ## adding extra space
 my $dx = 5;
 foreach my $key (keys %maximums)
 {
-  $maximums{$key} += $dx;
+   $maximums{$key} += $dx;
 }
 
 ## format string
@@ -231,7 +236,7 @@ $row_format   .=  "  %" . $maximums{"perc"}  . "s\n";
 
 printf($row_format, "Phylotype", "Frequency", "Percentage");
 foreach my $row (@fTbl) {
-    printf($row_format, $row->{"riboID"}, $row->{"count"}, $row->{"perc"});
+   printf($row_format, $row->{"riboID"}, $row->{"count"}, $row->{"perc"});
 }
 print "\n\n";
 
@@ -258,8 +263,8 @@ my %otuIdx;
 $i = 0;
 foreach my $g (@otus)
 {
-    $otuIdx{$g} = $i;
-    $i++;
+   $otuIdx{$g} = $i;
+   $i++;
 }
 
 ## print "--- Printing sample x OTU count table to $outFile\n";
@@ -268,7 +273,7 @@ open OUT, ">$outFile" or die "Cannot open $outFile for writing: $OS_ERROR";
 print OUT "sampleID";
 foreach my $otu (@otus)
 {
-  print OUT "\t$otu";
+   print OUT "\t$otu";
 }
 print OUT "\n";
 
@@ -276,38 +281,38 @@ $counter = 1;
 my $nStbl = keys %sampleTbl;
 foreach my $sid (sort keys %sampleTbl)
 {
-  if ($counter % 500 == 0)
-  {
-    $endRun = time();
-    $runTime = $endRun - $startRun;
-    if ( $runTime > 60 )
-    {
-      $timeMin = int($runTime / 60);
-      $timeSec = sprintf("%02d", $runTime % 60);
-      $timeStr = "$timeMin:$timeSec";
-    }
-    else
-    {
-      $timeStr = "$timeMin:$runTime";
-    }
-    my $perc = sprintf("%.1f%%", 100 * $counter / $nStbl);
-    print "\r$timeStr [$perc]";
-  }
-  $counter++;
+   if ($counter % 500 == 0)
+   {
+      $endRun = time();
+      $runTime = $endRun - $startRun;
+      if ( $runTime > 60 )
+      {
+         $timeMin = int($runTime / 60);
+         $timeSec = sprintf("%02d", $runTime % 60);
+         $timeStr = "$timeMin:$timeSec";
+      }
+      else
+      {
+         $timeStr = "$timeMin:$runTime";
+      }
+      my $perc = sprintf("%.1f%%", 100 * $counter / $nStbl);
+      print "\r$timeStr [$perc]";
+   }
+   $counter++;
 
-  my @counts = (0) x @otus;
+   my @counts = (0) x @otus;
 
-  foreach my $otu (keys %{$sampleTxTbl{$sid}})
-  {
-    $counts[$otuIdx{$otu}] = $sampleTxTbl{$sid}->{$otu};
-  }
+   foreach my $otu (keys %{$sampleTxTbl{$sid}})
+   {
+      $counts[$otuIdx{$otu}] = $sampleTxTbl{$sid}->{$otu};
+   }
 
-  print OUT $sid;
-  foreach my $count (@counts)
-  {
-    print OUT "\t$count";
-  }
-  print OUT "\n";
+   print OUT $sid;
+   foreach my $count (@counts)
+   {
+      print OUT "\t$count";
+   }
+   print OUT "\n";
 }
 close OUT;
 
@@ -316,18 +321,18 @@ print "\r\tSample x Phylotype count table written to $outFile\n\n";
 ## report timing
 if (0)
 {
-  $endRun = time();
-  $runTime = $endRun - $startRun;
-  if ( $runTime > 60 )
-  {
-    $timeMin = int($runTime / 60);
-    $timeSec = sprintf("%02d", $runTime % 60);
-    print "\rCompleted in $timeMin:$timeSec\n"
-  }
-  else
-  {
-    print "\rCompleted in $runTime seconds\n"
-  }
+   $endRun = time();
+   $runTime = $endRun - $startRun;
+   if ( $runTime > 60 )
+   {
+      $timeMin = int($runTime / 60);
+      $timeSec = sprintf("%02d", $runTime % 60);
+      print "\rCompleted in $timeMin:$timeSec\n"
+   }
+   else
+   {
+      print "\rCompleted in $runTime seconds\n"
+   }
 }
 
 
@@ -342,7 +347,7 @@ if (0)
 sub commify {
    local $_  = shift;
    s{(?<!\d|\.)(\d{4,})}
-    {my $n = $1;
+   {my $n = $1;
      $n=~s/(?<=.)(?=(?:.{3})+$)/,/g;
      $n;
     }eg;
@@ -353,81 +358,81 @@ sub commify {
 # elements of the first column to the second column
 sub read2colTbl{
 
-  my $file = shift;
+   my $file = shift;
 
-  ## my $fileSizeL = -s $file; # file size in bytes
-  ## my %vals;
-  my %tbl;
-  my $counter = 1;
-  open IN, "$file" or die "Cannot open $file for reading: $OS_ERROR\n";
-  foreach (<IN>)
-  {
-    if ($counter % 500 == 0)
-    {
-      $endRun = time();
-      $runTime = $endRun - $startRun;
-      if ( $runTime > 60 )
+   ## my $fileSizeL = -s $file; # file size in bytes
+   ## my %vals;
+   my %tbl;
+   my $counter = 1;
+   open IN, "$file" or die "Cannot open $file for reading: $OS_ERROR\n";
+   foreach (<IN>)
+   {
+      if ($counter % 500 == 0)
       {
-	$timeMin = int($runTime / 60);
-	$timeSec = sprintf("%02d", $runTime % 60);
-	$timeStr = "$timeMin:$timeSec";
+         $endRun = time();
+         $runTime = $endRun - $startRun;
+         if ( $runTime > 60 )
+         {
+            $timeMin = int($runTime / 60);
+            $timeSec = sprintf("%02d", $runTime % 60);
+            $timeStr = "$timeMin:$timeSec";
+         }
+         else
+         {
+            $runTime = sprintf("%02d", $runTime);
+            $timeStr = "$timeMin:$runTime";
+         }
+         ##my $perc = sprintf("%.1f%%", 100 * (tell IN) / $fileSizeL);
+         ##print "\r$timeStr [$perc]";
+         print "\r$timeStr";
       }
-      else
-      {
-	$runTime = sprintf("%02d", $runTime);
-	$timeStr = "$timeMin:$runTime";
-      }
-      ##my $perc = sprintf("%.1f%%", 100 * (tell IN) / $fileSizeL);
-      ##print "\r$timeStr [$perc]";
-      print "\r$timeStr";
-    }
-    $counter++;
+      $counter++;
 
-    chomp;
-    my ($id, $t) = split /\s+/,$_;
-    $tbl{$id} = $t;
+      chomp;
+      my ($id, $t) = split /\s+/,$_;
+      $tbl{$id} = $t;
 
-    # if ( !exists $tbl{$id} )
-    # {
-    #   $tbl{$id} = $t;
-    # }
-    # else
-    # {
-    #   print "rec: $_\n";
-    #   print "id: $id\ttx: $t\ttbl{$id}: " . $tbl{$id} . "\n";
-    #   exit;
-    # }
-    ## $vals{$t} = 0;
-  }
-  close IN;
+      # if ( !exists $tbl{$id} )
+      # {
+      #   $tbl{$id} = $t;
+      # }
+      # else
+      # {
+      #   print "rec: $_\n";
+      #   print "id: $id\ttx: $t\ttbl{$id}: " . $tbl{$id} . "\n";
+      #   exit;
+      # }
+      ## $vals{$t} = 0;
+   }
+   close IN;
 
-  return %tbl;
+   return %tbl;
 }
 
 # extract unique elements from an array
 sub unique{
 
-  my $a = shift;
-  my %saw;
-  my @out = grep(!$saw{$_}++, @{$a});
+   my $a = shift;
+   my %saw;
+   my @out = grep(!$saw{$_}++, @{$a});
 
-  return @out;
+   return @out;
 }
 
 # print array to stdout
 sub printArray{
 
-  my ($a, $header) = @_;
+   my ($a, $header) = @_;
 
-  print "$header\n" if $header;
-  map {print "$_\n"} @{$a};
+   print "$header\n" if $header;
+   map {print "$_\n"} @{$a};
 }
 
 # print elements of a hash table
 sub printTbl{
 
-  my $rTbl = shift;
-  map {print "$_\t" . $rTbl->{$_} . "\n"} keys %$rTbl;
+   my $rTbl = shift;
+   map {print "$_\t" . $rTbl->{$_} . "\n"} keys %$rTbl;
 }
 
 # format OUT name
