@@ -64,7 +64,7 @@
 #include <algorithm>
 #include <iterator>
 
-#include "Newick2.hh"
+#include "Newick.hh"
 #include "IOCUtilities.h"
 #include "IOCppUtilities.hh"
 
