@@ -60,10 +60,10 @@ public:
 // this is used in getSppProfs() and getTx() routines for taxonomic assignment
 class sppProf_t
 {
-   public:
-   NewickNode_t *node;      // cut-node
-   NewickNode_t *ancNode;   // ancestral node with reference sequences (can be the same as 'node')
-   map<string,int> sppFreq; // frequencies of sppecies found in the ancestral subtree
+public:
+  NewickNode_t *node;      // cut-node
+  NewickNode_t *ancNode;   // ancestral node with reference sequences (can be the same as 'node')
+  map<string,int> sppFreq; // frequencies of sppecies found in the ancestral subtree
 };
 
 class NewickTree_t
@@ -162,7 +162,7 @@ public:
                     int *annIdx,
                     int minNA,
                     map<int, string> &idxToAnn);
-                    //map<string, string> &txParent);
+  //map<string, string> &txParent);
 
   void getAncRoots(vector<sppProf_t*> &sppProfs,
                    vector<sppProf_t*> &ancRootNodes);

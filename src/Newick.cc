@@ -41,7 +41,7 @@ using namespace std;
 
 //--------------------------------------------- NewickNode_t() -----
 NewickNode_t::NewickNode_t(NewickNode_t * parent)
-  : parent_m(parent)
+  : parent_m(parent), children_m(0,nullptr)
 {
   #if DEBUG
   fprintf(stderr,"in NewickTree_t(parent)\t(parent==NULL)=%d\n",(int)(parent==NULL));
