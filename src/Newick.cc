@@ -27,6 +27,7 @@ OR PERFORMANCE OF THIS SOFTWARE.
 #include <iostream>
 #include <queue>
 #include <deque>
+#include <regex>
 #include <string>
 
 #include "IOCUtilities.h"
@@ -137,6 +138,474 @@ NewickTree_t::NewickTree_t()
 NewickTree_t::~NewickTree_t()
 {
   delete root_m;
+}
+
+//--------------------------------------------- loadFullTxTree2 -----
+// Create a tree using full taxonomy data in the input file
+// Nodes with single child are collapsed.
+// In this version (in contrast to loadFullTxTree())
+// If a node is not a root and has only one child, we take the children of the
+// child to be new children of the given node.
+//
+//  x----x----x    =>  x----x
+// pn    n    ch       pn   n
+void NewickTree_t::loadFullTxTree2(const char *file)
+{
+#define DEBUG_LFTT2 1
+
+#if DEBUG_LFTT2
+    fprintf(stderr, "in NewickTree_t::loadFullTxTree()\n");
+#endif
+
+    // parse fullTxFile that has the following structure
+
+    // BVAB1	g_Shuttleworthia	f_Lachnospiraceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
+    // BVAB2	g_Acetivibrio	f_Ruminococcaceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
+    // BVAB3	g_Acetivibrio	f_Ruminococcaceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
+    // Dialister_sp._type_1	g_Dialister	f_Veillonellaceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
+
+    //const int NUM_TX = 6;
+    char ***txTbl;
+    int nRows, nCols;
+    readCharTbl( file, &txTbl, &nRows, &nCols );
+
+#if DEBUG_LFTT2
+    fprintf(stderr,"fullTxFile txTbl:\n");
+    printCharTbl(txTbl, 10, nCols); // test
+#endif
+
+    // creating parent mapping
+    // for example, given
+    // BVAB1	g_Shuttleworthia	f_Lachnospiraceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
+    //
+    // parent[BVAB1]            = g_Shuttleworthia
+    // parent[g_Shuttleworthia] = f_Lachnospiraceae
+    // etc
+
+    //map<string, string> parent;
+    //parentMap( txTbl, nRows, nCols, parent );
+
+    // creating children mapping
+    // children[ d_Bacteria ] = set( all phyla in fullTx table that are children of d_Bacteria )
+    map<string, set<string> > children;
+    childrenMap( txTbl, nRows, nCols, children );
+
+#if DEBUG_LFTT2
+    fprintf(stderr,"\nchildren tbl:\n");
+    map<string, set<string> >::iterator it1;
+    for ( it1 = children.begin(); it1 != children.end(); it1++ )
+    {
+      fprintf(stderr,">%s :", (it1->first).c_str());
+      printStringSet(it1->second);
+    }
+    fprintf(stderr,"\n");
+#endif
+
+    // creating taxonomic rank index (species = 0, genus = 1, etc ) => set of
+    // corresponding taxonomic ranks in fullTx
+    vector< set<string> > txRank;
+    txRankTbl( txTbl, nRows, nCols, txRank );
+
+#if DEBUG_LFTT2
+    fprintf(stderr,"\ntxRankTbl:\n");
+    int n1 = txRank.size();
+    for ( int i = 0; i < n1; i++ )
+    {
+      fprintf(stderr,">%d :", i);
+      printStringSet( txRank[i] );
+    }
+    fprintf(stderr,"\n");
+#endif
+
+#if DEBUG_LFTT2
+    fprintf(stderr,"Creating NewickNode_t pointers for all elements of txRank\n");
+    fprintf(stderr,"and storing it in tx2node map\n");
+#endif
+    map< string, NewickNode_t* > tx2node; // this will leak memory as map<> is not going to free NewickNode_t objects members
+    root_m = new NewickNode_t();
+    root_m->label = string("d_Bacteria");
+    root_m->branch_length = 0.0;
+    tx2node["d_Bacteria"] = root_m;
+
+    int n = txRank.size();
+    for ( int i = 0; i < n; i++ )
+    {
+      set<string> taxa = txRank[i];
+      set<string>::iterator it;
+      for ( it = taxa.begin(); it != taxa.end(); it++ )
+      {
+        tx2node[ *it ] = new NewickNode_t();
+        tx2node[ *it ]->label = *it;
+        tx2node[ *it ]->branch_length = 0.0;
+      }
+    }
+
+#if DEBUG_LFTT2
+    fprintf(stderr,"Breath first search of the fullTx tree structure using children mapping\n");
+#endif
+    queue<string> bfs;
+    bfs.push("d_Bacteria");
+    string tx;
+    NewickNode_t *node = NULL;
+
+    while ( !bfs.empty() )
+    {
+      tx = bfs.front();
+      bfs.pop();
+      node = tx2node[tx];
+
+      set<string> chln = children[tx];
+      set<string>::iterator it;
+      for ( it = chln.begin(); it != chln.end(); it++ )
+      {
+        bfs.push( *it );
+        node->children_m.push_back( tx2node[*it] );
+        tx2node[*it]->depth_m = node->depth_m + 1;
+        tx2node[*it]->parent_m = node;
+        tx2node[*it]->branch_length = 0.0;
+        node->branch_length = 0.0;
+      }
+    } // end of while ( !bfs.empty() )
+
+
+    // traverse the tree and remove nodes with only one child
+
+#if DEBUG_LFTT2
+    fprintf(stderr, "\n\n\tTraversing the tree and removing nodes with only one child\n");
+#endif
+
+    queue<NewickNode_t *> bfs2;
+    bfs2.push(root_m);
+    int numChildren;
+    NewickNode_t *pnode;
+    NewickNode_t *chNode;
+
+    while ( !bfs2.empty() )
+    {
+      node = bfs2.front();
+      bfs2.pop();
+
+#if DEBUG_LFTT2
+      fprintf(stderr, "\n\tProcessing %s\n", node->label.c_str());
+#endif
+      while ( node->children_m.size() == 1 )
+      {
+
+        chNode = node->children_m[0];
+
+#if DEBUG_LFTT2
+        fprintf(stderr, "\t\t%s has only one child %s\n", node->label.c_str(), chNode->label.c_str());
+#endif
+
+        if ( node->idx < 0 ) // chNode is not a leaf - make children of chNode the new children of node
+        {
+#if DEBUG_LFTT2
+          fprintf(stderr, "\t\t%s is not a leaf: making children of %s the new children of %s\n", chNode->label.c_str(), chNode->label.c_str(), node->label.c_str());
+#endif
+          numChildren = chNode->children_m.size();
+          // emptying node->children_m vector
+          node->children_m.erase(node->children_m.begin(), node->children_m.end());
+
+          for (int i = 0; i < numChildren; i++)
+          {
+            (chNode->children_m[i])->parent_m = node;
+            node->children_m.push_back(chNode->children_m[i]);
+          }
+        }
+        else
+        {
+          // chNode is a leaf - get rid of node making chNode a child of node's
+          // parent; and making chNode->parent = node->parent
+
+          // finding node in a children array of the parent node
+          pnode = node->parent_m;
+
+          if ( pnode != NULL )
+          {
+            numChildren = pnode->children_m.size();
+
+#if DEBUG_LFTT2
+            fprintf(stderr, "\t\t%s is a leaf\n\t\t%s's parent is %s with %d children\n",
+                    node->children_m[0]->label.c_str(), node->label.c_str(),
+                    pnode->label.c_str(), numChildren);
+#endif
+            int i;
+            for ( i = 0; i < numChildren; i++)
+            {
+              if ( pnode->children_m[i] == node )
+                break;
+            }
+
+            if ( i == numChildren )
+            {
+              fprintf(stderr, "ERROR in %s at line %d: node %s cannot be found in %s\n",
+                      __FILE__, __LINE__,(node->label).c_str(), (pnode->label).c_str());
+              exit(1);
+            }
+
+#if DEBUG_LFTT2
+            fprintf(stderr, "\t\t%s is the %d-th child of %s\n",
+                    node->label.c_str(), i, pnode->label.c_str());
+
+            fprintf(stderr, "\t\t%s children BEFORE change: ", pnode->label.c_str());
+            for ( int j = 0; j < numChildren; j++)
+              fprintf(stderr, "\t\t\t%s\n", pnode->children_m[j]->label.c_str());
+#endif
+
+            node = node->children_m[0];
+            pnode->children_m[i] = node;
+            node->parent_m = pnode;
+
+#if DEBUG_LFTT2
+            fprintf(stderr, "\n\t\t%s children AFTER  change: ", pnode->label.c_str());
+            for ( int j = 0; j < numChildren; j++)
+              fprintf(stderr, "\t\t\t%s\n", pnode->children_m[j]->label.c_str());
+            //fprintf(stderr, "\n");
+#endif
+          }
+          else
+          {
+            fprintf(stderr, "\n\n\tERROR in %s at line %d: node %s seem to be a leaf and has no parent\n",
+                    __FILE__, __LINE__,(chNode->label).c_str());
+            exit(1);
+          }
+        }
+      }
+
+      if ( node->idx < 0 )
+      {
+        numChildren = node->children_m.size();
+        for (int i = 0; i < numChildren; i++)
+          bfs2.push(node->children_m[i]);
+      }
+
+    } // end of while ( !bfs2.empty() )
+}
+
+
+//--------------------------------------------- loadFullTxTree -----
+// Create a tree using full taxonomy data in the input file
+// Nodes with single child are collapsed.
+// In this version (in contrast to loadFullTxTree2())
+// If a node is not a root and has only one child, we make the parent of the node
+// the parent of the child of the node.
+//
+//  x----x----x    =>  x----x
+// pn    n    ch       pn   ch
+void NewickTree_t::loadFullTxTree(const char *file)
+{
+#define DEBUG_LFTT 0
+
+#if DEBUG_LFTT
+    fprintf(stderr, "in NewickTree_t::loadFullTxTree()\n");
+#endif
+
+    // parse fullTxFile that has the following structure
+
+    // BVAB1	g_Shuttleworthia	f_Lachnospiraceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
+    // BVAB2	g_Acetivibrio	f_Ruminococcaceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
+    // BVAB3	g_Acetivibrio	f_Ruminococcaceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
+    // Dialister_sp._type_1	g_Dialister	f_Veillonellaceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
+
+    //const int NUM_TX = 6;
+    char ***txTbl;
+    int nRows, nCols;
+    readCharTbl( file, &txTbl, &nRows, &nCols );
+
+#if DEBUG_LFTT
+    fprintf(stderr,"fullTxFile txTbl:\n");
+    printCharTbl(txTbl, 10, nCols); // test
+#endif
+
+    // creating children mapping
+    // children[ d_Bacteria ] = set( all phyla in fullTx table that are children of d_Bacteria )
+    map<string, set<string> > children;
+    childrenMap( txTbl, nRows, nCols, children );
+
+#if DEBUG_LFTT
+    fprintf(stderr,"\nchildren tbl:\n");
+    map<string, set<string> >::iterator it1;
+    for ( it1 = children.begin(); it1 != children.end(); it1++ )
+    {
+      fprintf(stderr,">%s :", (it1->first).c_str());
+      printStringSet(it1->second);
+    }
+    fprintf(stderr,"\n");
+#endif
+
+    // creating taxonomic rank index (species = 0, genus = 1, etc ) => set of
+    // corresponding taxonomic ranks in fullTx
+    vector< set<string> > txRank;
+    txRankTbl( txTbl, nRows, nCols, txRank );
+
+#if DEBUG_LFTT
+    fprintf(stderr,"\ntxRankTbl:\n");
+    int n1 = txRank.size();
+    for ( int i = 0; i < n1; i++ )
+    {
+      fprintf(stderr,">%d :", i);
+      printStringSet( txRank[i] );
+    }
+    fprintf(stderr,"\n");
+#endif
+
+#if DEBUG_LFTT
+    fprintf(stderr,"Creating NewickNode_t pointers for all elements of txRank\n");
+    fprintf(stderr,"and storing it in tx2node map\n");
+#endif
+    map< string, NewickNode_t* > tx2node; // this will leak memory as map<> is not going to free NewickNode_t objects members
+    root_m = new NewickNode_t();
+    root_m->label = string("d_Bacteria");
+    root_m->branch_length = 0.0;
+    tx2node["d_Bacteria"] = root_m;
+
+    int n = txRank.size();
+    for ( int i = 0; i < n; i++ )
+    {
+      set<string> taxa = txRank[i];
+      set<string>::iterator it;
+      for ( it = taxa.begin(); it != taxa.end(); it++ )
+      {
+        tx2node[ *it ] = new NewickNode_t();
+        tx2node[ *it ]->label = *it;
+        tx2node[ *it ]->branch_length = 0.0;
+      }
+    }
+
+#if DEBUG_LFTT
+    fprintf(stderr,"Breath first search of the fullTx tree structure using children mapping\n");
+#endif
+    queue<string> bfs;
+    bfs.push("d_Bacteria");
+    string tx;
+    NewickNode_t *node = NULL;
+
+    while ( !bfs.empty() )
+    {
+      tx = bfs.front();
+      bfs.pop();
+      node = tx2node[tx];
+
+      set<string> chln = children[tx];
+      set<string>::iterator it;
+      for ( it = chln.begin(); it != chln.end(); it++ )
+      {
+        bfs.push( *it );
+        node->children_m.push_back( tx2node[*it] );
+        tx2node[*it]->depth_m = node->depth_m + 1;
+        tx2node[*it]->parent_m = node;
+        tx2node[*it]->branch_length = 0.0;
+        node->branch_length = 0.0;
+      }
+    } // end of while ( !bfs.empty() )
+
+
+    // traverse the tree and remove nodes with only one child
+
+#if DEBUG_LFTT
+    fprintf(stderr, "\n\n\tTraversing the tree and removing nodes with only one child\n");
+#endif
+
+    queue<NewickNode_t *> bfs2;
+    bfs2.push(root_m);
+    int numChildren;
+    NewickNode_t *pnode;
+
+    while ( !bfs2.empty() )
+    {
+      node = bfs2.front();
+      bfs2.pop();
+
+#if DEBUG_LFTT
+      fprintf(stderr, "\n\tProcessing %s\n", node->label.c_str());
+#endif
+      while ( node->children_m.size() == 1 )
+      {
+        // finding node in a children array of the parent node
+        pnode = node->parent_m;
+
+        if ( pnode != NULL ) // node is not a root
+        {
+          // identifying index of pnode->children_m vector corresponding to 'node'
+
+          numChildren = pnode->children_m.size();
+
+#if DEBUG_LFTT
+          fprintf(stderr, "\n\n\t\t%s is not a root and has only one child %s\n\t\t%s's parent is %s with %d children\n",
+                  node->label.c_str(), node->children_m[0]->label.c_str(), node->label.c_str(),
+                  pnode->label.c_str(), numChildren);
+#endif
+          int i; // index of pnode->children_m corresponding to 'node'
+          for ( i = 0; i < numChildren; i++)
+          {
+            if ( pnode->children_m[i] == node )
+              break;
+          }
+
+          if ( i == numChildren )
+          {
+            fprintf(stderr, "\n\n\tERROR in %s at line %d: node %s cannot be found in %s\n\n",
+                    __FILE__, __LINE__,(node->label).c_str(), (pnode->label).c_str());
+            exit(1);
+          }
+
+#if DEBUG_LFTT
+          fprintf(stderr, "\t\t%s is the %d-th child of %s\n",
+                  node->label.c_str(), i, pnode->label.c_str());
+
+          fprintf(stderr, "\n\t\t%s children BEFORE change:\n", pnode->label.c_str());
+          for ( int j = 0; j < numChildren; j++)
+            fprintf(stderr, "\t\t\t%s\n", pnode->children_m[j]->label.c_str());
+
+          fprintf(stderr, "\n\t\tNode's name BEFORE regex statement: %s\n", node->label.c_str());
+#endif
+
+          // node->children_m[0] is the only child of node
+          // check if its name starts with sg_
+          // if it does, copy the name of node to node->children_m[0]
+          // and proceed as before
+
+          regex rgx("\\bsg_"); // find string that starts with sg_
+          smatch match;
+          if ( regex_search (node->children_m[0]->label, match, rgx) )
+          {
+            node->children_m[0]->label = node->label;
+          }
+
+          node = node->children_m[0];
+          pnode->children_m[i] = node;
+          node->parent_m = pnode;
+
+#if DEBUG_LFTT
+          fprintf(stderr, "\t\tAFTER removing 'node' the new node's name: %s\n", node->label.c_str());
+          fprintf(stderr, "\n\t\t%s children AFTER  change:\n", pnode->label.c_str());
+          for ( int j = 0; j < numChildren; j++)
+            fprintf(stderr, "\t\t\t%s\n", pnode->children_m[j]->label.c_str());
+#endif
+        }
+        else if ( node == root_m )
+        {
+#if DEBUG_LFTT
+          fprintf(stderr, "\t%s is the root and has only one child %s\n",
+                  node->label.c_str(), node->children_m[0]->label.c_str());
+#endif
+          root_m = node->children_m[0];
+          node = node->children_m[0];
+          node->parent_m = NULL;
+#if DEBUG_LFTT
+          fprintf(stderr, "\tSetting %s to be the new root\n", node->label.c_str());
+#endif
+        }
+      }
+
+      if ( node->idx < 0 )
+      {
+        numChildren = node->children_m.size();
+        for (int i = 0; i < numChildren; i++)
+          bfs2.push(node->children_m[i]);
+      }
+
+    } // end of while ( !bfs2.empty() )
 }
 
 //--------------------------------------------- rmLeaf -----
@@ -479,6 +948,7 @@ void NewickTree_t::writeTree(FILE * fp, NewickNode_t *node)
 }
 
 //--------------------------------------------- writeTree -----
+/// Writing a subtree with the node label = 'nodeLabel' to a file
 void NewickTree_t::writeTree(FILE * fp, const string &nodeLabel)
 {
   if (root_m == NULL) fprintf(stderr, "ERROR: Root is NULL!\n");
@@ -500,15 +970,14 @@ void NewickTree_t::writeTree(FILE * fp, const string &nodeLabel)
       break;
     }
 
-    numChildren = node->children_m.size();
-    if ( numChildren )
+    if ( node->idx < 0 )
     {
+      numChildren = node->children_m.size();
       for (int i = 0; i < numChildren; i++)
-      {
-	bfs.push(node->children_m[i]);
-      }
+        bfs.push(node->children_m[i]);
     }
-  }
+
+  } // END OF while ( !bfs.empty() )
 }
 
 //--------------------------------------------- getDepth -----
@@ -649,56 +1118,50 @@ void NewickTree_t::printTreeBFS()
     node = bfs.front();
     bfs.pop();
 
-    int numChildren = node->children_m.size();
-    if ( numChildren==0 ) // leaf
+    if ( node->idx > 0 ) // leaf (numChildren==0)
     {
       printf("%s%s\n",indent[node->depth_m],node->label.c_str());
     }
     else
     {
       printf("%s*\n",indent[node->depth_m]);
+      int numChildren = node->children_m.size();
       for (int i = 0; i < numChildren; i++)
-      {
-	bfs.push(node->children_m[i]);
-      }
+      	bfs.push(node->children_m[i]);
     }
   }
 }
 #endif
 
 //--------------------------------------------- indexNewickNodes -----
+/// populates a hash table of <node index> => <pointer to the node>
+///   returns number of leaves of the tree
 void NewickTree_t::indexNewickNodes( map<int, NewickNode_t*> & idx2node)
-/*
-   populates a hash table of <node index> => <pointer to the node>
-   returns number of leaves of the tree
-*/
 {
-  if ( idx2node_m.size() == 0 )
-  {
-    //Breath first search
-    queue<NewickNode_t *> bfs;
-    bfs.push(root_m);
-    NewickNode_t *node;
-
-    while ( !bfs.empty() )
+    if ( idx2node_m.size() == 0 )
     {
-      node = bfs.front();
-      bfs.pop();
+      //Breath first search
+      queue<NewickNode_t *> bfs;
+      bfs.push(root_m);
+      NewickNode_t *node;
 
-      idx2node_m[node->idx] = node;
-
-      int numChildren = node->children_m.size();
-      if ( numChildren != 0 ) // leaf
+      while ( !bfs.empty() )
       {
-	for (int i = 0; i < numChildren; i++)
-	{
-	  bfs.push(node->children_m[i]);
-	}
+        node = bfs.front();
+        bfs.pop();
+
+        idx2node_m[node->idx] = node;
+
+        if ( node->idx > 0 ) // leaf
+        {
+          int numChildren = node->children_m.size();
+          for (int i = 0; i < numChildren; i++)
+            bfs.push(node->children_m[i]);
+        }
       }
     }
-  }
 
-  idx2node = idx2node_m;
+    idx2node = idx2node_m;
 }
 
 //--------------------------------------------- leafLabels -----
@@ -715,17 +1178,15 @@ char ** NewickTree_t::leafLabels()
     node = bfs.front();
     bfs.pop();
 
-    int numChildren = node->children_m.size();
-    if ( numChildren==0 ) // leaf
+    if ( node->idx > 0 ) // leaf
     {
       leafLabel[node->idx] = strdup((node->label).c_str());
     }
     else
     {
+      int numChildren = node->children_m.size();
       for (int i = 0; i < numChildren; i++)
-      {
-	bfs.push(node->children_m[i]);
-      }
+        bfs.push(node->children_m[i]);
     }
   }
 
@@ -749,17 +1210,14 @@ void NewickTree_t::assignIntNodeNames()
     node = bfs.front();
     bfs.pop();
 
-    int numChildren = node->children_m.size();
-    if ( numChildren ) // not leaf
+    if ( node->idx < 0 ) // not leaf
     {
       //negIdx = -node->idx;
       sprintf(str,"%d", -node->idx);
       node->label = string("i") + string(str);
-
+      int numChildren = node->children_m.size();
       for (int i = 0; i < numChildren; i++)
-      {
-	bfs.push(node->children_m[i]);
-      }
+      	bfs.push(node->children_m[i]);
     }
   }
 }
@@ -768,11 +1226,7 @@ void NewickTree_t::assignIntNodeNames()
 
 
 // ------------------------------ saveCltrMemb ------------------------
-void NewickTree_t::saveCltrMemb( const char *outFile,
-				 vector<int> &nodeCut,
-				 int *annIdx,
-				 map<int, string> &idxToAnn)
-/*
+/*!
   save clustering membership data to outFile
   output file format:
 
@@ -780,67 +1234,65 @@ void NewickTree_t::saveCltrMemb( const char *outFile,
 
   Parameters:
 
-  outFile  - output file
-  nodeCut  - min-node-cut
-  annIdx   - annIdx[i] = <0-based index of the annotation string assigned to the i-th
-                          element of data table>
-	     annIdx[i] = -1 if the i-th element has no annotation
-  idxToAnn - idxToAnn[annIdx] = <annotation string associated with annIdx>
+  \param outFile  - output file
+  \param nodeCut  - min-node-cut
+  \param annIdx   - annIdx[i] = <0-based index of the annotation string assigned to the i-th
+                    element of data table>
+	                annIdx[i] = -1 if the i-th element has no annotation
+  \param idxToAnn - idxToAnn[annIdx] = <annotation string associated with annIdx>
 */
+void NewickTree_t::saveCltrMemb( const char *outFile,
+                                 vector<int> &nodeCut,
+                                 int *annIdx,
+                                 map<int, string> &idxToAnn)
 {
-  map<int, NewickNode_t*> idx2node;
-  indexNewickNodes(idx2node);
+    map<int, NewickNode_t*> idx2node;
+    indexNewickNodes(idx2node);
 
-  FILE *file = fOpen(outFile,"w");
+    FILE *file = fOpen(outFile,"w");
 
-  fprintf(file,"readId\tclstr\tannot\n");
+    fprintf(file,"readId\tclstr\tannot\n");
 
-  int n = nodeCut.size();
-  for ( int i = 0; i < n; ++i )
-  {
-    if ( nodeCut[i] >= 0 )
+    int n = nodeCut.size();
+    for ( int i = 0; i < n; ++i )
     {
-      fprintf(file,"%s\t%d\t%s\n",idx2node[nodeCut[i]]->label.c_str(),i,
-	      idxToAnn[ annIdx[nodeCut[i]] ].c_str() );
-    }
-    else
-    {
-      queue<NewickNode_t *> bfs;
-      bfs.push(idx2node[nodeCut[i]]);
-      NewickNode_t *node;
-
-      while ( !bfs.empty() )
+      if ( nodeCut[i] >= 0 )
       {
-	node = bfs.front();
-	bfs.pop();
+        fprintf(file,"%s\t%d\t%s\n",idx2node[nodeCut[i]]->label.c_str(),i,
+                idxToAnn[ annIdx[nodeCut[i]] ].c_str() );
+      }
+      else
+      {
+        queue<NewickNode_t *> bfs;
+        bfs.push(idx2node[nodeCut[i]]);
+        NewickNode_t *node;
 
-	int numChildren = node->children_m.size();
-	if ( numChildren==0 ) // leaf
-	{
-	  fprintf(file,"%s\t%d\t%s\n",node->label.c_str(),i,
-		  idxToAnn[ annIdx[node->idx] ].c_str() );
-	}
-	else
-	{
-	  for (int i = 0; i < numChildren; i++)
-	  {
-	    bfs.push(node->children_m[i]);
-	  }
-	}
+        while ( !bfs.empty() )
+        {
+          node = bfs.front();
+          bfs.pop();
+
+          if ( node->idx > 0 ) // leaf
+          {
+            fprintf(file,"%s\t%d\t%s\n",node->label.c_str(),i,
+                    idxToAnn[ annIdx[node->idx] ].c_str() );
+          }
+          else
+          {
+            int numChildren = node->children_m.size();
+            for (int i = 0; i < numChildren; i++)
+              bfs.push(node->children_m[i]);
+          }
+        }
       }
     }
-  }
 
-  fclose(file);
+    fclose(file);
 }
 
 
 // ------------------------------ saveCltrMemb2 ------------------------
-void NewickTree_t::saveCltrMemb2( const char *outFile,
-				  vector<int> &nodeCut,
-				  int *annIdx,
-				  map<int, string> &idxToAnn)
-/*
+/*!
   save clustering membership data to outFile
   output file format:
 
@@ -859,51 +1311,53 @@ void NewickTree_t::saveCltrMemb2( const char *outFile,
 	     annIdx[i] = -1 if the i-th element has no annotation
   idxToAnn - idxToAnn[annIdx] = <annotation string associated with annIdx>
 */
+void NewickTree_t::saveCltrMemb2( const char *outFile,
+                                  vector<int> &nodeCut,
+                                  int *annIdx,
+                                  map<int, string> &idxToAnn)
 {
-  map<int, NewickNode_t*> idx2node;
-  indexNewickNodes(idx2node);
+    map<int, NewickNode_t*> idx2node;
+    indexNewickNodes(idx2node);
 
-  FILE *file = fOpen(outFile,"w");
+    FILE *file = fOpen(outFile,"w");
 
-  int n = nodeCut.size();
-  for ( int i = 0; i < n; ++i )
-  {
-    fprintf(file,"Cluster %d:\n",i);
-
-    if ( nodeCut[i] >= 0 )
+    int n = nodeCut.size();
+    for ( int i = 0; i < n; ++i )
     {
-      fprintf(file,"\t%s\t%s\n",idx2node[nodeCut[i]]->label.c_str(),
-	      idxToAnn[ annIdx[nodeCut[i]] ].c_str() );
-    }
-    else
-    {
-      queue<NewickNode_t *> bfs;
-      bfs.push(idx2node[nodeCut[i]]);
-      NewickNode_t *node;
+      fprintf(file,"Cluster %d:\n",i);
 
-      while ( !bfs.empty() )
+      if ( nodeCut[i] >= 0 )
       {
-	node = bfs.front();
-	bfs.pop();
+        fprintf(file,"\t%s\t%s\n",idx2node[nodeCut[i]]->label.c_str(),
+                idxToAnn[ annIdx[nodeCut[i]] ].c_str() );
+      }
+      else
+      {
+        queue<NewickNode_t *> bfs;
+        bfs.push(idx2node[nodeCut[i]]);
+        NewickNode_t *node;
 
-	int numChildren = node->children_m.size();
-	if ( numChildren==0 ) // leaf
-	{
-	  fprintf(file,"\t%s\t%s\n",node->label.c_str(),
-		  idxToAnn[ annIdx[node->idx] ].c_str() );
-	}
-	else
-	{
-	  for (int i = 0; i < numChildren; i++)
-	  {
-	    bfs.push(node->children_m[i]);
-	  }
-	}
+        while ( !bfs.empty() )
+        {
+          node = bfs.front();
+          bfs.pop();
+
+          if ( node->idx > 0 ) // leaf
+          {
+            fprintf(file,"\t%s\t%s\n",node->label.c_str(),
+                    idxToAnn[ annIdx[node->idx] ].c_str() );
+          }
+          else
+          {
+            int numChildren = node->children_m.size();
+            for (int i = 0; i < numChildren; i++)
+              bfs.push(node->children_m[i]);
+          }
+        }
       }
     }
-  }
 
-  fclose(file);
+    fclose(file);
 }
 
 
@@ -921,11 +1375,7 @@ bool Sort_by(const sort_map& a ,const sort_map& b)
 }
 
 // ------------------------------ saveCltrAnnStats --------------------------------
-void NewickTree_t::saveCltrAnnStats( const char *outFile,
-				     vector<int> &nodeCut,
-				     int *annIdx,
-				     map<int, string> &idxToAnn)
-/*
+/*!
   save annotation summary statistics of the clustering induced by nodeCut to outFile
   output file format:
 
@@ -952,167 +1402,167 @@ void NewickTree_t::saveCltrAnnStats( const char *outFile,
 	     annIdx[i] = -1 if the i-th element has no annotation
   idxToAnn - idxToAnn[annIdx] = <annotation string associated with annIdx>
 */
+void NewickTree_t::saveCltrAnnStats( const char *outFile,
+                                     vector<int> &nodeCut,
+                                     int *annIdx,
+                                     map<int, string> &idxToAnn)
 {
-  map<int, NewickNode_t*> idx2node;
-  indexNewickNodes(idx2node);
+    map<int, NewickNode_t*> idx2node;
+    indexNewickNodes(idx2node);
 
-  FILE *file = fOpen(outFile,"w");
+    FILE *file = fOpen(outFile,"w");
 
-  int n = nodeCut.size();
-  for ( int i = 0; i < n; ++i )
-  {
-    fprintf(file,"Cluster %d:\n",i);
-
-    if ( nodeCut[i] >= 0 )
+    int n = nodeCut.size();
+    for ( int i = 0; i < n; ++i )
     {
-      fprintf(file,"\t%s\t1\t100%%\n", idxToAnn[ annIdx[nodeCut[i]] ].c_str() );
-    }
-    else
-    {
-      map<string,int> annCount; // count of a given annotation string in the subtree of a given cut-node
+      fprintf(file,"Cluster %d:\n",i);
 
-      queue<NewickNode_t *> bfs;
-      bfs.push(idx2node[nodeCut[i]]);
-      NewickNode_t *node;
-
-      while ( !bfs.empty() )
+      if ( nodeCut[i] >= 0 )
       {
-	node = bfs.front();
-	bfs.pop();
-
-	int numChildren = node->children_m.size();
-	if ( numChildren==0 ) // leaf
-	{
-	  annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
-	}
-	else
-	{
-	  for (int i = 0; i < numChildren; i++)
-	  {
-	    bfs.push(node->children_m[i]);
-	  }
-	}
+        fprintf(file,"\t%s\t1\t100%%\n", idxToAnn[ annIdx[nodeCut[i]] ].c_str() );
       }
-
-      // printing annotation counts in the order of their counts
-      map<string,int>::iterator it;
-      vector< sort_map > v;
-      vector< sort_map >::iterator itv;
-      sort_map sm;
-      double sum = 0;
-
-      for (it = annCount.begin(); it != annCount.end(); ++it)
+      else
       {
-	sm.key = (*it).first;
-	sm.val = (*it).second;
-	v.push_back(sm);
-	sum += sm.val;
+        map<string,int> annCount; // count of a given annotation string in the subtree of a given cut-node
+
+        queue<NewickNode_t *> bfs;
+        bfs.push(idx2node[nodeCut[i]]);
+        NewickNode_t *node;
+
+        while ( !bfs.empty() )
+        {
+          node = bfs.front();
+          bfs.pop();
+
+          if ( node->idx > 0 ) // leaf
+          {
+            annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
+          }
+          else
+          {
+            int numChildren = node->children_m.size();
+            for (int i = 0; i < numChildren; i++)
+              bfs.push(node->children_m[i]);
+          }
+        }
+
+        // printing annotation counts in the order of their counts
+        map<string,int>::iterator it;
+        vector< sort_map > v;
+        vector< sort_map >::iterator itv;
+        sort_map sm;
+        double sum = 0;
+
+        for (it = annCount.begin(); it != annCount.end(); ++it)
+        {
+          sm.key = (*it).first;
+          sm.val = (*it).second;
+          v.push_back(sm);
+          sum += sm.val;
+        }
+
+        sort(v.begin(),v.end(),Sort_by);
+
+        for (itv = v.begin(); itv != v.end(); ++itv)
+          fprintf(file,"\t%s\t%d\t%.1f%%\n", ((*itv).key).c_str(), (*itv).val, 100.0 * (*itv).val / sum);
+        if ( v.size() > 1 )
+          fprintf(file,"\tTOTAL\t%d\t100%%\n", (int)sum);
       }
-
-      sort(v.begin(),v.end(),Sort_by);
-
-      for (itv = v.begin(); itv != v.end(); ++itv)
-	fprintf(file,"\t%s\t%d\t%.1f%%\n", ((*itv).key).c_str(), (*itv).val, 100.0 * (*itv).val / sum);
-      if ( v.size() > 1 )
-	fprintf(file,"\tTOTAL\t%d\t100%%\n", (int)sum);
     }
-  }
-  fclose(file);
+    fclose(file);
 }
 
 
 
 // ------------------------------ saveNAcltrAnnStats ------------------------
-vector<string> NewickTree_t::saveNAcltrAnnStats( const char *outFile,
-						 vector<int> &nodeCut,
-						 int *annIdx,
-						 map<int, string> &idxToAnn)
-/*
+/*!
   It is a version of saveCltrAnnStats() that reports only clusters containig query (NA) elements.
 */
+vector<string> NewickTree_t::saveNAcltrAnnStats( const char *outFile,
+                                                 vector<int> &nodeCut,
+                                                 int *annIdx,
+                                                 map<int, string> &idxToAnn)
 {
-  map<int, NewickNode_t*> idx2node;
-  indexNewickNodes(idx2node);
+    map<int, NewickNode_t*> idx2node;
+    indexNewickNodes(idx2node);
 
-  FILE *file = fOpen(outFile,"w");
+    FILE *file = fOpen(outFile,"w");
 
-  vector<string> selAnn; // vector of taxons which are memembers of clusters that contain query seqeunces
-  int n = nodeCut.size();
-  for ( int i = 0; i < n; ++i )
-  {
-    if ( nodeCut[i] < 0 )
+    vector<string> selAnn; // vector of taxons which are memembers of clusters that contain query seqeunces
+    int n = nodeCut.size();
+    for ( int i = 0; i < n; ++i )
     {
-      map<string,int> annCount; // count of a given annotation string in the subtree of a given cut-node
-
-      queue<NewickNode_t *> bfs;
-      bfs.push(idx2node[nodeCut[i]]);
-      NewickNode_t *node;
-      bool foundNA = false;
-
-      while ( !bfs.empty() )
+      if ( nodeCut[i] < 0 )
       {
-	node = bfs.front();
-	bfs.pop();
+        map<string,int> annCount; // count of a given annotation string in the subtree of a given cut-node
 
-	int numChildren = node->children_m.size();
-	if ( numChildren==0 ) // leaf
-	{
-	  annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
-	  if ( annIdx[node->idx] == -2) foundNA = true;
-	}
-	else
-	{
-	  for (int i = 0; i < numChildren; i++)
-	  {
-	    bfs.push(node->children_m[i]);
-	  }
-	}
-      }
+        queue<NewickNode_t *> bfs;
+        bfs.push(idx2node[nodeCut[i]]);
+        NewickNode_t *node;
+        bool foundNA = false;
 
-      // printing annotation counts in the order of their counts
-      if ( foundNA )
-      {
-	map<string,int>::iterator it;
-	vector< sort_map > v;
-	vector< sort_map >::iterator itv;
-	sort_map sm;
-	double sum = 0;
+        while ( !bfs.empty() )
+        {
+          node = bfs.front();
+          bfs.pop();
 
-	for (it = annCount.begin(); it != annCount.end(); ++it)
-	{
-	  sm.key = (*it).first;
-	  sm.val = (*it).second;
-	  selAnn.push_back(sm.key);
-	  v.push_back(sm);
-	  sum += sm.val;
-	}
+          if ( node->idx > 0 ) // leaf
+          {
+            annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
+            if ( annIdx[node->idx] == -2) foundNA = true;
+          }
+          else
+          {
+            int numChildren = node->children_m.size();
+            for (int i = 0; i < numChildren; i++)
+              bfs.push(node->children_m[i]);
+          }
+        }
 
-	sort(v.begin(),v.end(),Sort_by);
+        // printing annotation counts in the order of their counts
+        if ( foundNA )
+        {
+          map<string,int>::iterator it;
+          vector< sort_map > v;
+          vector< sort_map >::iterator itv;
+          sort_map sm;
+          double sum = 0;
 
-	fprintf(file,"Cluster %d:\n",i);
-	for (itv = v.begin(); itv != v.end(); ++itv)
-	  fprintf(file,"\t%s\t%d\t%.1f%%\n", ((*itv).key).c_str(), (*itv).val, 100.0 * (*itv).val / sum);
-	if ( v.size() > 1 )
-	  fprintf(file,"\tTOTAL\t%d\t100%%\n", (int)sum);
+          for (it = annCount.begin(); it != annCount.end(); ++it)
+          {
+            sm.key = (*it).first;
+            sm.val = (*it).second;
+            selAnn.push_back(sm.key);
+            v.push_back(sm);
+            sum += sm.val;
+          }
+
+          sort(v.begin(),v.end(),Sort_by);
+
+          fprintf(file,"Cluster %d:\n",i);
+          for (itv = v.begin(); itv != v.end(); ++itv)
+            fprintf(file,"\t%s\t%d\t%.1f%%\n", ((*itv).key).c_str(), (*itv).val, 100.0 * (*itv).val / sum);
+          if ( v.size() > 1 )
+            fprintf(file,"\tTOTAL\t%d\t100%%\n", (int)sum);
+        }
       }
     }
-  }
-  fclose(file);
+    fclose(file);
 
-  return selAnn;
+    return selAnn;
 }
 
 
 // ------------------------------ saveNAcltrAnnStats ------------------------
 void NewickTree_t::saveNAcltrAnnStats( const char *outFileA, // file to with cluster stats of clusters with at least minNA query sequences
-				       const char *outFileB, // file to with cluster stats of clusters with less than minNA query sequences
-				       const char *outFileC, // file with reference IDs of sequences for clusters in outFileA
-				       const char *outFileD, // file with taxons, for clusters in outFileA, with the number of sequences >= minAnn
-				       vector<int> &nodeCut,
-				       int *annIdx,
-				       map<int, string> &idxToAnn,
-				       int minNA,
-				       int minAnn)
+                                       const char *outFileB, // file to with cluster stats of clusters with less than minNA query sequences
+                                       const char *outFileC, // file with reference IDs of sequences for clusters in outFileA
+                                       const char *outFileD, // file with taxons, for clusters in outFileA, with the number of sequences >= minAnn
+                                       vector<int> &nodeCut,
+                                       int *annIdx,
+                                       map<int, string> &idxToAnn,
+                                       int minNA,
+                                       int minAnn)
 /*
   It is a version of saveCltrAnnStats() that reports only clusters containig at
   least minNA query sequences to outFileA and less than minNA sequences to
@@ -1121,176 +1571,164 @@ void NewickTree_t::saveNAcltrAnnStats( const char *outFileA, // file to with clu
   output vector contains taxons with at least minAnn elements (in a single cluster).
 */
 {
-  map<int, NewickNode_t*> idx2node;
-  indexNewickNodes(idx2node);
+    map<int, NewickNode_t*> idx2node;
+    indexNewickNodes(idx2node);
 
-  FILE *fileA = fOpen(outFileA,"w");
-  FILE *fileB = fOpen(outFileB,"w");
-  FILE *fileC = fOpen(outFileC,"w");
+    FILE *fileA = fOpen(outFileA,"w");
+    FILE *fileB = fOpen(outFileB,"w");
+    FILE *fileC = fOpen(outFileC,"w");
 
-  int nCltrs = 0; // number of clusters with the number of query seq's >= minNA
-  int nTx    = 0; // number of selected taxons from the above clusters with the number of reads >= minAnn
-  int nRef   = 0; // number of reference sequence from the above clusters with taxons with the number of reads >= minAnn
+    int nCltrs = 0; // number of clusters with the number of query seq's >= minNA
+    int nTx    = 0; // number of selected taxons from the above clusters with the number of reads >= minAnn
+    int nRef   = 0; // number of reference sequence from the above clusters with taxons with the number of reads >= minAnn
 
-  map<string,bool> selTx; // hash table of selected taxons as in nTx; nTx = number of elements in selTx
+    map<string,bool> selTx; // hash table of selected taxons as in nTx; nTx = number of elements in selTx
 
-  int n = nodeCut.size();
-  for ( int i = 0; i < n; ++i )
-  {
-    if ( nodeCut[i] < 0 ) // internal node
+    int n = nodeCut.size();
+    for ( int i = 0; i < n; ++i )
     {
-      map<string,int> annCount; // count of a given annotation string in the subtree of a given cut-node
-
-      queue<NewickNode_t *> bfs;
-      bfs.push(idx2node[nodeCut[i]]);
-      NewickNode_t *node;
-      int naCount = 0;
-
-      while ( !bfs.empty() )
+      if ( nodeCut[i] < 0 ) // internal node
       {
-	node = bfs.front();
-	bfs.pop();
+        map<string,int> annCount; // count of a given annotation string in the subtree of a given cut-node
 
-	int numChildren = node->children_m.size();
-	if ( numChildren==0 ) // leaf
-	{
-	  annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
-	  if ( annIdx[node->idx] == -2) naCount++;
-	}
-	else
-	{
-	  for (int i = 0; i < numChildren; i++)
-	  {
-	    bfs.push(node->children_m[i]);
-	  }
-	}
-      }
+        queue<NewickNode_t *> bfs;
+        bfs.push(idx2node[nodeCut[i]]);
+        NewickNode_t *node;
+        int naCount = 0;
 
-      // printing annotation counts in the order of their counts
-      if ( naCount >= minNA )
-      {
-	nCltrs++;
+        while ( !bfs.empty() )
+        {
+          node = bfs.front();
+          bfs.pop();
 
-	map<string,int>::iterator it;
-	vector< sort_map > v;
-	vector< sort_map >::iterator itv;
-	sort_map sm;
-	double sum = 0;
+          if ( node->idx > 0 ) // leaf
+          {
+            annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
+            if ( annIdx[node->idx] == -2) naCount++;
+          }
+          else
+          {
+            int numChildren = node->children_m.size();
+            for (int i = 0; i < numChildren; i++)
+              bfs.push(node->children_m[i]);
+          }
+        }
 
-	for (it = annCount.begin(); it != annCount.end(); ++it)
-	{
-	  sm.key = (*it).first;
-	  sm.val = (*it).second;
-	  v.push_back(sm);
-	  sum += sm.val;
-	}
+        // printing annotation counts in the order of their counts
+        if ( naCount >= minNA )
+        {
+          nCltrs++;
 
-	sort(v.begin(),v.end(),Sort_by);
+          map<string,int>::iterator it;
+          vector< sort_map > v;
+          vector< sort_map >::iterator itv;
+          sort_map sm;
+          double sum = 0;
 
-	fprintf(fileA,"Cluster %d:\n",i);
-	for (itv = v.begin(); itv != v.end(); ++itv)
-	  fprintf(fileA,"\t%s\t%d\t%.1f%%\n", ((*itv).key).c_str(), (*itv).val, 100.0 * (*itv).val / sum);
-	if ( v.size() > 1 )
-	  fprintf(fileA,"\tTOTAL\t%d\t100%%\n", (int)sum);
+          for (it = annCount.begin(); it != annCount.end(); ++it)
+          {
+            sm.key = (*it).first;
+            sm.val = (*it).second;
+            v.push_back(sm);
+            sum += sm.val;
+          }
+
+          sort(v.begin(),v.end(),Sort_by);
+
+          fprintf(fileA,"Cluster %d:\n",i);
+          for (itv = v.begin(); itv != v.end(); ++itv)
+            fprintf(fileA,"\t%s\t%d\t%.1f%%\n", ((*itv).key).c_str(), (*itv).val, 100.0 * (*itv).val / sum);
+          if ( v.size() > 1 )
+            fprintf(fileA,"\tTOTAL\t%d\t100%%\n", (int)sum);
 
 
-	// traverse the subtree again selecting sequences with annCount of the
-	// corresponding taxons that have at least minAnn elements to be printed
-	// in fileC
+          // traverse the subtree again selecting sequences with annCount of the
+          // corresponding taxons that have at least minAnn elements to be printed
+          // in fileC
 
-	queue<NewickNode_t *> bfs2;
-	bfs2.push(idx2node[nodeCut[i]]);
-	NewickNode_t *node;
+          queue<NewickNode_t *> bfs2;
+          bfs2.push(idx2node[nodeCut[i]]);
+          NewickNode_t *node;
 
-	while ( !bfs2.empty() )
-	{
-	  node = bfs2.front();
-	  bfs2.pop();
+          while ( !bfs2.empty() )
+          {
+            node = bfs2.front();
+            bfs2.pop();
 
-	  int numChildren = node->children_m.size();
-	  if ( numChildren==0 ) // leaf
-	  {
-	    if ( annCount[ idxToAnn[ annIdx[node->idx] ] ] > minAnn && idxToAnn[ annIdx[node->idx] ] != "NA" )
-	    {
-	      selTx[ idxToAnn[ annIdx[node->idx] ] ] = true;
-	      nRef++;
-	      fprintf(fileC, "%s\t%s\n",
-		      node->label.c_str(),
-		      idxToAnn[ annIdx[node->idx] ].c_str() );
-	    }
-	  }
-	  else
-	  {
-	    for (int i = 0; i < numChildren; i++)
-	    {
-	      bfs2.push(node->children_m[i]);
-	    }
-	  }
-	}
-      }
-      else
-      {
-	map<string,int>::iterator it;
-	vector< sort_map > v;
-	vector< sort_map >::iterator itv;
-	sort_map sm;
-	double sum = 0;
+            int numChildren = node->children_m.size();
+            if ( numChildren==0 ) // leaf
+            {
+              if ( annCount[ idxToAnn[ annIdx[node->idx] ] ] > minAnn && idxToAnn[ annIdx[node->idx] ] != "NA" )
+              {
+                selTx[ idxToAnn[ annIdx[node->idx] ] ] = true;
+                nRef++;
+                fprintf(fileC, "%s\t%s\n",
+                        node->label.c_str(),
+                        idxToAnn[ annIdx[node->idx] ].c_str() );
+              }
+            }
+            else
+            {
+              for (int i = 0; i < numChildren; i++)
+              {
+                bfs2.push(node->children_m[i]);
+              }
+            }
+          }
+        }
+        else
+        {
+          map<string,int>::iterator it;
+          vector< sort_map > v;
+          vector< sort_map >::iterator itv;
+          sort_map sm;
+          double sum = 0;
 
-	for (it = annCount.begin(); it != annCount.end(); ++it)
-	{
-	  sm.key = (*it).first;
-	  sm.val = (*it).second;
-	  v.push_back(sm);
-	  sum += sm.val;
-	}
+          for (it = annCount.begin(); it != annCount.end(); ++it)
+          {
+            sm.key = (*it).first;
+            sm.val = (*it).second;
+            v.push_back(sm);
+            sum += sm.val;
+          }
 
-	sort(v.begin(),v.end(),Sort_by);
+          sort(v.begin(),v.end(),Sort_by);
 
-	fprintf(fileB,"Cluster %d:\n",i);
-	for (itv = v.begin(); itv != v.end(); ++itv)
-	  fprintf(fileB,"\t%s\t%d\t%.1f%%\n", ((*itv).key).c_str(), (*itv).val, 100.0 * (*itv).val / sum);
-	if ( v.size() > 1 )
-	  fprintf(fileB,"\tTOTAL\t%d\t100%%\n", (int)sum);
+          fprintf(fileB,"Cluster %d:\n",i);
+          for (itv = v.begin(); itv != v.end(); ++itv)
+            fprintf(fileB,"\t%s\t%d\t%.1f%%\n", ((*itv).key).c_str(), (*itv).val, 100.0 * (*itv).val / sum);
+          if ( v.size() > 1 )
+            fprintf(fileB,"\tTOTAL\t%d\t100%%\n", (int)sum);
+        }
       }
     }
-  }
-  fclose(fileA);
-  fclose(fileB);
-  fclose(fileC);
+    fclose(fileA);
+    fclose(fileB);
+    fclose(fileC);
 
 
-  // extracting only keys of selTx;
-  FILE *fileD = fOpen(outFileD,"w");
-  //vector<string> selTxV;  // vector of taxons which are memembers of clusters that contain query seqeunces
-  for(map<string,bool>::iterator it = selTx.begin(); it != selTx.end(); ++it)
-  {
-    //selTxV.push_back(it->first);
-    fprintf(fileD,"%s\n",(it->first).c_str());
-  }
-  fclose(fileD);
+    // extracting only keys of selTx;
+    FILE *fileD = fOpen(outFileD,"w");
+    //vector<string> selTxV;  // vector of taxons which are memembers of clusters that contain query seqeunces
+    for(map<string,bool>::iterator it = selTx.begin(); it != selTx.end(); ++it)
+    {
+      //selTxV.push_back(it->first);
+      fprintf(fileD,"%s\n",(it->first).c_str());
+    }
+    fclose(fileD);
 
-  nTx = selTx.size();
+    nTx = selTx.size();
 
-  fprintf(stderr,"\nNumber of clusters with the number of query seq's >= %d: %d\n",minNA, nCltrs);
-  fprintf(stderr,"Number of selected taxons from the above clusters with the number of reads >= %d: %d\n",minAnn, nTx);
-  fprintf(stderr,"Number of selected reference sequence from the above clusters with taxons with the number of reads >= %d: %d\n",minAnn, nRef);
+    fprintf(stderr,"\nNumber of clusters with the number of query seq's >= %d: %d\n",minNA, nCltrs);
+    fprintf(stderr,"Number of selected taxons from the above clusters with the number of reads >= %d: %d\n",minAnn, nTx);
+    fprintf(stderr,"Number of selected reference sequence from the above clusters with taxons with the number of reads >= %d: %d\n",minAnn, nRef);
 }
 
 // comparison between integers producing descending order
 bool gr (int i,int j) { return (i>j); }
 
 // ------------------------------ saveNAtaxonomy0 ------------------------
-void NewickTree_t::saveNAtaxonomy0( const char *outFile,
-				    const char *logFile, // recording sizes of two most abundant taxa. If there is only one (besides query sequences), recording the number of elements of the dominant taxon and 0.
-				    vector<int> &nodeCut,
-				    int *annIdx,
-				    map<int, string> &idxToAnn,
-				    int minAnn,
-				    int &nNAs,
-				    int &nNAs_with_tx,
-				    int &tx_changed,
-				    int &nClades_modified)
-/*
+/*!
   Assigning taxonomy to query sequences and modifying taxonomy of sequences with
   non-monolityc clades using majority vote.
 
@@ -1303,158 +1741,154 @@ void NewickTree_t::saveNAtaxonomy0( const char *outFile,
   sequences. If there are ties, that is two taxonomies are most abundant, then
   there is no change.
 */
+void NewickTree_t::saveNAtaxonomy0( const char *outFile,
+                                    const char *logFile, // recording sizes of two most abundant taxa. If there is only one (besides query sequences), recording the number of elements of the dominant taxon and 0.
+                                    vector<int> &nodeCut,
+                                    int *annIdx,
+                                    map<int, string> &idxToAnn,
+                                    int minAnn,
+                                    int &nNAs,
+                                    int &nNAs_with_tx,
+                                    int &tx_changed,
+                                    int &nClades_modified)
 {
-  map<int, NewickNode_t*> idx2node;
-  indexNewickNodes(idx2node);
+    map<int, NewickNode_t*> idx2node;
+    indexNewickNodes(idx2node);
 
-  map<string,int> otuFreq; // <taxonomic rank name> => number of OTUs already assigned to it
+    map<string,int> otuFreq; // <taxonomic rank name> => number of OTUs already assigned to it
 
-  FILE *file = fOpen(outFile,"w");
-  FILE *logfile = fOpen(logFile,"w");
+    FILE *file = fOpen(outFile,"w");
+    FILE *logfile = fOpen(logFile,"w");
 
-  nNAs = 0;
-  nNAs_with_tx = 0;
-  tx_changed = 0;
-  nClades_modified = 0;
+    nNAs = 0;
+    nNAs_with_tx = 0;
+    tx_changed = 0;
+    nClades_modified = 0;
 
-  int n = nodeCut.size();
-  for ( int i = 0; i < n; ++i )
-  {
-    map<string,int> annCount; // count of a given annotation string in the subtree of a given node
-    int naCount = 0;
-
-    queue<NewickNode_t *> bfs;
-    bfs.push(idx2node[nodeCut[i]]);
-    NewickNode_t *node;
-
-    while ( !bfs.empty() )
+    int n = nodeCut.size();
+    for ( int i = 0; i < n; ++i )
     {
-      node = bfs.front();
-      bfs.pop();
+      map<string,int> annCount; // count of a given annotation string in the subtree of a given node
+      int naCount = 0;
 
-      int numChildren = node->children_m.size();
-      if ( numChildren==0 ) // leaf
+      queue<NewickNode_t *> bfs;
+      bfs.push(idx2node[nodeCut[i]]);
+      NewickNode_t *node;
+
+      while ( !bfs.empty() )
       {
-	//if ( i==262 )printf("\n%s\t%s", node->label.c_str(), idxToAnn[ annIdx[node->idx] ].c_str());
+        node = bfs.front();
+        bfs.pop();
 
-	annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
-	if ( annIdx[node->idx] == -2) naCount++;
-	if ( idxToAnn[ annIdx[node->idx] ] == "NA" ) nNAs++;
-      }
-      else
-      {
-	for (int j = 0; j < numChildren; j++)
-	{
-	  bfs.push(node->children_m[j]);
-	}
-      }
-    }
-    //if ( i==262 )printf("\n\n");
-
-    //if ( naCount >= minNA && annCount.size() >= minAnn )
-    if ( annCount.size() >= (unsigned)minAnn ) // Assigning taxonomy to query sequences and modifying taxonomy of sequences with non-monolityc clades using majority vote
-    {
-      string cltrTx;
-      int maxCount = 0; // maximal count among annotated sequences in the cluster
-      map<string,int>::iterator it;
-
-      // Make sure there are not ties for max count
-
-      // Copying counts into a vector, sorting it and checking that the first two
-      // values (when sorting in the decreasing order) are not equal to each
-      // other.
-      vector<int> counts;
-
-      for (it = annCount.begin(); it != annCount.end(); ++it)
-      {
-	if ( (*it).first != "NA" )
-	  counts.push_back((*it).second);
-
-	if ( (*it).first != "NA" && (*it).second > maxCount )
-	{
-	  maxCount = (*it).second;
-	  cltrTx   = (*it).first;
-	}
+        if ( node->idx > 0 ) // leaf
+        {
+          annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
+          if ( annIdx[node->idx] == -2) naCount++;
+          if ( idxToAnn[ annIdx[node->idx] ] == "NA" ) nNAs++;
+        }
+        else
+        {
+          int numChildren = node->children_m.size();
+          for (int j = 0; j < numChildren; j++)
+            bfs.push(node->children_m[j]);
+        }
       }
 
-      sort( counts.begin(), counts.end(), gr );
-
-      #if 0
-      if ( i==231 )
+      if ( annCount.size() >= (unsigned)minAnn ) // Assigning taxonomy to query sequences and modifying taxonomy of sequences with non-monolityc clades using majority vote
       {
-	fprintf(stderr,"\ncltrTx: %s\n", cltrTx.c_str());
-	fprintf(stderr,"\nCluster %d\nannCount\n",i);
-	for (it = annCount.begin(); it != annCount.end(); ++it)
-	{
-	  fprintf(stderr,"\t%s\t%d\n", ((*it).first).c_str(), (*it).second);
-	}
-	fprintf(stderr,"\nsorted counts: ");
-	for (int j = 0; j < counts.size(); j++)
-	  fprintf(stderr,"%d, ", counts[j]);
-	fprintf(stderr,"\n\n");
-      }
-      #endif
+        string cltrTx;
+        int maxCount = 0; // maximal count among annotated sequences in the cluster
+        map<string,int>::iterator it;
 
-      // Traverse the subtree again assigning taxonomy to all query sequences
-      int counts_size = counts.size();
-      if ( counts_size==1 || ( counts_size>1 && counts[0] > counts[1] ) )
-      {
-	nClades_modified++;
+        // Make sure there are not ties for max count
 
-	if ( counts_size > 1 )
-	  fprintf(logfile, "%d\t%d\n", counts[0], counts[1]);
-	else
-	  fprintf(logfile, "%d\t0\n", counts[0]);
+        // Copying counts into a vector, sorting it and checking that the first two
+        // values (when sorting in the decreasing order) are not equal to each
+        // other.
+        vector<int> counts;
 
-	queue<NewickNode_t *> bfs2;
-	bfs2.push(idx2node[nodeCut[i]]);
-	NewickNode_t *node;
+        for (it = annCount.begin(); it != annCount.end(); ++it)
+        {
+          if ( (*it).first != "NA" )
+            counts.push_back((*it).second);
 
-	while ( !bfs2.empty() )
-	{
-	  node = bfs2.front();
-	  bfs2.pop();
+          if ( (*it).first != "NA" && (*it).second > maxCount )
+          {
+            maxCount = (*it).second;
+            cltrTx   = (*it).first;
+          }
+        }
 
-	  int numChildren = node->children_m.size();
-	  if ( numChildren==0 ) // leaf
-	  {
-	    //if ( idxToAnn[ annIdx[node->idx] ] == "NA" && !cltrTx.empty() )
-	    if ( idxToAnn[ annIdx[node->idx] ] !=cltrTx  && !cltrTx.empty() )
-	    {
-	      //idxToAnn[ annIdx[node->idx] ] = cltrTx;
-	      fprintf(file, "%s\t%s\n", node->label.c_str(), cltrTx.c_str());
-	      if ( idxToAnn[ annIdx[node->idx] ] == "NA" )
-		nNAs_with_tx++;
-	      else
-		tx_changed++;
-	    }
-	  }
-	  else
-	  {
-	    for (int j = 0; j < numChildren; j++)
-	      bfs2.push(node->children_m[j]);
-	  }
-	} // end while ( !bfs2.empty() )
-      } // end  if ( counts.size()==1 || ( counts.size()>1 && counts[0] > counts[1] ) )
+        sort( counts.begin(), counts.end(), gr );
 
-    } // end if ( naCount >= minNA && annCount.size() >= minAnn )
+#if 0
+        if ( i==231 )
+        {
+          fprintf(stderr,"\ncltrTx: %s\n", cltrTx.c_str());
+          fprintf(stderr,"\nCluster %d\nannCount\n",i);
+          for (it = annCount.begin(); it != annCount.end(); ++it)
+          {
+            fprintf(stderr,"\t%s\t%d\n", ((*it).first).c_str(), (*it).second);
+          }
+          fprintf(stderr,"\nsorted counts: ");
+          for (int j = 0; j < counts.size(); j++)
+            fprintf(stderr,"%d, ", counts[j]);
+          fprintf(stderr,"\n\n");
+        }
+#endif
 
-  } // end   for ( int i = 0; i < n; ++i )
+        // Traverse the subtree again assigning taxonomy to all query sequences
+        int counts_size = counts.size();
+        if ( counts_size==1 || ( counts_size>1 && counts[0] > counts[1] ) )
+        {
+          nClades_modified++;
 
-  fclose(file);
-  fclose(logfile);
+          if ( counts_size > 1 )
+            fprintf(logfile, "%d\t%d\n", counts[0], counts[1]);
+          else
+            fprintf(logfile, "%d\t0\n", counts[0]);
+
+          queue<NewickNode_t *> bfs2;
+          bfs2.push(idx2node[nodeCut[i]]);
+          NewickNode_t *node;
+
+          while ( !bfs2.empty() )
+          {
+            node = bfs2.front();
+            bfs2.pop();
+
+            int numChildren = node->children_m.size();
+            if ( numChildren==0 ) // leaf
+            {
+              //if ( idxToAnn[ annIdx[node->idx] ] == "NA" && !cltrTx.empty() )
+              if ( idxToAnn[ annIdx[node->idx] ] !=cltrTx  && !cltrTx.empty() )
+              {
+                //idxToAnn[ annIdx[node->idx] ] = cltrTx;
+                fprintf(file, "%s\t%s\n", node->label.c_str(), cltrTx.c_str());
+                if ( idxToAnn[ annIdx[node->idx] ] == "NA" )
+                  nNAs_with_tx++;
+                else
+                  tx_changed++;
+              }
+            }
+            else
+            {
+              for (int j = 0; j < numChildren; j++)
+                bfs2.push(node->children_m[j]);
+            }
+          } // end while ( !bfs2.empty() )
+        } // end  if ( counts.size()==1 || ( counts.size()>1 && counts[0] > counts[1] ) )
+
+      } // end if ( naCount >= minNA && annCount.size() >= minAnn )
+
+    } // end   for ( int i = 0; i < n; ++i )
+
+    fclose(file);
+    fclose(logfile);
 }
 
 // ------------------------------ saveNAtaxonomy ------------------------
-void NewickTree_t::saveNAtaxonomy( const char *outFile,
-				   const char *logFile,
-				   const char *genusOTUsFile,
-				   vector<int> &nodeCut,
-				   int *annIdx,
-				   map<int, string> &idxToAnn,
-				   int minNA,
-				   map<string, string> &txParent)
-/*
+/*!
   Taxonomy assignments of query sequences from clusters containing either only
   query sequences or query sequences with at least minNA query sequences and
   minAnn reference sequences; In the last case the taxonomy is based on the most
@@ -1483,375 +1917,375 @@ void NewickTree_t::saveNAtaxonomy( const char *outFile,
 
   In the extreme case of Bacteria_OTU I am merging
 */
+void NewickTree_t::saveNAtaxonomy( const char *outFile,
+                                   const char *logFile,
+                                   const char *genusOTUsFile,
+                                   vector<int> &nodeCut,
+                                   int *annIdx,
+                                   map<int, string> &idxToAnn,
+                                   int minNA,
+                                   map<string, string> &txParent)
 {
-  FILE *file = fOpen(outFile,"w");
-  FILE *fh = fOpen(logFile,"w");
-  FILE *genusFH = fOpen(genusOTUsFile,"w");
+    FILE *file = fOpen(outFile,"w");
+    FILE *fh = fOpen(logFile,"w");
+    FILE *genusFH = fOpen(genusOTUsFile,"w");
 
-  //map<string,bool> selTx; // hash table of selected taxons as in nTx; nTx = number of elements in selTx
-  map<int, NewickNode_t*> idx2node;
-  indexNewickNodes(idx2node);
+    //map<string,bool> selTx; // hash table of selected taxons as in nTx; nTx = number of elements in selTx
+    map<int, NewickNode_t*> idx2node;
+    indexNewickNodes(idx2node);
 
-  map<string,int> otuFreq; // <taxonomic rank name> => number of OTUs already assigned to it
+    map<string,int> otuFreq; // <taxonomic rank name> => number of OTUs already assigned to it
 
-  int n = nodeCut.size();
-  for ( int i = 0; i < n; ++i )
-  {
-    //if ( nodeCut[i] < 0 ) // internal node
+    int n = nodeCut.size();
+    for ( int i = 0; i < n; ++i )
     {
-      map<string,int> annCount; // count of a given annotation string in the subtree of a given cut-node
-
-      queue<NewickNode_t *> bfs;
-      bfs.push(idx2node[nodeCut[i]]);
-      NewickNode_t *node;
-      int naCount = 0;
-
-      while ( !bfs.empty() )
+      //if ( nodeCut[i] < 0 ) // internal node
       {
-	node = bfs.front();
-	bfs.pop();
+        map<string,int> annCount; // count of a given annotation string in the subtree of a given cut-node
 
-	int numChildren = node->children_m.size();
-	if ( numChildren==0 ) // leaf
-	{
-	  annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
-	  if ( annIdx[node->idx] == -2) naCount++;
-	}
-	else
-	{
-	  for (int i = 0; i < numChildren; i++)
-	  {
-	    bfs.push(node->children_m[i]);
-	  }
-	}
-      }
+        queue<NewickNode_t *> bfs;
+        bfs.push(idx2node[nodeCut[i]]);
+        NewickNode_t *node;
+        int naCount = 0;
 
-      if ( naCount >= minNA )
-      {
-	string cltrTx; // = "Unclassified"; // taxonomy for all query reads of the cluster with no annotated sequences
+        while ( !bfs.empty() )
+        {
+          node = bfs.front();
+          bfs.pop();
 
-	if ( annCount.size() > 1 ) // there is at least one annotated element; setting cltrTx to annotation with the max frequency
-	{
-	  int maxCount = 0; // maximal count among annotated sequences in the cluster
-	  map<string,int>::iterator it;
+          if ( node->idx > 0 ) // leaf
+          {
+            annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
+            if ( annIdx[node->idx] == -2) naCount++;
+          }
+          else
+          {
+            int numChildren = node->children_m.size();
+            for (int i = 0; i < numChildren; i++)
+              bfs.push(node->children_m[i]);
+          }
+        }
 
-	  for (it = annCount.begin(); it != annCount.end(); ++it)
-	  {
-	    if ( (*it).first != "NA" && (*it).second > maxCount )
-	    {
-	      maxCount = (*it).second;
-	      cltrTx   = (*it).first;
-	    }
-	  }
-	}
-	else // there are no annotated sequences in the cluster; we are looking for the nearest ancestral node with known taxonomy
-	{
-	  node = idx2node[nodeCut[i]]; // current node
-	  node = node->parent_m; // looking at the parent node
+        if ( naCount >= minNA )
+        {
+          string cltrTx; // = "Unclassified"; // taxonomy for all query reads of the cluster with no annotated sequences
 
-	  map<string,int> sppFreq;
-	  int nSpp = cltrSpp(node, annIdx, idxToAnn, sppFreq); // table of species frequencies in the subtree of 'node'
-	  while ( nSpp==0 ) // if the parent node does not have any annotation sequences
-	  {
-	    node = node->parent_m; // move up to its parent node
-	    nSpp = cltrSpp(node, annIdx, idxToAnn, sppFreq);
-	  }
+          if ( annCount.size() > 1 ) // there is at least one annotated element; setting cltrTx to annotation with the max frequency
+          {
+            int maxCount = 0; // maximal count among annotated sequences in the cluster
+            map<string,int>::iterator it;
 
-	  // Debug
-	  // fprintf(stderr, "\n--- i: %d\tCluster %d\n", i, node->idx);
-	  // fprintf(stderr,"Number of species detected in the Unassigned node: %d\n",nSpp);
+            for (it = annCount.begin(); it != annCount.end(); ++it)
+            {
+              if ( (*it).first != "NA" && (*it).second > maxCount )
+              {
+                maxCount = (*it).second;
+                cltrTx   = (*it).first;
+              }
+            }
+          }
+          else // there are no annotated sequences in the cluster; we are looking for the nearest ancestral node with known taxonomy
+          {
+            node = idx2node[nodeCut[i]]; // current node
+            node = node->parent_m; // looking at the parent node
 
-	  // besides writing frequencies I am finding taxonomic parents of each species
-	  map<string,int> genus;  // this is a map not vector so that I avoid duplication and find out frequence of a genus
-	  map<string,int>::iterator it;
-	  for ( it = sppFreq.begin(); it != sppFreq.end(); it++ )
-	  {
-	    //if ( (*it).first != "NA" )
-	    //fprintf(fh, "%s\t%d\n", ((*it).first).c_str(), (*it).second);
-	    if ( !txParent[(*it).first].empty() )
-	      genus[ txParent[(*it).first] ] += (*it).second;
-	  }
+            map<string,int> sppFreq;
+            int nSpp = cltrSpp(node, annIdx, idxToAnn, sppFreq); // table of species frequencies in the subtree of 'node'
+            while ( nSpp==0 ) // if the parent node does not have any annotation sequences
+            {
+              node = node->parent_m; // move up to its parent node
+              nSpp = cltrSpp(node, annIdx, idxToAnn, sppFreq);
+            }
 
-	  #if 0
-	  // Checking of there is more than one genus present
-	  // If so, we are going higher until we get only one taxonomic rank.
-	  int nRks = genus.size();
-	  map<string,int> txRk = genus; // taxonomic rank
-	  map<string,int> pTxRk;        // parent taxonomic rank
-	  while ( nRks>1 )
-	  {
-	    for ( it = txRk.begin(); it != txRk.end(); it++ )
-	      if ( !txParent[(*it).first].empty() )
-		pTxRk[ txParent[(*it).first] ]++;
+            // besides writing frequencies I am finding taxonomic parents of each species
+            map<string,int> genus;  // this is a map not vector so that I avoid duplication and find out frequence of a genus
+            map<string,int>::iterator it;
+            for ( it = sppFreq.begin(); it != sppFreq.end(); it++ )
+            {
+              //if ( (*it).first != "NA" )
+              //fprintf(fh, "%s\t%d\n", ((*it).first).c_str(), (*it).second);
+              if ( !txParent[(*it).first].empty() )
+                genus[ txParent[(*it).first] ] += (*it).second;
+            }
 
-	    // fprintf(fh, "\nTx Rank Frequencies\n");
-	    // for ( it = pTxRk.begin(); it != pTxRk.end(); it++ )
-	    //   fprintf(fh, "%s\t%d\n", ((*it).first).c_str(), (*it).second);
+#if 0
+            // Checking of there is more than one genus present
+            // If so, we are going higher until we get only one taxonomic rank.
+            int nRks = genus.size();
+            map<string,int> txRk = genus; // taxonomic rank
+            map<string,int> pTxRk;        // parent taxonomic rank
+            while ( nRks>1 )
+            {
+              for ( it = txRk.begin(); it != txRk.end(); it++ )
+                if ( !txParent[(*it).first].empty() )
+                  pTxRk[ txParent[(*it).first] ]++;
 
-	    nRks = pTxRk.size();
-	    txRk = pTxRk;
-	    pTxRk.clear();
+              // fprintf(fh, "\nTx Rank Frequencies\n");
+              // for ( it = pTxRk.begin(); it != pTxRk.end(); it++ )
+              //   fprintf(fh, "%s\t%d\n", ((*it).first).c_str(), (*it).second);
 
-	    // Debug
-	    // fprintf(stderr,"nRks: %d\n",nRks);
-	  }
-	  it = txRk.begin();
-	  string otuRank = (*it).first;
-	  #endif
+              nRks = pTxRk.size();
+              txRk = pTxRk;
+              pTxRk.clear();
 
-	  // assign OTU ID
-	  if ( genus.size() == 1 ) // assign species name of the most frequent OTU
-	  {
-	    int maxCount = 0; // maximal count among annotated sequences in the cluster
-	    map<string,int>::iterator it;
-	    for (it = sppFreq.begin(); it != sppFreq.end(); ++it)
-	    {
-	      if ( (*it).first != "NA" && (*it).second > maxCount )
-	      {
-		maxCount = (*it).second;
-		cltrTx   = (*it).first;
-	      }
-	    }
-	  }
-	  else
-	  {
-	    // assigning the same OTU id to all OTUs with the same sppFreq profile
-	    string sppProf;
-	    map<string,int>::iterator it;
-	    for (it = sppFreq.begin(); it != sppFreq.end(); ++it)
-	    {
-	      if ( (*it).first != "NA" )
-	      {
-		sppProf += (*it).first;
-	      }
-	    }
+              // Debug
+              // fprintf(stderr,"nRks: %d\n",nRks);
+            }
+            it = txRk.begin();
+            string otuRank = (*it).first;
+#endif
 
-	    int maxCount = 0; // maximal count among genera
-	    string otuGenus;
-	    for (it = genus.begin(); it != genus.end(); ++it)
-	    {
-	      if ( (*it).first != "NA" && (*it).second > maxCount )
-	      {
-		maxCount = (*it).second;
-		otuGenus = (*it).first;
-	      }
-	    }
+            // assign OTU ID
+            if ( genus.size() == 1 ) // assign species name of the most frequent OTU
+            {
+              int maxCount = 0; // maximal count among annotated sequences in the cluster
+              map<string,int>::iterator it;
+              for (it = sppFreq.begin(); it != sppFreq.end(); ++it)
+              {
+                if ( (*it).first != "NA" && (*it).second > maxCount )
+                {
+                  maxCount = (*it).second;
+                  cltrTx   = (*it).first;
+                }
+              }
+            }
+            else
+            {
+              // assigning the same OTU id to all OTUs with the same sppFreq profile
+              string sppProf;
+              map<string,int>::iterator it;
+              for (it = sppFreq.begin(); it != sppFreq.end(); ++it)
+              {
+                if ( (*it).first != "NA" )
+                {
+                  sppProf += (*it).first;
+                }
+              }
 
-	    it = otuFreq.find(sppProf);
-	    int k = 1;
-	    if ( it != otuFreq.end() )
-	      k = it->second + 1;
-	    otuFreq[sppProf] = k;
+              int maxCount = 0; // maximal count among genera
+              string otuGenus;
+              for (it = genus.begin(); it != genus.end(); ++it)
+              {
+                if ( (*it).first != "NA" && (*it).second > maxCount )
+                {
+                  maxCount = (*it).second;
+                  otuGenus = (*it).first;
+                }
+              }
 
-	    char kStr[8];
-	    sprintf(kStr,"%d",k);
-	    cltrTx = otuGenus + string("_OTU") + string(kStr);
-	  }
+              it = otuFreq.find(sppProf);
+              int k = 1;
+              if ( it != otuFreq.end() )
+                k = it->second + 1;
+              otuFreq[sppProf] = k;
 
-
-	  // Writing sppFreq to log file
-	  fprintf(fh,"\n==== %s\tAncestral node ID: %d ====\n\n",cltrTx.c_str(), node->idx);
-
-
-	  fprintf(fh, "-- Species Frequencies\n");
-	  int totalSppLen = 0;
-	  for ( it = sppFreq.begin(); it != sppFreq.end(); it++ )
-	  {
-	    fprintf(fh, "%s\t%d\n", ((*it).first).c_str(), (*it).second);
-	    totalSppLen += ((*it).first).length();
-	  }
-
-	  // For each species of sppFreq, determine its taxonomy parent and write them to the log file
-	  fprintf(fh, "\n-- Genus Frequencies\n");
-	  for ( it = genus.begin(); it != genus.end(); it++ )
-	    fprintf(fh, "%s\t%d\n", ((*it).first).c_str(), (*it).second);
-
-	  if ( genus.size() == 1 ) // for genus OTUs print OTU name, ancestral node ID and species names into genusOTUsFile
-	  {
-	    //fprintf(stderr, "%s\t genus.size(): %d\n", cltrTx.c_str(), (int)genus.size());
-
-	    // number of quary sequences in the OTU
-	    it = sppFreq.find("NA");
-	    if ( it == sppFreq.end() )
-	      fprintf(stderr,"ERROR: OTU %s does not contain any quary sequences\n",cltrTx.c_str());
-
-	    // OTU_ID, number of query sequences in the OTU, ID of the ancestral node that contains ref sequences
-	    fprintf(genusFH,"%s\t%d\t%d\t",cltrTx.c_str(), (*it).second, node->idx);
-
-	    int n = sppFreq.size();
-	    char *sppStr = (char*)malloc((totalSppLen+n+1) * sizeof(char));
-	    sppStr[0] = '\0';
-	    int foundSpp = 0;
-	    for ( it = sppFreq.begin(); it != sppFreq.end(); it++ )
-	    {
-	      if ( (*it).first != "NA" && (*it).first != "Unclassified" )
-	      {
-		if ( foundSpp )
-		  strncat(sppStr, ":",1);
-		strncat(sppStr, ((*it).first).c_str(), ((*it).first).length());
-		foundSpp = 1;
-	      }
-	    }
-	    fprintf(genusFH,"%s\n", sppStr);
-	    free(sppStr);
-	  }
-
-	  #if 0
-	  // Higher taxonomic order frequencies
-	  nRks = genus.size();
-	  txRk = genus;  // taxonomic rank
-	  pTxRk.clear(); // parent taxonomic rank
-	  while ( nRks>1 )
-	  {
-	    for ( it = txRk.begin(); it != txRk.end(); it++ )
-	      if ( !txParent[(*it).first].empty() )
-		pTxRk[ txParent[(*it).first] ]++;
-
-	    fprintf(fh, "\n-- Tx Rank Frequencies\n");
-	    for ( it = pTxRk.begin(); it != pTxRk.end(); it++ )
-	      fprintf(fh, "%s\t%d\n", ((*it).first).c_str(), (*it).second);
-
-	    nRks = pTxRk.size();
-	    txRk = pTxRk;
-	    pTxRk.clear();
-	  }
-	  #endif
-
-	  //Debugging
-	  //fprintf(stderr,"OTU ID: %s\n",cltrTx.c_str());
-
-	} // end if ( annCount.size() > 1 )
-
-	// traverse the subtree again assigning taxonomy to all query sequences
-	queue<NewickNode_t *> bfs2;
-	bfs2.push(idx2node[nodeCut[i]]);
-	NewickNode_t *node;
-
-	while ( !bfs2.empty() )
-	{
-	  node = bfs2.front();
-	  bfs2.pop();
-
-	  int numChildren = node->children_m.size();
-	  if ( numChildren==0 ) // leaf
-	  {
-	    if ( idxToAnn[ annIdx[node->idx] ] == "NA" )
-	    {
-	      fprintf(file, "%s\t%s\n", node->label.c_str(), cltrTx.c_str());
-	    }
-	  }
-	  else
-	  {
-	    for (int i = 0; i < numChildren; i++)
-	      bfs2.push(node->children_m[i]);
-	  }
-	} // end while ( !bfs2.empty() )
-
-      } // if ( naCount >= minNA )
-
-    } // end if ( nodeCut[i] < 0 ) // internal node
-
-  } // end   for ( int i = 0; i < n; ++i )
+              char kStr[8];
+              sprintf(kStr,"%d",k);
+              cltrTx = otuGenus + string("_OTU") + string(kStr);
+            }
 
 
-  fclose(fh);
-  fclose(genusFH);
-  fclose(file);
+            // Writing sppFreq to log file
+            fprintf(fh,"\n==== %s\tAncestral node ID: %d ====\n\n",cltrTx.c_str(), node->idx);
+
+
+            fprintf(fh, "-- Species Frequencies\n");
+            int totalSppLen = 0;
+            for ( it = sppFreq.begin(); it != sppFreq.end(); it++ )
+            {
+              fprintf(fh, "%s\t%d\n", ((*it).first).c_str(), (*it).second);
+              totalSppLen += ((*it).first).length();
+            }
+
+            // For each species of sppFreq, determine its taxonomy parent and write them to the log file
+            fprintf(fh, "\n-- Genus Frequencies\n");
+            for ( it = genus.begin(); it != genus.end(); it++ )
+              fprintf(fh, "%s\t%d\n", ((*it).first).c_str(), (*it).second);
+
+            if ( genus.size() == 1 ) // for genus OTUs print OTU name, ancestral node ID and species names into genusOTUsFile
+            {
+              //fprintf(stderr, "%s\t genus.size(): %d\n", cltrTx.c_str(), (int)genus.size());
+
+              // number of quary sequences in the OTU
+              it = sppFreq.find("NA");
+              if ( it == sppFreq.end() )
+                fprintf(stderr,"ERROR: OTU %s does not contain any quary sequences\n",cltrTx.c_str());
+
+              // OTU_ID, number of query sequences in the OTU, ID of the ancestral node that contains ref sequences
+              fprintf(genusFH,"%s\t%d\t%d\t",cltrTx.c_str(), (*it).second, node->idx);
+
+              int n = sppFreq.size();
+              char *sppStr = (char*)malloc((totalSppLen+n+1) * sizeof(char));
+              sppStr[0] = '\0';
+              int foundSpp = 0;
+              for ( it = sppFreq.begin(); it != sppFreq.end(); it++ )
+              {
+                if ( (*it).first != "NA" && (*it).first != "Unclassified" )
+                {
+                  if ( foundSpp )
+                    strncat(sppStr, ":",1);
+                  strncat(sppStr, ((*it).first).c_str(), ((*it).first).length());
+                  foundSpp = 1;
+                }
+              }
+              fprintf(genusFH,"%s\n", sppStr);
+              free(sppStr);
+            }
+
+#if 0
+            // Higher taxonomic order frequencies
+            nRks = genus.size();
+            txRk = genus;  // taxonomic rank
+            pTxRk.clear(); // parent taxonomic rank
+            while ( nRks>1 )
+            {
+              for ( it = txRk.begin(); it != txRk.end(); it++ )
+                if ( !txParent[(*it).first].empty() )
+                  pTxRk[ txParent[(*it).first] ]++;
+
+              fprintf(fh, "\n-- Tx Rank Frequencies\n");
+              for ( it = pTxRk.begin(); it != pTxRk.end(); it++ )
+                fprintf(fh, "%s\t%d\n", ((*it).first).c_str(), (*it).second);
+
+              nRks = pTxRk.size();
+              txRk = pTxRk;
+              pTxRk.clear();
+            }
+#endif
+
+            //Debugging
+            //fprintf(stderr,"OTU ID: %s\n",cltrTx.c_str());
+
+          } // end if ( annCount.size() > 1 )
+
+          // traverse the subtree again assigning taxonomy to all query sequences
+          queue<NewickNode_t *> bfs2;
+          bfs2.push(idx2node[nodeCut[i]]);
+          NewickNode_t *node;
+
+          while ( !bfs2.empty() )
+          {
+            node = bfs2.front();
+            bfs2.pop();
+
+            int numChildren = node->children_m.size();
+            if ( numChildren==0 ) // leaf
+            {
+              if ( idxToAnn[ annIdx[node->idx] ] == "NA" )
+              {
+                fprintf(file, "%s\t%s\n", node->label.c_str(), cltrTx.c_str());
+              }
+            }
+            else
+            {
+              for (int i = 0; i < numChildren; i++)
+                bfs2.push(node->children_m[i]);
+            }
+          } // end while ( !bfs2.empty() )
+
+        } // if ( naCount >= minNA )
+
+      } // end if ( nodeCut[i] < 0 ) // internal node
+
+    } // end   for ( int i = 0; i < n; ++i )
+
+
+    fclose(fh);
+    fclose(genusFH);
+    fclose(file);
 }
 
 
 // ------------------------------ cltrSpp ------------------------
-// Traverses the subtree of the current tree rooted at '_node' and finds
-// annotation strings (taxonomies) of reference sequences present in the subtree
-// (if any). sppFreq is the frequency table of found species.
-//
-// Returns the size of sppFreq
-//
+/*!
+  Traverses the subtree of the current tree rooted at '_node' and finds
+  annotation strings (taxonomies) of reference sequences present in the subtree
+  (if any). sppFreq is the frequency table of found species.
+
+  Returns the size of sppFreq
+*/
 int NewickTree_t::cltrSpp(NewickNode_t *_node,
-			  int *annIdx,
-			  map<int, string> &idxToAnn,
-			  map<string,int> &sppFreq)
+                          int *annIdx,
+                          map<int, string> &idxToAnn,
+                          map<string,int> &sppFreq)
 {
-  queue<NewickNode_t *> bfs;
-  bfs.push(_node);
-  NewickNode_t *node;
+    queue<NewickNode_t *> bfs;
+    bfs.push(_node);
+    NewickNode_t *node;
 
-  while ( !bfs.empty() )
-  {
-    node = bfs.front();
-    bfs.pop();
+    while ( !bfs.empty() )
+    {
+      node = bfs.front();
+      bfs.pop();
 
-    int numChildren = node->children_m.size();
-    if ( numChildren==0 ) // leaf
-    {
-      sppFreq[ idxToAnn[ annIdx[node->idx] ] ]++;
-    }
-    else
-    {
-      for (int i = 0; i < numChildren; i++)
+      if ( node->idx > 0 ) // leaf
       {
-	bfs.push(node->children_m[i]);
+        sppFreq[ idxToAnn[ annIdx[node->idx] ] ]++;
+      }
+      else
+      {
+        int numChildren = node->children_m.size();
+        for (int i = 0; i < numChildren; i++)
+          bfs.push(node->children_m[i]);
       }
     }
-  }
 
-  return int(sppFreq.size());
+    return int(sppFreq.size());
 }
 
 
 
 
 // ------------------------------ maxAnn ------------------------
-// traverse the subtree of the current tree rooted at '_node' and find annotation
-// string with max frequency Return empty string if there are no annotation
-// sequences in the subtree.
+/*!
+  Traverses the subtree of the current tree rooted at '_node' and find annotation
+  string with max frequency Return empty string if there are no annotation
+  sequences in the subtree.
+*/
 string NewickTree_t::maxAnn( NewickNode_t *_node,
-			     int *annIdx,
-			     map<int, string> &idxToAnn)
-
+                             int *annIdx,
+                             map<int, string> &idxToAnn)
 {
-  map<string,int> annCount; // count of a given annotation string in the subtree of the given node
-  queue<NewickNode_t *> bfs;
-  bfs.push(_node);
-  NewickNode_t *node;
+    map<string,int> annCount; // count of a given annotation string in the subtree of the given node
+    queue<NewickNode_t *> bfs;
+    bfs.push(_node);
+    NewickNode_t *node;
 
-  while ( !bfs.empty() )
-  {
-    node = bfs.front();
-    bfs.pop();
+    while ( !bfs.empty() )
+    {
+      node = bfs.front();
+      bfs.pop();
 
-    int numChildren = node->children_m.size();
-    if ( numChildren==0 ) // leaf
-    {
-      annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
-    }
-    else
-    {
-      for (int i = 0; i < numChildren; i++)
+      if ( node->idx > 0 ) // leaf
       {
-	bfs.push(node->children_m[i]);
+        annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
+      }
+      else
+      {
+        int numChildren = node->children_m.size();
+        for (int i = 0; i < numChildren; i++)
+          bfs.push(node->children_m[i]);
       }
     }
-  }
 
-  string cltrTx; // = "Unclassified"; // taxonomy for all query reads of the cluster with no annotated sequences
+    string cltrTx; // = "Unclassified"; // taxonomy for all query reads of the cluster with no annotated sequences
 
-  if ( annCount.size() > 1 ) // there is at least one annotated element; setting cltrTx to annotation with the max frequency
-  {
-    int maxCount = 0; // maximal count among annotated sequences in the cluster
-    map<string,int>::iterator it;
-
-    for (it = annCount.begin(); it != annCount.end(); ++it)
+    if ( annCount.size() > 1 ) // there is at least one annotated element; setting cltrTx to annotation with the max frequency
     {
-      if ( (*it).first != "NA" && (*it).second > maxCount )
+      int maxCount = 0; // maximal count among annotated sequences in the cluster
+      map<string,int>::iterator it;
+
+      for (it = annCount.begin(); it != annCount.end(); ++it)
       {
-	maxCount = (*it).second;
-	cltrTx   = (*it).first;
+        if ( (*it).first != "NA" && (*it).second > maxCount )
+        {
+          maxCount = (*it).second;
+          cltrTx   = (*it).first;
+        }
       }
     }
-  }
 
-  return cltrTx;
+    return cltrTx;
 }
 
 
@@ -1859,300 +2293,299 @@ string NewickTree_t::maxAnn( NewickNode_t *_node,
 // Find a node in lable 'label'
 NewickNode_t* NewickTree_t::findAnnNode(std::string label)
 {
-  queue<NewickNode_t *> bfs;
-  bfs.push(root_m);
-  NewickNode_t *node = 0;
-  NewickNode_t *searchedNode = 0;
+    queue<NewickNode_t *> bfs;
+    bfs.push(root_m);
+    NewickNode_t *node = 0;
+    NewickNode_t *searchedNode = 0;
 
-  while ( !bfs.empty() )
-  {
-    node = bfs.front();
-    bfs.pop();
-
-    if ( node->label == label )
+    while ( !bfs.empty() )
     {
-      searchedNode = node;
-      break;
-    }
+      node = bfs.front();
+      bfs.pop();
 
-    int numChildren = node->children_m.size();
-    if ( numChildren ) // not leaf
-    {
-      for (int i = 0; i < numChildren; i++)
+      if ( node->label == label )
       {
-	bfs.push(node->children_m[i]);
+        searchedNode = node;
+        break;
+      }
+
+      if ( node->idx < 0 ) // not leaf
+      {
+        int numChildren = node->children_m.size();
+        for (int i = 0; i < numChildren; i++)
+          bfs.push(node->children_m[i]);
       }
     }
-  }
 
-  return searchedNode;
+    return searchedNode;
 }
 
 
 // ------------------------------ printGenusTrees ------------------------
-// For each genus print a subtree rooted at the root nodes of the genus
-// * to each genus assign a vector of species/OTU's cut-nodes generated by vicut
-// * find a node with the smallest depth (from the root)
-// * walk ancestors of this node until all OTU nodes are in the subtree of that node
-// * print that tree to a file
+/*!
+  For each genus it prints a subtree rooted at the root nodes of the genus
+  to each genus assign a vector of species/OTU's cut-nodes generated by vicut
+  find a node with the smallest depth (from the root)
+  walk ancestors of this node until all OTU nodes are in the subtree of that node
+  print that tree to a file
+*/
 void NewickTree_t::printGenusTrees( const char *outDir,
-				    vector<int> &nodeCut,
-				    int *annIdx,
-				    int minNA,
-				    map<int, string> &idxToAnn,
-				    map<string, string> &txParent)
+                                    vector<int> &nodeCut,
+                                    int *annIdx,
+                                    int minNA,
+                                    map<int, string> &idxToAnn,
+                                    map<string, string> &txParent)
 {
-  //fprintf(stderr,"Entering printGenusTrees()\n");
+    //fprintf(stderr,"Entering printGenusTrees()\n");
 
-  char s[1024];
-  sprintf(s,"mkdir -p %s",outDir);
-  system(s);
+    char s[1024];
+    sprintf(s,"mkdir -p %s",outDir);
+    system(s);
 
-  // === Assign to each genus a vector of species/OTU nodes
-  map<string, vector<NewickNode_t*> > genusSpp; // <genus> => vector of OTU/species node
+    // === Assign to each genus a vector of species/OTU nodes
+    map<string, vector<NewickNode_t*> > genusSpp; // <genus> => vector of OTU/species node
 
-  map<int, NewickNode_t*> idx2node;
-  indexNewickNodes(idx2node);
+    map<int, NewickNode_t*> idx2node;
+    indexNewickNodes(idx2node);
 
-  int n = nodeCut.size();
-  for ( int i = 0; i < n; ++i )
-  {
-    //fprintf(stderr,"i: %d\r", i);
-
-    if ( nodeCut[i] < 0 ) // internal node
+    int n = nodeCut.size();
+    for ( int i = 0; i < n; ++i )
     {
-      map<string,int> annCount; // count of a given annotation string in the subtree of a given cut-node
+      //fprintf(stderr,"i: %d\r", i);
 
-      queue<NewickNode_t *> bfs;
-      bfs.push(idx2node[nodeCut[i]]);
-      NewickNode_t *node;
-      int naCount = 0;
-
-      while ( !bfs.empty() )
+      if ( nodeCut[i] < 0 ) // internal node
       {
-	node = bfs.front();
-	bfs.pop();
+        map<string,int> annCount; // count of a given annotation string in the subtree of a given cut-node
 
-	int numChildren = node->children_m.size();
-	if ( numChildren==0 ) // leaf
-	{
-	  annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
-	  if ( annIdx[node->idx] == -2) naCount++;
-	}
-	else
-	{
-	  for (int i = 0; i < numChildren; i++)
-	  {
-	    bfs.push(node->children_m[i]);
-	  }
-	}
+        queue<NewickNode_t *> bfs;
+        bfs.push(idx2node[nodeCut[i]]);
+        NewickNode_t *node;
+        int naCount = 0;
+
+        while ( !bfs.empty() )
+        {
+          node = bfs.front();
+          bfs.pop();
+
+          if ( node->idx > 0 ) // leaf
+          {
+            annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
+            if ( annIdx[node->idx] == -2) naCount++;
+          }
+          else
+          {
+            int numChildren = node->children_m.size();
+            for (int i = 0; i < numChildren; i++)
+              bfs.push(node->children_m[i]);
+          }
+        }
+
+        if ( naCount >= minNA )
+        {
+          string cltrTx; // taxonomy for all query reads of the cluster with no annotated sequences
+
+          if ( annCount.size() > 1 ) // there is at least one annotated element; setting cltrTx to annotation with the max frequency
+          {
+            int maxCount = 0; // maximal count among annotated sequences in the cluster
+            map<string,int>::iterator it;
+
+            for (it = annCount.begin(); it != annCount.end(); ++it)
+            {
+              if ( (*it).first != "NA" && (*it).second > maxCount )
+              {
+                maxCount = (*it).second;
+                cltrTx   = (*it).first;
+              }
+            }
+
+            genusSpp[ txParent[ cltrTx ] ].push_back( idx2node[nodeCut[i]] );
+          }
+          else // there are no annotated sequences in the cluster; we are looking for the nearest ancestral node with known taxonomy
+          {
+
+            //fprintf(stderr, "In if ( naCount >= minNA ) else\n");
+
+            node = idx2node[nodeCut[i]]; // current node
+            node = node->parent_m; // looking at the parent node
+
+            map<string,int> sppFreq;
+            int nSpp = cltrSpp(node, annIdx, idxToAnn, sppFreq); // table of species frequencies in the subtree of 'node'
+            while ( nSpp==0 ) // if the parent node does not have any annotation sequences
+            {
+              node = node->parent_m; // move up to its parent node
+              nSpp = cltrSpp(node, annIdx, idxToAnn, sppFreq);
+            }
+
+            //fprintf(stderr, "nSpp: %d\n", nSpp);
+
+            map<string,int> genus;  // this is a map not vector so that I avoid duplication and find out frequence of a genus
+            map<string,int>::iterator it;
+            for ( it = sppFreq.begin(); it != sppFreq.end(); it++ )
+            {
+              if ( !txParent[(*it).first].empty() )
+                genus[ txParent[(*it).first] ]++;
+            }
+
+            //fprintf(stderr, "genus.size(): %d\n", (int)genus.size());
+
+            if ( genus.size() == 1 ) //
+            {
+              it = genus.begin();
+              //fprintf(stderr,"genus: %s\n", (*it).first.c_str());
+              genusSpp[ (*it).first ].push_back( node );
+            }
+
+          } // end if ( annCount.size() > 1 )
+
+        } // if ( naCount >= minNA )
+
+      } // end if ( nodeCut[i] < 0 ) // internal node
+
+    } // end   for ( int i = 0; i < n; ++i )
+
+
+
+    // === For each genus, find a node with the smallest depth (from the root)
+    // === Walk this node until all OTU nodes are in the subtree of that node
+    // === Print that tree to a file
+    map<string, vector<NewickNode_t*> >::iterator itr;
+    for ( itr = genusSpp.begin(); itr != genusSpp.end(); itr++ )
+    {
+      vector<NewickNode_t*> v = (*itr).second;
+
+      int vn = (int)v.size();
+      //Debugging
+      // fprintf(stderr,"%s: ", (*itr).first.c_str());
+      // for ( int j = 0; j < vn; j++ )
+      //   fprintf(stderr,"(%d, %d)  ", v[j]->idx, v[j]->depth_m);
+      // fprintf(stderr,"\n");
+
+      NewickNode_t* minDepthNode = v[0];
+      int minDepth = v[0]->depth_m;
+      for ( int j = 1; j < vn; j++ )
+      {
+        if ( v[j]->depth_m < minDepth )
+        {
+          minDepth = v[j]->depth_m;
+          minDepthNode = v[j];
+        }
       }
 
-      if ( naCount >= minNA )
+      NewickNode_t* node = minDepthNode->parent_m;
+
+      bool foundParentNode = hasSelSpp(node, v); // looking for a parent node of all elements of v
+      while ( foundParentNode==false )
       {
-	string cltrTx; // taxonomy for all query reads of the cluster with no annotated sequences
-
-	if ( annCount.size() > 1 ) // there is at least one annotated element; setting cltrTx to annotation with the max frequency
-	{
-	  int maxCount = 0; // maximal count among annotated sequences in the cluster
-	  map<string,int>::iterator it;
-
-	  for (it = annCount.begin(); it != annCount.end(); ++it)
-	  {
-	    if ( (*it).first != "NA" && (*it).second > maxCount )
-	    {
-	      maxCount = (*it).second;
-	      cltrTx   = (*it).first;
-	    }
-	  }
-
-	  genusSpp[ txParent[ cltrTx ] ].push_back( idx2node[nodeCut[i]] );
-	}
-	else // there are no annotated sequences in the cluster; we are looking for the nearest ancestral node with known taxonomy
-	{
-
-	  //fprintf(stderr, "In if ( naCount >= minNA ) else\n");
-
-	  node = idx2node[nodeCut[i]]; // current node
-	  node = node->parent_m; // looking at the parent node
-
-	  map<string,int> sppFreq;
-	  int nSpp = cltrSpp(node, annIdx, idxToAnn, sppFreq); // table of species frequencies in the subtree of 'node'
-	  while ( nSpp==0 ) // if the parent node does not have any annotation sequences
-	  {
-	    node = node->parent_m; // move up to its parent node
-	    nSpp = cltrSpp(node, annIdx, idxToAnn, sppFreq);
-	  }
-
-	  //fprintf(stderr, "nSpp: %d\n", nSpp);
-
-	  map<string,int> genus;  // this is a map not vector so that I avoid duplication and find out frequence of a genus
-	  map<string,int>::iterator it;
-	  for ( it = sppFreq.begin(); it != sppFreq.end(); it++ )
-	  {
-	    if ( !txParent[(*it).first].empty() )
-	      genus[ txParent[(*it).first] ]++;
-	  }
-
-	  //fprintf(stderr, "genus.size(): %d\n", (int)genus.size());
-
-	  if ( genus.size() == 1 ) //
-	  {
-	    it = genus.begin();
-	    //fprintf(stderr,"genus: %s\n", (*it).first.c_str());
-	    genusSpp[ (*it).first ].push_back( node );
-	  }
-
-	} // end if ( annCount.size() > 1 )
-
-      } // if ( naCount >= minNA )
-
-    } // end if ( nodeCut[i] < 0 ) // internal node
-
-  } // end   for ( int i = 0; i < n; ++i )
-
-
-
-  // === For each genus, find a node with the smallest depth (from the root)
-  // === Walk this node until all OTU nodes are in the subtree of that node
-  // === Print that tree to a file
-  map<string, vector<NewickNode_t*> >::iterator itr;
-  for ( itr = genusSpp.begin(); itr != genusSpp.end(); itr++ )
-  {
-    vector<NewickNode_t*> v = (*itr).second;
-
-    int vn = (int)v.size();
-    //Debugging
-    // fprintf(stderr,"%s: ", (*itr).first.c_str());
-    // for ( int j = 0; j < vn; j++ )
-    //   fprintf(stderr,"(%d, %d)  ", v[j]->idx, v[j]->depth_m);
-    // fprintf(stderr,"\n");
-
-    NewickNode_t* minDepthNode = v[0];
-    int minDepth = v[0]->depth_m;
-    for ( int j = 1; j < vn; j++ )
-    {
-      if ( v[j]->depth_m < minDepth )
-      {
-	minDepth = v[j]->depth_m;
-	minDepthNode = v[j];
+        node = node->parent_m; // move up to its parent node
+        foundParentNode = hasSelSpp(node, v);
       }
+
+      // write subtree rooted in node to a file
+      int n1 = strlen(outDir);
+      int n2 =  ((*itr).first).length();
+      char *outFile = (char*)malloc((n1+n2+1+5)*sizeof(char));
+      strcpy(outFile,outDir);
+      strcat(outFile,((*itr).first).c_str());
+      strcat(outFile,".tree");
+      FILE *fh = fOpen(outFile,"w");
+      writeTree(fh, node);
+      fclose(fh);
+
+      // write leaf labels to a file
+      vector<string> leaves;
+      leafLabels(node, leaves);
+
+      char *idsFile = (char*)malloc((n1+n2+1+5)*sizeof(char));
+      strcpy(idsFile,outDir);
+      strcat(idsFile,((*itr).first).c_str());
+      strcat(idsFile,".ids");
+      writeStrVector(idsFile, leaves);
     }
-
-    NewickNode_t* node = minDepthNode->parent_m;
-
-    bool foundParentNode = hasSelSpp(node, v); // looking for a parent node of all elements of v
-    while ( foundParentNode==false )
-    {
-      node = node->parent_m; // move up to its parent node
-      foundParentNode = hasSelSpp(node, v);
-    }
-
-    // write subtree rooted in node to a file
-    int n1 = strlen(outDir);
-    int n2 =  ((*itr).first).length();
-    char *outFile = (char*)malloc((n1+n2+1+5)*sizeof(char));
-    strcpy(outFile,outDir);
-    strcat(outFile,((*itr).first).c_str());
-    strcat(outFile,".tree");
-    FILE *fh = fOpen(outFile,"w");
-    writeTree(fh, node);
-    fclose(fh);
-
-    // write leaf labels to a file
-    vector<string> leaves;
-    leafLabels(node, leaves);
-
-    char *idsFile = (char*)malloc((n1+n2+1+5)*sizeof(char));
-    strcpy(idsFile,outDir);
-    strcat(idsFile,((*itr).first).c_str());
-    strcat(idsFile,".ids");
-    writeStrVector(idsFile, leaves);
-  }
 }
 
 
 // ------------------------------ hasSelSpp ------------------------
-// Traverses the subtree of the current tree rooted at '_node'
-// and checks if that tree contains all elements of v
-//
-// Returns true if all elements of v are in the subtree of _node
-//
+/*!
+  Traverses the subtree of the current tree rooted at '_node'
+  and checks if that tree contains all elements of v
+
+  Returns true if all elements of v are in the subtree of _node
+*/
 bool NewickTree_t::hasSelSpp(NewickNode_t *_node,
-			     vector<NewickNode_t*> &v)
+                             vector<NewickNode_t*> &v)
 {
-  queue<NewickNode_t *> bfs;
-  bfs.push(_node);
-  NewickNode_t *node;
-  int countFoundNodes = 0; // count of nodes of v found in the subtree of _node
-  // table of indixes of nodes of v; return values of the table are not used
-  // the table is used only to find is a node is in v
-  map<int,bool> V;
-  int n = (int)v.size();
-  for ( int i = 0; i < n; i++ )
-    V[v[i]->idx] = true;
+    queue<NewickNode_t *> bfs;
+    bfs.push(_node);
+    NewickNode_t *node;
+    int countFoundNodes = 0; // count of nodes of v found in the subtree of _node
+    // table of indixes of nodes of v; return values of the table are not used
+    // the table is used only to find is a node is in v
+    map<int,bool> V;
+    int n = (int)v.size();
+    for ( int i = 0; i < n; i++ )
+      V[v[i]->idx] = true;
 
-  map<int,bool>::iterator it;
+    map<int,bool>::iterator it;
 
-  while ( !bfs.empty() )
-  {
-    node = bfs.front();
-    bfs.pop();
-
-    it = V.find(node->idx);
-    if ( it != V.end() )
-      countFoundNodes++;
-
-    int numChildren = node->children_m.size();
-    if ( numChildren!=0 ) // internal node
+    while ( !bfs.empty() )
     {
-      for (int i = 0; i < numChildren; i++)
+      node = bfs.front();
+      bfs.pop();
+
+      it = V.find(node->idx);
+      if ( it != V.end() )
+        countFoundNodes++;
+
+      if ( node->idx < 0 ) // internal node
       {
-	bfs.push(node->children_m[i]);
+        int numChildren = node->children_m.size();
+        for (int i = 0; i < numChildren; i++)
+          bfs.push(node->children_m[i]);
       }
     }
-  }
 
-  return countFoundNodes == (int)v.size();
+    return countFoundNodes == (int)v.size();
 }
 
 
 
 //--------------------------------------------- leafLabels -----
-// Given a node in the tree, the routine gives leaf labels
-// of the subtree rooted at 'node'.
+/*!
+  Given a node in the tree, the routine gives leaf labels
+  of the subtree rooted at 'node'.
+*/
 void NewickTree_t::leafLabels(NewickNode_t *_node, vector<string> &leaves)
 {
-  leaves.clear();
+    leaves.clear();
 
-  queue<NewickNode_t *> bfs;
-  bfs.push(_node);
-  NewickNode_t *node;
+    queue<NewickNode_t *> bfs;
+    bfs.push(_node);
+    NewickNode_t *node;
 
-  while ( !bfs.empty() )
-  {
-    node = bfs.front();
-    bfs.pop();
-
-    int numChildren = node->children_m.size();
-    if ( numChildren==0 ) // leaf
+    while ( !bfs.empty() )
     {
-      leaves.push_back( node->label );
-    }
-    else
-    {
-      for (int i = 0; i < numChildren; i++)
+      node = bfs.front();
+      bfs.pop();
+
+      if ( node->idx > 0 ) // leaf
       {
-	bfs.push(node->children_m[i]);
+        leaves.push_back( node->label );
+      }
+      else
+      {
+        int numChildren = node->children_m.size();
+        for (int i = 0; i < numChildren; i++)
+          bfs.push(node->children_m[i]);
       }
     }
-  }
 }
 
 
 //--------------------------------------------- leafLabels -----
-// Given a node in the tree, the routine returns a vector of pointes to leaf nodes
-// of the subtree rooted at 'node'.
+/*!
+   Given a node in the tree, the routine returns a vector of pointes to leaf nodes
+   of the subtree rooted at 'node'.
+*/
 void NewickTree_t::leafLabels(NewickNode_t *_node, vector<NewickNode_t *> &leaves)
 {
   queue<NewickNode_t *> bfs;
@@ -2164,162 +2597,160 @@ void NewickTree_t::leafLabels(NewickNode_t *_node, vector<NewickNode_t *> &leave
     node = bfs.front();
     bfs.pop();
 
-    int numChildren = node->children_m.size();
-    if ( numChildren==0 ) // leaf
+    if ( node->idx > 0 ) // leaf
     {
       leaves.push_back( node );
     }
     else
     {
+      int numChildren = node->children_m.size();
       for (int i = 0; i < numChildren; i++)
-      {
-	bfs.push(node->children_m[i]);
-      }
+      	bfs.push(node->children_m[i]);
     }
   }
 }
 
 
 //--------------------------------------------- leafLabels -----
-// Given a node in the tree, the routine returns a vector of pointes to leaf nodes
-// (excluding a selected node) of the subtree rooted at 'node'.
-void NewickTree_t::leafLabels(NewickNode_t *_node, vector<NewickNode_t *> &leaves, NewickNode_t *selNode)
-{
-  queue<NewickNode_t *> bfs;
-  bfs.push(_node);
-  NewickNode_t *node;
-
-  while ( !bfs.empty() )
-  {
-    node = bfs.front();
-    bfs.pop();
-
-    int numChildren = node->children_m.size();
-    if ( numChildren==0 ) // leaf
-    {
-      if ( node != selNode )
-	leaves.push_back( node );
-    }
-    else
-    {
-      for (int i = 0; i < numChildren; i++)
-      {
-	bfs.push(node->children_m[i]);
-      }
-    }
-  }
-}
-
-
-//--------------------------------------------- leafLabels -----
-// Given a node in the tree, the routine gives leaf labels
-// of the subtree rooted at 'node'.
-void NewickTree_t::leafLabels(NewickNode_t *_node, set<string> &leaves)
-{
-  queue<NewickNode_t *> bfs;
-  bfs.push(_node);
-  NewickNode_t *node;
-
-  while ( !bfs.empty() )
-  {
-    node = bfs.front();
-    bfs.pop();
-
-    int numChildren = node->children_m.size();
-    if ( numChildren==0 ) // leaf
-    {
-      leaves.insert( node->label );
-    }
-    else
-    {
-      for (int i = 0; i < numChildren; i++)
-      {
-	bfs.push(node->children_m[i]);
-      }
-    }
-  }
-}
-
-
-//--------------------------------------------- getSppProfs -----
-void NewickTree_t::getSppProfs( vector<sppProf_t*> &sppProfs,
-                                vector<int> &nodeCut,
-                                int *annIdx,
-                                int minNA,
-                                map<int, string> &idxToAnn)
-                                //map<string, string> &txParent)
-/*
-  Given nodeCut + some other parameters
-  populate a vector of pointers to sppProf_t's
-  with i-th element of sppProfs corresponding to the i-th
-  node cut in nodeCut.
+/*!
+   Given a node in the tree, the routine returns a vector of pointes to leaf nodes
+   (excluding a selected node) of the subtree rooted at 'node'.
 */
+void NewickTree_t::leafLabels(NewickNode_t *_node,
+                              vector<NewickNode_t *> &leaves,
+                              NewickNode_t *selNode)
 {
-  map<int, NewickNode_t*> idx2node;
-  indexNewickNodes(idx2node);
-
-  int n = nodeCut.size();
-  for ( int i = 0; i < n; ++i )
-  {
-    map<string,int> annCount; // count of a given annotation string in the subtree of a given cut-node
-
     queue<NewickNode_t *> bfs;
-    bfs.push(idx2node[nodeCut[i]]);
+    bfs.push(_node);
     NewickNode_t *node;
-    int naCount = 0;
 
     while ( !bfs.empty() )
     {
       node = bfs.front();
       bfs.pop();
 
-      int numChildren = node->children_m.size();
-      if ( numChildren==0 ) // leaf
+      if ( node->idx > 0 ) // leaf
       {
-	annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
-	if ( annIdx[node->idx] == -2) naCount++;
+        if ( node != selNode )
+          leaves.push_back( node );
       }
       else
       {
-	for (int i = 0; i < numChildren; i++)
-	{
-	  bfs.push(node->children_m[i]);
-	}
+        int numChildren = node->children_m.size();
+        for (int i = 0; i < numChildren; i++)
+          bfs.push(node->children_m[i]);
       }
     }
+}
 
-    if ( naCount >= minNA )
+
+//--------------------------------------------- leafLabels -----
+/*!
+   Given a node in the tree, the routine gives leaf labels
+   of the subtree rooted at 'node'.
+*/
+void NewickTree_t::leafLabels(NewickNode_t *_node,
+                              set<string> &leaves)
+{
+    queue<NewickNode_t *> bfs;
+    bfs.push(_node);
+    NewickNode_t *node;
+
+    while ( !bfs.empty() )
     {
-      map<string,int> sppFreq;
-      node = idx2node[nodeCut[i]]; // current node
-      NewickNode_t * ancNode;
+      node = bfs.front();
+      bfs.pop();
 
-      if ( annCount.size() > 1 ) // there is at least one annotated element; setting cltrTx to annotation with the max frequency
+      if ( node->idx > 0 ) // leaf
       {
-	cltrSpp(node, annIdx, idxToAnn, sppFreq); // table of species frequencies in the subtree of 'node'
-	ancNode = node;
+        leaves.insert( node->label );
       }
-      else // there are no annotated sequences in the cluster; we are looking for the nearest ancestral node with known taxonomy
+      else
       {
-	ancNode = node->parent_m; // looking at the parent node
-
-	int nSpp = cltrSpp(ancNode, annIdx, idxToAnn, sppFreq); // table of species frequencies in the subtree of 'node'
-	while ( nSpp==0 ) // if the parent node does not have any annotation sequences
-	{
-	  ancNode = ancNode->parent_m; // move up to its parent node
-	  nSpp = cltrSpp(ancNode, annIdx, idxToAnn, sppFreq);
-	}
-	//ancNode = ancNode->parent_m;
+        int numChildren = node->children_m.size();
+        for (int i = 0; i < numChildren; i++)
+          bfs.push(node->children_m[i]);
       }
-
-      sppProf_t *sppProf = new sppProf_t();
-      sppProf->node    = node;
-      sppProf->ancNode = ancNode;
-      sppProf->sppFreq = sppFreq;
-
-      sppProfs.push_back( sppProf );
     }
-  }
+}
+
+
+//--------------------------------------------- getSppProfs -----
+/*!
+  Given nodeCut + some other parameters
+  populate a vector of pointers to sppProf_t's
+  with i-th element of sppProfs corresponding to the i-th
+  node cut in nodeCut.
+*/
+void NewickTree_t::getSppProfs( vector<sppProf_t*> &sppProfs,
+                                vector<int> &nodeCut,
+                                int *annIdx,
+                                int minNA,
+                                map<int, string> &idxToAnn)
+{
+    map<int, NewickNode_t*> idx2node;
+    indexNewickNodes(idx2node);
+
+    int n = nodeCut.size();
+    for ( int i = 0; i < n; ++i )
+    {
+      map<string,int> annCount; // count of a given annotation string in the subtree of a given cut-node
+
+      queue<NewickNode_t *> bfs;
+      bfs.push(idx2node[nodeCut[i]]);
+      NewickNode_t *node;
+      int naCount = 0;
+
+      while ( !bfs.empty() )
+      {
+        node = bfs.front();
+        bfs.pop();
+
+        if ( node->idx > 0 ) // leaf
+        {
+          annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
+          if ( annIdx[node->idx] == -2) naCount++;
+        }
+        else
+        {
+          int numChildren = node->children_m.size();
+          for (int i = 0; i < numChildren; i++)
+            bfs.push(node->children_m[i]);
+        }
+      }
+
+      if ( naCount >= minNA )
+      {
+        map<string,int> sppFreq;
+        node = idx2node[nodeCut[i]]; // current node
+        NewickNode_t * ancNode;
+
+        if ( annCount.size() > 1 ) // there is at least one annotated element; setting cltrTx to annotation with the max frequency
+        {
+          cltrSpp(node, annIdx, idxToAnn, sppFreq); // table of species frequencies in the subtree of 'node'
+          ancNode = node;
+        }
+        else // there are no annotated sequences in the cluster; we are looking for the nearest ancestral node with known taxonomy
+        {
+          ancNode = node->parent_m; // looking at the parent node
+
+          int nSpp = cltrSpp(ancNode, annIdx, idxToAnn, sppFreq); // table of species frequencies in the subtree of 'node'
+          while ( nSpp==0 ) // if the parent node does not have any annotation sequences
+          {
+            ancNode = ancNode->parent_m; // move up to its parent node
+            nSpp = cltrSpp(ancNode, annIdx, idxToAnn, sppFreq);
+          }
+          //ancNode = ancNode->parent_m;
+        }
+
+        sppProf_t *sppProf = new sppProf_t();
+        sppProf->node    = node;
+        sppProf->ancNode = ancNode;
+        sppProf->sppFreq = sppFreq;
+
+        sppProfs.push_back( sppProf );
+      }
+    }
 }
 
 #if 0
@@ -2508,240 +2939,242 @@ void NewickTree_t::printTx( const char *outFile,
 }
 
 //---------------------------------------------------------- updateLabels ----
-void NewickTree_t::updateLabels( strSet_t &tx2seqIDs )
-/*
+/*!
   To test txSet2txTree() this routine updates tree labels so they
   include the number of sequences associated with each node
 */
+void NewickTree_t::updateLabels( strSet_t &tx2seqIDs )
 {
-  queue<NewickNode_t *> bfs;
-  bfs.push(root_m);
-  NewickNode_t *node;
-  strSet_t::iterator it;
-  char nStr[16];
+    queue<NewickNode_t *> bfs;
+    bfs.push(root_m);
+    NewickNode_t *node;
+    strSet_t::iterator it;
+    char nStr[16];
 
-  while ( !bfs.empty() )
-  {
-    node = bfs.front();
-    bfs.pop();
-
-    if ( node != root_m )
+    while ( !bfs.empty() )
     {
-      it=tx2seqIDs.find( node->label );
-      if ( it != tx2seqIDs.end() )
+      node = bfs.front();
+      bfs.pop();
+
+      if ( node != root_m )
       {
-	int n = (it->second).size();
-	sprintf(nStr,"%d",n);
-	node->label += string("{") + string(nStr) + string("}");
+        it=tx2seqIDs.find( node->label );
+        if ( it != tx2seqIDs.end() )
+        {
+          int n = (it->second).size();
+          sprintf(nStr,"%d",n);
+          node->label += string("{") + string(nStr) + string("}");
+        }
+        else
+        {
+          fprintf(stderr,"ERROR in %s at line %d: node with label %s not found in tx2seqIDs map\n",
+                  __FILE__,__LINE__, node->label.c_str());
+          exit(1);
+        }
       }
-      else
+
+      if ( node->idx < 0 )
       {
-	fprintf(stderr,"ERROR in %s at line %d: node with label %s not found in tx2seqIDs map\n",
-		__FILE__,__LINE__, node->label.c_str());
-	exit(1);
+        int numChildren = node->children_m.size();
+        for (int i = 0; i < numChildren; i++)
+          bfs.push(node->children_m[i]);
       }
     }
-
-    int numChildren = node->children_m.size();
-    if ( numChildren )
-    {
-      for (int i = 0; i < numChildren; i++)
-	bfs.push(node->children_m[i]);
-    }
-  }
 }
 
 
 //---------------------------------------------------------- txSet2txTree ----
-void NewickTree_t::txSet2txTree( strSet_t &tx2seqIDs )
-/*
+/*!
   tx2seqIDs maps tx (assumed to be labels of the leaves of the tree) into set of
   seqIDs corresponding to the given taxon, tx.
 
   The routine extends tx2seqIDs to map also internal nodes to seqIDs associated
   with the leaves of the corresponding subtree.
 */
+void NewickTree_t::txSet2txTree( strSet_t &tx2seqIDs )
 {
-  queue<NewickNode_t *> bfs;
-  bfs.push(root_m);
-  NewickNode_t *node;
+    queue<NewickNode_t *> bfs;
+    bfs.push(root_m);
+    NewickNode_t *node;
 
-  while ( !bfs.empty() )
-  {
-    node = bfs.front();
-    bfs.pop();
-
-    int numChildren = node->children_m.size();
-    if ( numChildren )
+    while ( !bfs.empty() )
     {
-      for (int i = 0; i < numChildren; i++)
+      node = bfs.front();
+      bfs.pop();
+
+      if ( node->idx < 0 )
       {
-	bfs.push(node->children_m[i]);
+        int numChildren = node->children_m.size();
+        for (int i = 0; i < numChildren; i++)
+        {
+          bfs.push(node->children_m[i]);
 
-	set<string> seqIDs; // sequence IDs from all leaves of the subtree of node->children_m[i]
-	set<string> leaves;
-	leafLabels(node->children_m[i], leaves);
-	set<string>::iterator it;
-	for (it=leaves.begin(); it!=leaves.end(); it++)
-	{
-	  set<string> ids = tx2seqIDs[ *it ];
-	  set_union( seqIDs.begin(), seqIDs.end(),
-		     ids.begin(), ids.end(),
-		     inserter(seqIDs, seqIDs.begin()) );
-	}
+          set<string> seqIDs; // sequence IDs from all leaves of the subtree of node->children_m[i]
+          set<string> leaves;
+          leafLabels(node->children_m[i], leaves);
+          set<string>::iterator it;
+          for (it=leaves.begin(); it!=leaves.end(); it++)
+          {
+            set<string> ids = tx2seqIDs[ *it ];
+            set_union( seqIDs.begin(), seqIDs.end(),
+                       ids.begin(), ids.end(),
+                       inserter(seqIDs, seqIDs.begin()) );
+          }
 
-	if ( (node->children_m[i])->label.empty() )
-	{
-	  cerr << "ERROR in " << __FILE__ << " at line " << __LINE__ << ": internal node is missing lable\n" << endl;
-	}
+          if ( (node->children_m[i])->label.empty() )
+          {
+            cerr << "ERROR in " << __FILE__ << " at line " << __LINE__ << ": internal node is missing lable\n" << endl;
+          }
 
-	tx2seqIDs[ (node->children_m[i])->label ] = seqIDs;
+          tx2seqIDs[ (node->children_m[i])->label ] = seqIDs;
+        }
       }
     }
-  }
 }
 
 
 //---------------------------------------------------------- inodeTx ----
-void NewickTree_t::inodeTx( const char *fullTxFile, map<string, string> &inodeTx )
-/*
+/*!
   Creating <interna node> => <taxonomy> table inodeTx
 */
+void NewickTree_t::inodeTx( const char *fullTxFile, map<string, string> &inodeTx )
 {
-  // parse fullTxFile that has the following structure
+    // parse fullTxFile that has the following structure
 
-  // BVAB1	g_Shuttleworthia	f_Lachnospiraceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
-  // BVAB2	g_Acetivibrio	f_Ruminococcaceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
-  // BVAB3	g_Acetivibrio	f_Ruminococcaceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
-  // Dialister_sp._type_1	g_Dialister	f_Veillonellaceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
+    // BVAB1	g_Shuttleworthia	f_Lachnospiraceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
+    // BVAB2	g_Acetivibrio	f_Ruminococcaceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
+    // BVAB3	g_Acetivibrio	f_Ruminococcaceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
+    // Dialister_sp._type_1	g_Dialister	f_Veillonellaceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
 
-  const int NUM_TX = 7;
-  char ***txTbl;
-  int nRows, nCols;
-  readCharTbl( fullTxFile, &txTbl, &nRows, &nCols );
+    const int NUM_TX = 7;
+    char ***txTbl;
+    int nRows, nCols;
+    readCharTbl( fullTxFile, &txTbl, &nRows, &nCols );
 
-  #if 0
-  fprintf(stderr,"fullTxFile txTbl:\n");
-  printCharTbl(txTbl, 10, nCols); // test
-  #endif
+#if 0
+    fprintf(stderr,"fullTxFile txTbl:\n");
+    printCharTbl(txTbl, 10, nCols); // test
+#endif
 
-  map<string, vector<string> > fullTx; // fullTx[speciesName] = vector of the corresponding higher rank taxonomies
-  // for example
-  // BVAB1	g_Shuttleworthia	f_Lachnospiraceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
-  // corresponds to
-  // fullTx[BVAB1] = (g_Shuttleworthia, f_Lachnospiraceae, o_Clostridiales, c_Clostridia, p_Firmicutes, d_Bacteria)
-  charTbl2strVect( txTbl, nRows, nCols, fullTx);
+    map<string, vector<string> > fullTx; // fullTx[speciesName] = vector of the corresponding higher rank taxonomies
+    // for example
+    // BVAB1	g_Shuttleworthia	f_Lachnospiraceae	o_Clostridiales	c_Clostridia	p_Firmicutes	d_Bacteria
+    // corresponds to
+    // fullTx[BVAB1] = (g_Shuttleworthia, f_Lachnospiraceae, o_Clostridiales, c_Clostridia, p_Firmicutes, d_Bacteria)
+    charTbl2strVect( txTbl, nRows, nCols, fullTx);
 
-  map<string, vector<string> >::iterator it1;
+    map<string, vector<string> >::iterator it1;
 
-  #if 0
-  map<string, vector<string> >::iterator it1;
-  for ( it1 = fullTx.begin(); it1 != fullTx.end(); it1++ )
-  {
-    fprintf(stderr, "%s: ", (it1->first).c_str());
-    vector<string> v = it1->second;
-    for ( int i = 0; i < (int)v.size(); i++ )
-      fprintf(stderr, "%s ", v[i].c_str());
-    fprintf(stderr, "\n");
-  }
-
-  for ( it1 = fullTx.begin(); it1 != fullTx.end(); it1++ )
-  {
-    vector<string> v = it1->second;
-    fprintf(stderr, "%s: %d\n", (it1->first).c_str(), (int)v.size());
-  }
-  fprintf(stderr, "after\n");
-  #endif
-
-  // traverse the tree and for each internal node find consensus taxonomic rank
-  // of all leaves of the corresponding subtree
-  queue<NewickNode_t *> bfs;
-  bfs.push(root_m);
-  NewickNode_t *node;
-
-  while ( !bfs.empty() )
-  {
-    node = bfs.front();
-    bfs.pop();
-
-    int numChildren = node->children_m.size();
-    if ( numChildren ) // internal node
+#if 0
+    map<string, vector<string> >::iterator it1;
+    for ( it1 = fullTx.begin(); it1 != fullTx.end(); it1++ )
     {
-      for (int i = 0; i < numChildren; i++)
-	bfs.push(node->children_m[i]);
-
-      vector<string> spp;
-      leafLabels(node, spp);
-
-      int txIdx;
-      set<string> tx;
-      set<string>::iterator it;
-      for ( txIdx = 0; txIdx < NUM_TX; txIdx++ )
-      {
-	tx.erase( tx.begin(), tx.end() ); // erasing all elements of tx
-
-	int n = spp.size();
-	for ( int j = 0; j < n; j++ )
-	{
-	  it1 = fullTx.find( spp[j] );
-	  if ( it1==fullTx.end() )
-	    fprintf(stderr, "%s not found in fullTx\n", spp[j].c_str());
-	  tx.insert( fullTx[ spp[j] ][txIdx] );
-	}
-
-	if ( tx.size() == 1 )
-	  break;
-      }
-
-      it = tx.begin(); // now it points to the first and unique element of tx
-      inodeTx[ node->label ] = *it;
+      fprintf(stderr, "%s: ", (it1->first).c_str());
+      vector<string> v = it1->second;
+      for ( int i = 0; i < (int)v.size(); i++ )
+        fprintf(stderr, "%s ", v[i].c_str());
+      fprintf(stderr, "\n");
     }
-  }
+
+    for ( it1 = fullTx.begin(); it1 != fullTx.end(); it1++ )
+    {
+      vector<string> v = it1->second;
+      fprintf(stderr, "%s: %d\n", (it1->first).c_str(), (int)v.size());
+    }
+    fprintf(stderr, "after\n");
+#endif
+
+    // traverse the tree and for each internal node find consensus taxonomic rank
+    // of all leaves of the corresponding subtree
+    queue<NewickNode_t *> bfs;
+    bfs.push(root_m);
+    NewickNode_t *node;
+
+    while ( !bfs.empty() )
+    {
+      node = bfs.front();
+      bfs.pop();
+
+      if ( node->idx < 0 ) // internal node
+      {
+        int numChildren = node->children_m.size();
+        for (int i = 0; i < numChildren; i++)
+          bfs.push(node->children_m[i]);
+
+        vector<string> spp;
+        leafLabels(node, spp);
+
+        int txIdx;
+        set<string> tx;
+        set<string>::iterator it;
+        for ( txIdx = 0; txIdx < NUM_TX; txIdx++ )
+        {
+          tx.erase( tx.begin(), tx.end() ); // erasing all elements of tx
+
+          int n = spp.size();
+          for ( int j = 0; j < n; j++ )
+          {
+            it1 = fullTx.find( spp[j] );
+            if ( it1==fullTx.end() )
+              fprintf(stderr, "%s not found in fullTx\n", spp[j].c_str());
+            tx.insert( fullTx[ spp[j] ][txIdx] );
+          }
+
+          if ( tx.size() == 1 )
+            break;
+        }
+
+        it = tx.begin(); // now it points to the first and unique element of tx
+        inodeTx[ node->label ] = *it;
+      }
+    }
 }
 
 
 //---------------------------------------------------------- modelIdx ----
-// populate model_idx fields of all nodes of the tree
-//
-// when node labels correspond to model labels model_idx is the index of the node
-// label in MarkovChains2_t's modelIds_m
+/*!
+  Populates model_idx fields of all nodes of the tree
+
+  when node labels correspond to model labels model_idx is the index of the node
+  label in MarkovChains2_t's modelIds_m
+*/
 void NewickTree_t::modelIdx( vector<string> &modelIds )
 {
-  map<string, int> modelIdx;
-  int n = modelIds.size();
-  for ( int i = 0; i < n; i++ )
-    modelIdx[ modelIds[i] ] = i;
+    map<string, int> modelIdx;
+    int n = modelIds.size();
+    for ( int i = 0; i < n; i++ )
+      modelIdx[ modelIds[i] ] = i;
 
-  queue<NewickNode_t *> bfs;
-  bfs.push(root_m);
-  NewickNode_t *node;
+    queue<NewickNode_t *> bfs;
+    bfs.push(root_m);
+    NewickNode_t *node;
 
-  map<string, int>::iterator it;
+    map<string, int>::iterator it;
 
-  while ( !bfs.empty() )
-  {
-    node = bfs.front();
-    bfs.pop();
-
-    if ( node != root_m )
+    while ( !bfs.empty() )
     {
-      it = modelIdx.find( node->label );
-      if ( it != modelIdx.end() )
-	node->model_idx = modelIdx[ node->label ];
-      #if 0
-      else
-	fprintf(stderr, "ERROR in %s at line %d: Node label %s not found in modelIds\n",
-		__FILE__, __LINE__, (node->label).c_str());
-      #endif
-    }
+      node = bfs.front();
+      bfs.pop();
 
-    int numChildren = node->children_m.size();
-    if ( numChildren ) // internal node
-    {
-      for (int i = 0; i < numChildren; i++)
-	bfs.push(node->children_m[i]);
+      if ( node != root_m )
+      {
+        it = modelIdx.find( node->label );
+        if ( it != modelIdx.end() )
+          node->model_idx = modelIdx[ node->label ];
+#if 0
+        else
+          fprintf(stderr, "ERROR in %s at line %d: Node label %s not found in modelIds\n",
+                  __FILE__, __LINE__, (node->label).c_str());
+#endif
+      }
+
+      if ( node->idx < 0 ) // internal node
+      {
+        int numChildren = node->children_m.size();
+        for (int i = 0; i < numChildren; i++)
+          bfs.push(node->children_m[i]);
+      }
     }
-  }
 }
 
 
