@@ -25,9 +25,10 @@ MOVE            = mv -f
 CHK_DIR_EXISTS  = test -d
 MKDIR           = mkdir -p
 
-BUILDDIR= .build
+BUILDDIR= src/.build
 
 src-make_default: src/Makefile_buildMC src/Makefile_buildModelTree src/Makefile_clError src/Makefile_classify src/Makefile_cut_tree src/Makefile_est_error_thlds  src/Makefile_fp_fn_rates src/Makefile_pp_embedding src/Makefile_pp_ref_sib_wr_ref_models src/Makefile_pp_wr_selected_models src/Makefile_rk_stats src/Makefile_tree_stitcher src/Makefile_vicut
+	cd src && $(MAKE) -f Makefile_sp_model_seq_lpps
 	cd src && $(MAKE) -f Makefile_buildMC
 	cd src && $(MAKE) -f Makefile_buildMC
 	cd src && $(MAKE) -f Makefile_buildModelTree
@@ -43,7 +44,7 @@ src-make_default: src/Makefile_buildMC src/Makefile_buildModelTree src/Makefile_
 	cd src && $(MAKE) -f Makefile_vicut
 
 src-clean:
-	$(DEL_FILE) -f $(BUILDDIR)/*.o
+	$(DEL_FILE) $(BUILDDIR)/*.o
 
 install: bin/buildMC bin/buildModelTree bin/clError bin/classify bin/cut_tree bin/est_error_thlds bin/fp_fn_rates bin/pp_embedding bin/pp_ref_sib_wr_ref_models bin/pp_wr_selected_models bin/rk_stats bin/tree_stitcher bin/vicut
 	$(shell $(CHK_DIR_EXISTS) $(BIN_DIR) || $(MKDIR) $(BIN_DIR))
@@ -53,6 +54,7 @@ install: bin/buildMC bin/buildModelTree bin/clError bin/classify bin/cut_tree bi
 	$(COPY) bin/classify $(BIN_DIR)
 	$(COPY) bin/cut_tree $(BIN_DIR)
 	$(COPY) bin/est_error_thlds $(BIN_DIR)
+	$(COPY) bin/sp_model_seq_lpps $(BIN_DIR)
 	$(COPY) bin/fp_fn_rates $(BIN_DIR)
 	$(COPY) bin/pp_embedding $(BIN_DIR)
 	$(COPY) bin/pp_ref_sib_wr_ref_models $(BIN_DIR)
