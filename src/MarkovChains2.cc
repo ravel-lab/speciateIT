@@ -2243,9 +2243,9 @@ void MarkovChains2_t::sample_pp( NewickNode_t *node, int ssize, char *mcDir )
     for ( int i = 0; i < n; i++ )
       modelIdx[ modelStrIds[i] ] = i;
 
-    int model_idx = modelIdx[node->label];
+    int ref_model_idx = modelIdx[node->label];
     #if DEBUG_SAMPLE_PP
-    fprintf(stderr,"sample_pp(): ref model_idx=%d\n", model_idx);
+    fprintf(stderr,"sample_pp(): ref ref_model_idx=%d\n", ref_model_idx);
     #endif
 
     char **seqTbl;
@@ -2256,14 +2256,14 @@ void MarkovChains2_t::sample_pp( NewickNode_t *node, int ssize, char *mcDir )
       seqTbl[i][seqLen] = '\0';
     }
 
-    sampleMF(seqTbl, model_idx, ssize, seqLen);
+    sampleMF(seqTbl, ref_model_idx, ssize, seqLen);
 
     // lpp's of the random sequences of 'node'
     double lpp;
     fprintf(lppFH,"%s", node->label.c_str());
     for ( int i = 0; i < ssize; ++i )
     {
-      lpp = normLog10prob(seqTbl[i], seqLen, model_idx);
+      lpp = normLog10prob(seqTbl[i], seqLen, ref_model_idx);
       fprintf(lppFH,",%lf", lpp);
     }
     fprintf(lppFH,"\n");
@@ -2288,7 +2288,7 @@ void MarkovChains2_t::sample_pp( NewickNode_t *node, int ssize, char *mcDir )
     for (int j = 0; j < nSiblings; j++)
     {
       sibnode = siblings[j];
-      model_idx = modelIdx[sibnode->label];
+      int model_idx = modelIdx[sibnode->label];
       sampleMF(seqTbl, model_idx, ssize, seqLen);
 
       fprintf(lppFH,"%s", sibnode->label.c_str());
@@ -2297,7 +2297,7 @@ void MarkovChains2_t::sample_pp( NewickNode_t *node, int ssize, char *mcDir )
         #if DEBUG_SAMPLE_PP
         fprintf(stderr,"\rj=%d i=%d", j, i);
         #endif
-        lpp = normLog10prob(seqTbl[i], seqLen, model_idx);
+        lpp = normLog10prob(seqTbl[i], seqLen, ref_model_idx);
         fprintf(lppFH,",%lf", lpp);
       }
       fprintf(lppFH,"\n");
