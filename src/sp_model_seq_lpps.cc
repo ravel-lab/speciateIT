@@ -128,16 +128,16 @@ inPar_t::~inPar_t()
 //------------------------------------------------------- print ----
 void inPar_t::print()
 {
-  cerr << "\npseudoCountType=\t\t" << pseudoCountType
-       << "\nverbose=\t\t" << verbose << endl;
+  cerr << "\npseudoCountType:\t\t" << pseudoCountType
+       << "\nverbose:\t\t" << verbose << endl;
 
-  cerr << "mcDir=\t\t";
+  cerr << "mcDir:\t\t";
   if ( mcDir )
     cerr << mcDir << endl;
   else
     cerr << "MISSING" << endl;
 
-  cerr << "treeFile=\t\t";
+  cerr << "treeFile:\t\t";
   if ( treeFile )
     cerr << treeFile << endl;
   else
@@ -234,24 +234,24 @@ int main(int argc, char **argv)
       node = bfs.front();
       bfs.pop();
 
-      //if ( inPar->verbose )
-      //  fprintf(stderr, "--- [%d] Visiting %s idx=%d depth=%d\n", nodeCount, node->label.c_str(), node->idx, node->depth_m);
+      if ( inPar->verbose && node->idx < 0 )
+        fprintf(stderr, "--- [%d] Visiting %s idx=%d depth=%d\n", nodeCount, node->label.c_str(), node->idx, node->depth_m);
 
       if ( node != root )
       {
         nodeCount++;
-        numChildren = node->children_m.size();
+        //numChildren = node->children_m.size();
 
         #if 0
         fprintf(stderr,"sp_model_seq_lpps(): %s  numChildren=%d  idx=%d\n",
                 node->label.c_str(), numChildren, node->idx);
         #endif
 
-        if ( numChildren==0 ) // the node is a leaf, that is a species
-        //if ( node->idx > 0 )
+        //if ( numChildren==0 ) // the node is a leaf, that is a species
+        if ( node->idx > 0 )
         {
           if ( inPar->verbose )
-            fprintf(stderr, "--- [%d] Processing %s\n", nodeCount, node->label.c_str());
+            fprintf(stderr, "--- [%d] Processing %s idx=%d depth=%d\n", nodeCount, node->label.c_str(), node->idx, node->depth_m);
 
           probModel->sample_pp( node, inPar->randSampleSize, inPar->mcDir);
           //sleep(1);
@@ -260,10 +260,10 @@ int main(int argc, char **argv)
 
       } // END OF if ( node != root )
 
-      if ( numChildren )
-      //if ( node->idx < 0 )
+      //if ( numChildren )
+      if ( node->idx < 0 )
       {
-        //numChildren = node->children_m.size();
+        numChildren = node->children_m.size();
         for (int i = 0; i < numChildren; i++)
           bfs.push(node->children_m[i]);
       }
