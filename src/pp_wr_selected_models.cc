@@ -780,7 +780,4 @@ void parseArgs( int argc, char ** argv, inPar_t *p )
     cerr << "Try '" << argv[0] << " -h' for more information" << endl;
     exit (EXIT_FAILURE);
   }
-
-  for ( ; optind < argc; ++ optind )
-    p->trgFiles.push_back( strdup(argv[optind]) );
 }

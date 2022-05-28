@@ -422,8 +422,6 @@ int main(int argc, char **argv)
       node = bfs.front();
       bfs.pop();
 
-      numChildren = node->children_m.size();
-
       if ( node != root )
       {
         if ( inPar->verbose )
@@ -464,6 +462,8 @@ int main(int argc, char **argv)
           double lpp05 = lpp05_lm_slope*medianLpp + lpp05_lm_yintt;
           errorThld = offset + min(lpp05, refMinLpp);
         }
+
+        numChildren = node->children_m.size();
 
         if ( numChildren==0 ) // the node is a species
         {
@@ -571,9 +571,7 @@ int main(int argc, char **argv)
       if ( numChildren )
       {
         for (int i = 0; i < numChildren; i++)
-        {
           bfs.push(node->children_m[i]);
-        }
       }
 
     } // END OF while ( !bfs.empty() )
@@ -716,7 +714,4 @@ void parseArgs( int argc, char ** argv, inPar_t *p )
       cerr << "Try '" << argv[0] << " -h' for more information" << endl;
       exit (EXIT_FAILURE);
     }
-
-    for ( ; optind < argc; ++ optind )
-      p->trgFiles.push_back( strdup(argv[optind]) );
 }

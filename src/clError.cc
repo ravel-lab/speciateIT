@@ -42,8 +42,8 @@ OR PERFORMANCE OF THIS SOFTWARE.
 
   Let w_i be the proportion of times the above equality holds.
 
-  4. Generate a file with 1002 columns and the number of rows = number of
-  siblings of s + 1. The first column contains the name of each node, the second
+  4. Generate a file with 1002 columns and the number of rows = (number of
+  siblings of s) + 1. The first column contains the name of each node, the second
   w_i, except for the first row which contains 1000 random sequences of M and the
   first column is 0. The last 1000 columns contain random sequences of M_i.
 
@@ -425,19 +425,19 @@ int main(int argc, char **argv)
       cerr << "\r--- Generating k-mer frequency tables for k=1:" << wordLen << " ... ";
   }
 
+  #if 0
   size_t alloc = 1024*1024;
   char *data, *seq;
   MALLOC(data, char*, alloc * sizeof(char));
   MALLOC(seq, char*, alloc * sizeof(char));
-
-  MarkovChains2_t *probModel;
+  #endif
 
   // loading MC models
-  probModel = new MarkovChains2_t( wordLen-1,
-				   inPar->trgFiles,
-				   inPar->mcDir,
-				   inPar->maxNumAmbCodes,
-				   inPar->pseudoCountType );
+  MarkovChains2_t *probModel = new MarkovChains2_t(wordLen-1,
+                                                   inPar->trgFiles,
+                                                   inPar->mcDir,
+                                                   inPar->maxNumAmbCodes,
+                                                   inPar->pseudoCountType);
   if ( 0 && inPar->verbose )
     cerr << "done" << endl;
 
@@ -493,8 +493,8 @@ int main(int argc, char **argv)
     {
       if ( inPar->verbose )
       {
-	fprintf(stderr, "\r--- [%d] Processing %s\n", nodeCount, node->label.c_str());
-	nodeCount++;
+        fprintf(stderr, "\r--- [%d] Processing %s\n", nodeCount, node->label.c_str());
+        nodeCount++;
       }
 
       string outFile = string(inPar->outDir) + string("/") + node->label + string(".txt");
@@ -513,29 +513,29 @@ int main(int argc, char **argv)
 
       int nSpp = leaves.size();
       int nSeqsPerSpp = ceil( 1.0 * sampleSize / nSpp );
-      #if 0
+#if 0
       cerr << "--- nSpp=" << nSpp << endl;
       cerr << "--- nSeqsPerSpp=" << nSeqsPerSpp << endl;
       //exit(1);
-      #endif
+#endif
 
       fprintf(out,"%s",node->label.c_str());
       int faSeqCounter = 1;
       for ( int k = 0; k < nSpp; ++k )
       {
-	sppnode = leaves[k];
-	//probModel->sample( &seqTbl, refSeqs, node->model_idx, sampleSize, seqLen ); // generate sampleSize random sequences from model s->model_idx
-	probModel->sample( &seqTbl, sppnode->model_idx, nSeqsPerSpp, inPar->randSeqLength ); // generate sampleSize random sequences from model s->model_idx
-	for ( int s = 0; s < nSeqsPerSpp; ++s )
-	{
-	  fprintf(out,"\t%f", probModel->normLog10prob(seqTbl[s], inPar->randSeqLength, node->model_idx ));
-	  fprintf(faOut,">%s_%d\n", node->label.c_str(), faSeqCounter);
-	  fprintf(faOut,"%s\n", seqTbl[s]);
-	  fprintf(txOut,"%s_%d\t%s\n", node->label.c_str(), faSeqCounter, node->label.c_str() );
-	  faSeqCounter++;
-	  free(seqTbl[s]);
-	}
-	free(seqTbl);
+        sppnode = leaves[k];
+        //probModel->sample( &seqTbl, refSeqs, node->model_idx, sampleSize, seqLen ); // generate sampleSize random sequences from model s->model_idx
+        probModel->sample( &seqTbl, sppnode->model_idx, nSeqsPerSpp, inPar->randSeqLength ); // generate sampleSize random sequences from model s->model_idx
+        for ( int s = 0; s < nSeqsPerSpp; ++s )
+        {
+          fprintf(out,"\t%f", probModel->normLog10prob(seqTbl[s], inPar->randSeqLength, node->model_idx ));
+          fprintf(faOut,">%s_%d\n", node->label.c_str(), faSeqCounter);
+          fprintf(faOut,"%s\n", seqTbl[s]);
+          fprintf(txOut,"%s_%d\t%s\n", node->label.c_str(), faSeqCounter, node->label.c_str() );
+          faSeqCounter++;
+          free(seqTbl[s]);
+        }
+        free(seqTbl);
       }
       fprintf(out,"\n");
 
@@ -543,30 +543,30 @@ int main(int argc, char **argv)
       pnode = node->parent_m;
       vector<NewickNode_t *> siblings;
       int n = pnode->children_m.size();
-      #if 0
+#if 0
       int nodeIdx = -1;
       for (int i = 0; i < n; i++)
-	if ( pnode->children_m[i] != node )
-	  siblings.push_back(pnode->children_m[i]);
-	else
-	  nodeIdx = i;
-      #endif
+        if ( pnode->children_m[i] != node )
+          siblings.push_back(pnode->children_m[i]);
+        else
+          nodeIdx = i;
+#endif
 
       for (int i = 0; i < n; i++)
-	if ( pnode->children_m[i] != node )
-	  siblings.push_back(pnode->children_m[i]);
+        if ( pnode->children_m[i] != node )
+          siblings.push_back(pnode->children_m[i]);
 
-      #if 0
+#if 0
       //debug
       fprintf(stderr, "\tIdentifying siblings of %s\n", node->label.c_str());
       fprintf(stderr, "\tSiblings:\n");
       for (int i = 0; i < (int)siblings.size(); ++i )
-	fprintf(stderr, "\t\t%s\n", siblings[i]->label.c_str());
+        fprintf(stderr, "\t\t%s\n", siblings[i]->label.c_str());
       fprintf(stderr, "\n");
-      #endif
+#endif
 
 
-      #if 0
+#if 0
       string faFile = string(inPar->faDir) + string("/fasta_files/") + node->label + string(".fa");
       map<string, string> refSeqs;
       readFasta( faFile.c_str(), refSeqs);
@@ -575,17 +575,17 @@ int main(int argc, char **argv)
 
       if ( node->label == "f_Lachnospiraceae" )
       {
-	int nref = refSeqs.size();
-	map<string, string>::iterator itr;
-	fprintf(stderr,"%s\t",node->label.c_str());
-	for ( itr = refSeqs.begin(); itr != refSeqs.end(); ++itr )
-	  fprintf(stderr,",%f", probModel->normLog10prob(itr->second.c_str(), (int)itr->second.size(), node->model_idx ));
+        int nref = refSeqs.size();
+        map<string, string>::iterator itr;
+        fprintf(stderr,"%s\t",node->label.c_str());
+        for ( itr = refSeqs.begin(); itr != refSeqs.end(); ++itr )
+          fprintf(stderr,",%f", probModel->normLog10prob(itr->second.c_str(), (int)itr->second.size(), node->model_idx ));
 
-	for ( int s = nref; s < sampleSize; ++s )
-	  fprintf(stderr,",0");
-	fprintf(stderr,"\n");
+        for ( int s = nref; s < sampleSize; ++s )
+          fprintf(stderr,",0");
+        fprintf(stderr,"\n");
       }
-      #endif
+#endif
 
       n = siblings.size();
 
@@ -594,89 +594,89 @@ int main(int argc, char **argv)
       //vector<double> w(n); // proportion of sampleSize for which p(x|M) = max_{j=0...n} p(x|M_j) where M is the model associated with node and x is a random sequence of M_i.
       for (int i = 0; i < n; i++) // for each sibling s
       {
-	sibnode = siblings[i];
+        sibnode = siblings[i];
 
-	// fprintf(stderr, "\ri: %d  sibnode->label: %s\n", i, sibnode->label.c_str());
+        // fprintf(stderr, "\ri: %d  sibnode->label: %s\n", i, sibnode->label.c_str());
 
-    #if 0
-	faFile = string(inPar->faDir) + string("/fasta_files/") + sibnode->label + string(".fa");
-	refSeqs.clear();
-	readFasta( faFile.c_str(), refSeqs);
-
-	for ( itr = refSeqs.begin(); itr != refSeqs.end(); ++itr )
-	  fprintf(out,"\t%f", probModel->normLog10prob(itr->second.c_str(), (int)itr->second.size(), node->model_idx ));
-
-	for ( int s = nref; s < sampleSize; ++s )
-	  fprintf(out,"\t0");
-	fprintf(out,"\n");
-	#endif
-
-	//probModel->sample( &seqTbl, refSeqs, sibnode->model_idx, sampleSize, seqLen ); // generate sampleSize random sequences from model s->model_idxw
-
-	// This is sampling from the sibling node itself; but if we sample for
-	// ref node from species of the node, I don't see why wouldn't we want to
-	// do the same for each sibling
-
-	//probModel->sample( &seqTbl, sibnode->model_idx, sampleSize, seqLen ); // generate sampleSize random sequences from model s->model_idx
-
-	//
-	// doing the same what we do for node - sampling from species(leaves) of the sibling node
-	//
-	leaves.clear();
-	nt.leafLabels( sibnode, leaves);
-
-	nSpp = leaves.size();
-	nSeqsPerSpp = ceil( 1.0 * sampleSize / nSpp );
 #if 0
-	cerr << "--- nSpp=" << nSpp << endl;
-	cerr << "--- nSeqsPerSpp=" << nSeqsPerSpp << endl;
-	//exit(1);
+        faFile = string(inPar->faDir) + string("/fasta_files/") + sibnode->label + string(".fa");
+        refSeqs.clear();
+        readFasta( faFile.c_str(), refSeqs);
+
+        for ( itr = refSeqs.begin(); itr != refSeqs.end(); ++itr )
+          fprintf(out,"\t%f", probModel->normLog10prob(itr->second.c_str(), (int)itr->second.size(), node->model_idx ));
+
+        for ( int s = nref; s < sampleSize; ++s )
+          fprintf(out,"\t0");
+        fprintf(out,"\n");
 #endif
 
-	fprintf(out,"%s",sibnode->label.c_str());
-	for ( int k = 0; k < nSpp; ++k )
-	{
-	  sppnode = leaves[k];
-	  probModel->sample( &seqTbl, sppnode->model_idx, nSeqsPerSpp, inPar->randSeqLength ); // generate sampleSize random sequences from model s->model_idx
-	  for ( int s = 0; s < nSeqsPerSpp; ++s )
-	  {
-	    fprintf(out,"\t%f", probModel->normLog10prob(seqTbl[s], inPar->randSeqLength, node->model_idx ));
-	    free(seqTbl[s]);
-	  }
-	  free(seqTbl);
-	}
-	fprintf(out,"\n");
+        //probModel->sample( &seqTbl, refSeqs, sibnode->model_idx, sampleSize, seqLen ); // generate sampleSize random sequences from model s->model_idxw
+
+        // This is sampling from the sibling node itself; but if we sample for
+        // ref node from species of the node, I don't see why wouldn't we want to
+        // do the same for each sibling
+
+        //probModel->sample( &seqTbl, sibnode->model_idx, sampleSize, seqLen ); // generate sampleSize random sequences from model s->model_idx
+
+        //
+        // doing the same what we do for node - sampling from species(leaves) of the sibling node
+        //
+        leaves.clear();
+        nt.leafLabels( sibnode, leaves);
+
+        nSpp = leaves.size();
+        nSeqsPerSpp = ceil( 1.0 * sampleSize / nSpp );
+#if 0
+        cerr << "--- nSpp=" << nSpp << endl;
+        cerr << "--- nSeqsPerSpp=" << nSeqsPerSpp << endl;
+        //exit(1);
+#endif
+
+        fprintf(out,"%s",sibnode->label.c_str());
+        for ( int k = 0; k < nSpp; ++k )
+        {
+          sppnode = leaves[k];
+          probModel->sample( &seqTbl, sppnode->model_idx, nSeqsPerSpp, inPar->randSeqLength ); // generate sampleSize random sequences from model s->model_idx
+          for ( int s = 0; s < nSeqsPerSpp; ++s )
+          {
+            fprintf(out,"\t%f", probModel->normLog10prob(seqTbl[s], inPar->randSeqLength, node->model_idx ));
+            free(seqTbl[s]);
+          }
+          free(seqTbl);
+        }
+        fprintf(out,"\n");
 
 
-	#if 0
-	int iw = 0; // number of times   p(x|M) = max_{j=0...n} p(x|M_j) where M is the model associated with node and x is a random sequence of M_i.
-	for ( int s = 0; s < sampleSize; ++s )
-	{
-	  int m = pnode->children_m.size();
-	  double x[m];
-	  for ( int j = 0; j < m; j++ )
-	    x[j] = probModel->normLog10prob(seqTbl[s], inPar->randSeqLength, (pnode->children_m[j])->model_idx );
+#if 0
+        int iw = 0; // number of times   p(x|M) = max_{j=0...n} p(x|M_j) where M is the model associated with node and x is a random sequence of M_i.
+        for ( int s = 0; s < sampleSize; ++s )
+        {
+          int m = pnode->children_m.size();
+          double x[m];
+          for ( int j = 0; j < m; j++ )
+            x[j] = probModel->normLog10prob(seqTbl[s], inPar->randSeqLength, (pnode->children_m[j])->model_idx );
 
-	  if ( nodeIdx == which_max( x, m ) )
-	    iw++;
-	}
-	//w[i] = (double)iw / sampleSize;
-	#endif
+          if ( nodeIdx == which_max( x, m ) )
+            iw++;
+        }
+        //w[i] = (double)iw / sampleSize;
+#endif
 
-	#if 0
-	// this is a fragment that was used with
-	//probModel->sample( &seqTbl, sibnode->model_idx, sampleSize, inPar->randSeqLength ); // generate sampleSize random sequences from model s->model_idx
+#if 0
+        // this is a fragment that was used with
+        //probModel->sample( &seqTbl, sibnode->model_idx, sampleSize, inPar->randSeqLength ); // generate sampleSize random sequences from model s->model_idx
 
-	// write to file log10 prob's of random sequences of s model
-	fprintf(out,"%s",sibnode->label.c_str());
-	for ( int s = 0; s < sampleSize; ++s )
-	  fprintf(out,"\t%f", probModel->normLog10prob(seqTbl[s], inPar->randSeqLength, node->model_idx ));
-	fprintf(out,"\n");
+        // write to file log10 prob's of random sequences of s model
+        fprintf(out,"%s",sibnode->label.c_str());
+        for ( int s = 0; s < sampleSize; ++s )
+          fprintf(out,"\t%f", probModel->normLog10prob(seqTbl[s], inPar->randSeqLength, node->model_idx ));
+        fprintf(out,"\n");
 
-	for ( int j = 0; j < sampleSize; ++j )
-	  free(seqTbl[j]);
-	free(seqTbl);
-	#endif
+        for ( int j = 0; j < sampleSize; ++j )
+          free(seqTbl[j]);
+        free(seqTbl);
+#endif
       } // end of for (int i = 0; i < n; i++) // for each sibling s
 
       fclose(out);
@@ -686,7 +686,7 @@ int main(int argc, char **argv)
     {
       for (int i = 0; i < numChildren; i++)
       {
-	bfs.push(node->children_m[i]);
+        bfs.push(node->children_m[i]);
       }
     }
   } // end of while ( !bfs.empty() ) loop
@@ -708,131 +708,128 @@ int main(int argc, char **argv)
 //! parse command line arguments
 void parseArgs( int argc, char ** argv, inPar_t *p )
 {
-  int c, errflg = 0;
-  optarg = NULL;
+    int c, errflg = 0;
+    optarg = NULL;
 
-  static struct option longOptions[] = {
-    {"print-counts"       ,no_argument, &p->printCounts,    1},
-    {"max-num-amb-codes"  ,required_argument, 0,          'b'},
-    {"fasta-dir"          ,required_argument, 0,          'f'},
-    {"out-dir"            ,required_argument, 0,          'o'},
-    {"ref-tree"           ,required_argument, 0,          'r'},
-    {"pseudo-count-type"  ,required_argument, 0,          'p'},
-    {"random-seq-length"  ,required_argument, 0,          'l'},
-    {"sample-size"        ,required_argument, 0,          's'},
-    {"help"               ,no_argument,       0,          'h'},
-    {"debug"              ,no_argument, &p->debug,          0},
-    {0, 0, 0, 0}
-  };
+    static struct option longOptions[] = {
+      {"print-counts"       ,no_argument, &p->printCounts,    1},
+      {"max-num-amb-codes"  ,required_argument, 0,          'b'},
+      {"fasta-dir"          ,required_argument, 0,          'f'},
+      {"out-dir"            ,required_argument, 0,          'o'},
+      {"ref-tree"           ,required_argument, 0,          'r'},
+      {"pseudo-count-type"  ,required_argument, 0,          'p'},
+      {"random-seq-length"  ,required_argument, 0,          'l'},
+      {"sample-size"        ,required_argument, 0,          's'},
+      {"help"               ,no_argument,       0,          'h'},
+      {"debug"              ,no_argument, &p->debug,          0},
+      {0, 0, 0, 0}
+    };
 
-  while ((c = getopt_long(argc, argv,"b:d:e:f:t:i:k:l:o:vp:r:s:h",longOptions, NULL)) != -1)
-    switch (c)
+    while ((c = getopt_long(argc, argv,"b:d:e:f:t:i:k:l:o:vp:r:s:h",longOptions, NULL)) != -1)
+      switch (c)
+      {
+        case 'b':
+          p->maxNumAmbCodes = atoi(optarg);
+          break;
+
+        case 'l':
+          p->randSeqLength = atoi(optarg);
+          break;
+
+        case 's':
+          p->randSampleSize = atoi(optarg);
+          break;
+
+        case 'r':
+          p->treeFile = strdup(optarg);
+          break;
+
+        case 'e':
+          p->seqID = strdup(optarg);
+          break;
+
+        case 'p':
+          {
+            int pc = atoi(optarg);
+            if ( pc == -1 )
+            {
+              p->pseudoCountType = zeroOffset0;
+            }
+            else if ( pc == 0 )
+            {
+              p->pseudoCountType = zeroOffset1;
+            }
+            else if ( pc == 1 )
+            {
+              p->pseudoCountType = zeroOffset1;
+            }
+            else if ( pc == 2 )
+            {
+              p->pseudoCountType = recPdoCount;
+            }
+            else
+            {
+              cerr << "ERROR in " << __FILE__ << " at line " << __LINE__ << ": Undefined pseudo-count type" << endl;
+              exit(1);
+            }
+          }
+          break;
+
+        case 'd':
+          p->mcDir = strdup(optarg);
+          break;
+
+        case 'f':
+          p->faDir = strdup(optarg);
+          break;
+
+        case 'o':
+          p->outDir = strdup(optarg);
+          break;
+
+        case 't':
+          p->trgFile = strdup(optarg);
+          break;
+
+        case 'i':
+          p->inFile = strdup(optarg);
+          break;
+
+        case 'k':
+          parseCommaList(optarg, p->kMerLens);
+          break;
+
+        case 'v':
+          p->verbose = true;
+          break;
+
+
+        case 'h':
+          printHelp(argv[0]);
+          exit (EXIT_SUCCESS);
+          break;
+
+        case 0:
+          break;
+
+        default:
+          cerr << "\n"
+               << "=========================================\n"
+               << " ERROR: Unrecognized option " << (char)c << "\n" << endl;
+
+          for ( int i=0; i < argc; ++i )
+            cerr << argv[i] << " ";
+          cerr << endl;
+
+          cerr << "==========================================\n" << endl;
+          ++errflg;
+          break;
+      }
+
+    if ( errflg )
     {
-      case 'b':
-	p->maxNumAmbCodes = atoi(optarg);
-	break;
-
-      case 'l':
-	p->randSeqLength = atoi(optarg);
-	break;
-
-      case 's':
-	p->randSampleSize = atoi(optarg);
-	break;
-
-      case 'r':
-	p->treeFile = strdup(optarg);
-	break;
-
-      case 'e':
-	p->seqID = strdup(optarg);
-	break;
-
-      case 'p':
-	{
-	  int pc = atoi(optarg);
-	  if ( pc == -1 )
-	  {
-	    p->pseudoCountType = zeroOffset0;
-	  }
-	  else if ( pc == 0 )
-	  {
-	    p->pseudoCountType = zeroOffset1;
-	  }
-	  else if ( pc == 1 )
-	  {
-	    p->pseudoCountType = zeroOffset1;
-	  }
-	  else if ( pc == 2 )
-	  {
-	    p->pseudoCountType = recPdoCount;
-	  }
-	  else
-	  {
-	    cerr << "ERROR in " << __FILE__ << " at line " << __LINE__ << ": Undefined pseudo-count type" << endl;
-	    exit(1);
-	  }
-	}
-	break;
-
-      case 'd':
-	p->mcDir = strdup(optarg);
-	break;
-
-      case 'f':
-	p->faDir = strdup(optarg);
-	break;
-
-      case 'o':
-	p->outDir = strdup(optarg);
-	break;
-
-      case 't':
-	p->trgFile = strdup(optarg);
-	break;
-
-      case 'i':
-	p->inFile = strdup(optarg);
-	break;
-
-      case 'k':
-	parseCommaList(optarg, p->kMerLens);
-	break;
-
-      case 'v':
-	p->verbose = true;
-	break;
-
-
-      case 'h':
-	printHelp(argv[0]);
-	exit (EXIT_SUCCESS);
-	break;
-
-      case 0:
-	break;
-
-      default:
-	cerr << "\n"
-	     << "=========================================\n"
-	     << " ERROR: Unrecognized option " << (char)c << "\n" << endl;
-
-	for ( int i=0; i < argc; ++i )
-	  cerr << argv[i] << " ";
-	cerr << endl;
-
-	cerr << "==========================================\n" << endl;
-	++errflg;
-	break;
+      printUsage(argv[0]);
+      cerr << "Try '" << argv[0] << " -h' for more information" << endl;
+      exit (EXIT_FAILURE);
     }
-
-  if ( errflg )
-  {
-    printUsage(argv[0]);
-    cerr << "Try '" << argv[0] << " -h' for more information" << endl;
-    exit (EXIT_FAILURE);
-  }
-
-  for ( ; optind < argc; ++ optind )
-    p->trgFiles.push_back( strdup(argv[optind]) );
 }
