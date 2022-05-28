@@ -38,7 +38,7 @@ create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR
 create-bin-dir := $(shell $(CHK_DIR_EXISTS) $(BINDIR) || $(MKDIR) $(BINDIR))
 
 OBJECTS = $(BUILDDIR)/buildModelTree.o \
-          $(BUILDDIR)/Newick2.o \
+          $(BUILDDIR)/Newick.o \
           $(BUILDDIR)/IOCUtilities.o \
           $(BUILDDIR)/IOCppUtilities.o \
           $(BUILDDIR)/CppUtilities.o \
@@ -51,8 +51,8 @@ buildModelTree: $(OBJECTS)
 $(BUILDDIR)/buildModelTree.o: buildModelTree.cc
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -I$(SRCDIR) -o $(BUILDDIR)/buildModelTree.o buildModelTree.cc
 
-$(BUILDDIR)/Newick2.o: Newick2.hh Newick2.cc
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/Newick2.o Newick2.cc
+$(BUILDDIR)/Newick.o: Newick.hh Newick.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/Newick.o Newick.cc
 
 $(BUILDDIR)/IOCUtilities.o: IOCUtilities.h IOCUtilities.c
 	$(CC) -c $(CFLAGS) $(INCPATH) -o $(BUILDDIR)/IOCUtilities.o IOCUtilities.c
