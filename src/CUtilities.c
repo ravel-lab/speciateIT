@@ -36,6 +36,12 @@ void error_msg( const char *file, int line, const char *msg )
   fprintf(stderr, "\n\n\tERROR: in %s line %d: %s\n\n", file, line, msg );
 }
 
+//-------------------------------------------------------------- dir_exists ----
+int dir_exists( const char *dir )
+{
+    struct stat sb;
+    return (int)(stat(dir, &sb) == 0 && S_ISDIR(sb.st_mode));
+}
 
 //--------------------------------------------------------------- FileCheck ----
 /// Attempts to open/close file using mode. Validates the file by

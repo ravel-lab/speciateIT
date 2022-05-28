@@ -49,6 +49,7 @@ struct point3d_t
 void error_msg( const char *file, int line, const char *msg );
 #define errorMsg(x) error_msg( __FILE__, __LINE__, (x) )
 
+int dir_exists( const char *dir );
 
 /// Exits if the pointer is NULL
 #define CHECK_PTR(p)                                     \
