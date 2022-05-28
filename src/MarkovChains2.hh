@@ -27,6 +27,7 @@ OR PERFORMANCE OF THIS SOFTWARE.
 #include <vector>
 #include <map>
 #include "DNAsequence.hh"
+#include "Newick.hh"
 
 using namespace std;
 
@@ -137,6 +138,7 @@ public:
   void sample( char ***_seqTbl, int modelIdx, int sampleSize, int seqLen=534 );
   void sampleMF( char **seqTbl, int modelIdx, int sampleSize, int seqLen );
   void sample( char ***_seqTbl, map<string, string> &refSeqs, int modelIdx, int sampleSize, int seqLen );
+  void sample_pp( NewickNode_t *node, int ssize, char *mcDir );
 
   void printCounts( bool x ) { printCounts_m = x; }
 
