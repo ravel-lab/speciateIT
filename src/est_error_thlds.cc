@@ -463,9 +463,7 @@ int main(int argc, char **argv)
           errorThld = offset + min(lpp05, refMinLpp);
         }
 
-        numChildren = node->children_m.size();
-
-        if ( numChildren==0 ) // the node is a species
+        if ( node->idx > 0 ) // the node is a species
         {
           #if OUTPUT_LPPS_TO_FILE
           string lppFile = lppDir + node->label + string(".csv");
@@ -568,8 +566,9 @@ int main(int argc, char **argv)
 
       } // END OF if ( node != root )
 
-      if ( numChildren )
+      if ( node->idx < 0 )
       {
+        numChildren = node->children_m.size();
         for (int i = 0; i < numChildren; i++)
           bfs.push(node->children_m[i]);
       }
