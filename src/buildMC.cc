@@ -41,13 +41,12 @@ void printUsage( const char *s )
 
 	 << "USAGE " << endl << endl
 
-	 << "1. Building MC models on the fly" << endl << endl
+	 << "1. Building MC models only" << endl << endl
+         << s << "-t <training file's paths file> -k <k-mer size> -d < MC models directory> [Options]" << endl << endl
+         << s << "-k <k-mer size> -d < MC models directory> [Options]" << endl << endl
+
+     << "2. Building MC models on process an input file using these models" << endl << endl
 	 << s << "-t <training file's paths file> -k <k-mer size> -i <input fasta file> -o <output directory> [Options]" << endl << endl
-
-	 << "2. Building MC models only" << endl << endl
-	 << s << "-t <training file's paths file> -k <k-mer size> -d < MC models directory> [Options]" << endl << endl
-
-	 << s << "-k <k-mer size> -d < MC models directory> [Options]" << endl << endl
 
 	 << "3. Using prebuilt MC models" << endl << endl
 	 << s << "-d < MC models directory> -i <input fasta file> -o <output directory> [Options]" << endl << endl
