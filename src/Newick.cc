@@ -654,71 +654,71 @@ void NewickTree_t::rmLeaf( string &s )
 // remove nodes with only one child
 void NewickTree_t::rmNodesWith1child()
 {
-  queue<NewickNode_t *> bfs2;
-  bfs2.push(root_m);
-  int numChildren;
-  NewickNode_t *pnode;
-  NewickNode_t *node;
+    queue<NewickNode_t *> bfs2;
+    bfs2.push(root_m);
+    int numChildren;
+    NewickNode_t *pnode;
+    NewickNode_t *node;
 
-  while ( !bfs2.empty() )
-  {
-    node = bfs2.front();
-    bfs2.pop();
-
-    while ( node->children_m.size() == 1 )
+    while ( !bfs2.empty() )
     {
-      // finding node in a children array of the parent node
-      pnode = node->parent_m;
-      numChildren = pnode->children_m.size();
+      node = bfs2.front();
+      bfs2.pop();
 
-      #if DEBUG_LFTT
-      fprintf(stderr, "\n\nNode %s has only one child %s; %s's parent is %s with %d children\n",
-	      node->label.c_str(), node->children_m[0]->label.c_str(), node->label.c_str(),
-	      pnode->label.c_str(), numChildren);
-      #endif
-      int i;
-      for ( i = 0; i < numChildren; i++)
+      while ( node->children_m.size() == 1 )
       {
-	if ( pnode->children_m[i] == node )
-	  break;
+        // finding node in a children array of the parent node
+        pnode = node->parent_m;
+        numChildren = pnode->children_m.size();
+
+#if DEBUG_LFTT
+        fprintf(stderr, "\n\nNode %s has only one child %s; %s's parent is %s with %d children\n",
+                node->label.c_str(), node->children_m[0]->label.c_str(), node->label.c_str(),
+                pnode->label.c_str(), numChildren);
+#endif
+        int i;
+        for ( i = 0; i < numChildren; i++)
+        {
+          if ( pnode->children_m[i] == node )
+            break;
+        }
+
+        if ( i == numChildren )
+        {
+          fprintf(stderr, "ERROR in %s at line %d: node %s cannot be found in %s\n",
+                  __FILE__, __LINE__,(node->label).c_str(), (pnode->label).c_str());
+          exit(1);
+        }
+
+#if DEBUG_LFTT
+        fprintf(stderr, "%s is the %d-th child of %s\n",
+                node->label.c_str(), i, pnode->label.c_str());
+
+        fprintf(stderr, "%s children BEFORE change: ", pnode->label.c_str());
+        for ( int j = 0; j < numChildren; j++)
+          fprintf(stderr, "%s  ", pnode->children_m[j]->label.c_str());
+#endif
+
+        node = node->children_m[0];
+        pnode->children_m[i] = node;
+        node->parent_m = pnode;
+
+#if DEBUG_LFTT
+        fprintf(stderr, "\n%s children AFTER  change: ", pnode->label.c_str());
+        for ( int j = 0; j < numChildren; j++)
+          fprintf(stderr, "%s  ", pnode->children_m[j]->label.c_str());
+#endif
       }
 
-      if ( i == numChildren )
+      numChildren = node->children_m.size();
+      if ( numChildren )
       {
-	fprintf(stderr, "ERROR in %s at line %d: node %s cannot be found in %s\n",
-		__FILE__, __LINE__,(node->label).c_str(), (pnode->label).c_str());
-	exit(1);
+        for (int i = 0; i < numChildren; i++)
+        {
+          bfs2.push(node->children_m[i]);
+        }
       }
-
-      #if DEBUG_LFTT
-      fprintf(stderr, "%s is the %d-th child of %s\n",
-	      node->label.c_str(), i, pnode->label.c_str());
-
-      fprintf(stderr, "%s children BEFORE change: ", pnode->label.c_str());
-      for ( int j = 0; j < numChildren; j++)
-	fprintf(stderr, "%s  ", pnode->children_m[j]->label.c_str());
-      #endif
-
-      node = node->children_m[0];
-      pnode->children_m[i] = node;
-      node->parent_m = pnode;
-
-      #if DEBUG_LFTT
-      fprintf(stderr, "\n%s children AFTER  change: ", pnode->label.c_str());
-      for ( int j = 0; j < numChildren; j++)
-	fprintf(stderr, "%s  ", pnode->children_m[j]->label.c_str());
-      #endif
     }
-
-    numChildren = node->children_m.size();
-    if ( numChildren )
-    {
-      for (int i = 0; i < numChildren; i++)
-      {
-	bfs2.push(node->children_m[i]);
-      }
-    }
-  }
 }
 
 
@@ -1118,7 +1118,7 @@ void NewickTree_t::printTreeBFS()
     node = bfs.front();
     bfs.pop();
 
-    if ( node->idx > 0 ) // leaf (numChildren==0)
+    if ( node->idx >= 0 ) // leaf (numChildren==0)
     {
       printf("%s%s\n",indent[node->depth_m],node->label.c_str());
     }
@@ -1152,7 +1152,7 @@ void NewickTree_t::indexNewickNodes( map<int, NewickNode_t*> & idx2node)
 
         idx2node_m[node->idx] = node;
 
-        if ( node->idx > 0 ) // leaf
+        if ( node->idx >= 0 ) // leaf
         {
           int numChildren = node->children_m.size();
           for (int i = 0; i < numChildren; i++)
@@ -1178,7 +1178,7 @@ char ** NewickTree_t::leafLabels()
     node = bfs.front();
     bfs.pop();
 
-    if ( node->idx > 0 ) // leaf
+    if ( node->idx >= 0 ) // leaf
     {
       leafLabel[node->idx] = strdup((node->label).c_str());
     }
@@ -1272,7 +1272,7 @@ void NewickTree_t::saveCltrMemb( const char *outFile,
           node = bfs.front();
           bfs.pop();
 
-          if ( node->idx > 0 ) // leaf
+          if ( node->idx >= 0 ) // leaf
           {
             fprintf(file,"%s\t%d\t%s\n",node->label.c_str(),i,
                     idxToAnn[ annIdx[node->idx] ].c_str() );
@@ -1342,7 +1342,7 @@ void NewickTree_t::saveCltrMemb2( const char *outFile,
           node = bfs.front();
           bfs.pop();
 
-          if ( node->idx > 0 ) // leaf
+          if ( node->idx >= 0 ) // leaf
           {
             fprintf(file,"\t%s\t%s\n",node->label.c_str(),
                     idxToAnn[ annIdx[node->idx] ].c_str() );
@@ -1434,7 +1434,7 @@ void NewickTree_t::saveCltrAnnStats( const char *outFile,
           node = bfs.front();
           bfs.pop();
 
-          if ( node->idx > 0 ) // leaf
+          if ( node->idx >= 0 ) // leaf
           {
             annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
           }
@@ -1506,7 +1506,7 @@ vector<string> NewickTree_t::saveNAcltrAnnStats( const char *outFile,
           node = bfs.front();
           bfs.pop();
 
-          if ( node->idx > 0 ) // leaf
+          if ( node->idx >= 0 ) // leaf
           {
             annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
             if ( annIdx[node->idx] == -2) foundNA = true;
@@ -1601,7 +1601,7 @@ void NewickTree_t::saveNAcltrAnnStats( const char *outFileA, // file to with clu
           node = bfs.front();
           bfs.pop();
 
-          if ( node->idx > 0 ) // leaf
+          if ( node->idx >= 0 ) // leaf
           {
             annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
             if ( annIdx[node->idx] == -2) naCount++;
@@ -1780,7 +1780,7 @@ void NewickTree_t::saveNAtaxonomy0( const char *outFile,
         node = bfs.front();
         bfs.pop();
 
-        if ( node->idx > 0 ) // leaf
+        if ( node->idx >= 0 ) // leaf
         {
           annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
           if ( annIdx[node->idx] == -2) naCount++;
@@ -1953,7 +1953,7 @@ void NewickTree_t::saveNAtaxonomy( const char *outFile,
           node = bfs.front();
           bfs.pop();
 
-          if ( node->idx > 0 ) // leaf
+          if ( node->idx >= 0 ) // leaf
           {
             annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
             if ( annIdx[node->idx] == -2) naCount++;
@@ -2218,7 +2218,7 @@ int NewickTree_t::cltrSpp(NewickNode_t *_node,
       node = bfs.front();
       bfs.pop();
 
-      if ( node->idx > 0 ) // leaf
+      if ( node->idx >= 0 ) // leaf
       {
         sppFreq[ idxToAnn[ annIdx[node->idx] ] ]++;
       }
@@ -2256,7 +2256,7 @@ string NewickTree_t::maxAnn( NewickNode_t *_node,
       node = bfs.front();
       bfs.pop();
 
-      if ( node->idx > 0 ) // leaf
+      if ( node->idx >= 0 ) // leaf
       {
         annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
       }
@@ -2367,7 +2367,7 @@ void NewickTree_t::printGenusTrees( const char *outDir,
           node = bfs.front();
           bfs.pop();
 
-          if ( node->idx > 0 ) // leaf
+          if ( node->idx >= 0 ) // leaf
           {
             annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
             if ( annIdx[node->idx] == -2) naCount++;
@@ -2567,7 +2567,7 @@ void NewickTree_t::leafLabels(NewickNode_t *_node, vector<string> &leaves)
       node = bfs.front();
       bfs.pop();
 
-      if ( node->idx > 0 ) // leaf
+      if ( node->idx >= 0 ) // leaf
       {
         leaves.push_back( node->label );
       }
@@ -2597,7 +2597,7 @@ void NewickTree_t::leafLabels(NewickNode_t *_node, vector<NewickNode_t *> &leave
     node = bfs.front();
     bfs.pop();
 
-    if ( node->idx > 0 ) // leaf
+    if ( node->idx >= 0 ) // leaf
     {
       leaves.push_back( node );
     }
@@ -2629,7 +2629,7 @@ void NewickTree_t::leafLabels(NewickNode_t *_node,
       node = bfs.front();
       bfs.pop();
 
-      if ( node->idx > 0 ) // leaf
+      if ( node->idx >= 0 ) // leaf
       {
         if ( node != selNode )
           leaves.push_back( node );
@@ -2661,7 +2661,7 @@ void NewickTree_t::leafLabels(NewickNode_t *_node,
       node = bfs.front();
       bfs.pop();
 
-      if ( node->idx > 0 ) // leaf
+      if ( node->idx >= 0 ) // leaf
       {
         leaves.insert( node->label );
       }
@@ -2706,7 +2706,7 @@ void NewickTree_t::getSppProfs( vector<sppProf_t*> &sppProfs,
         node = bfs.front();
         bfs.pop();
 
-        if ( node->idx > 0 ) // leaf
+        if ( node->idx >= 0 ) // leaf
         {
           annCount[ idxToAnn[ annIdx[node->idx] ] ]++;
           if ( annIdx[node->idx] == -2) naCount++;

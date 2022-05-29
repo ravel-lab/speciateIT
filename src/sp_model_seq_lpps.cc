@@ -248,7 +248,7 @@ int main(int argc, char **argv)
         #endif
 
         //if ( numChildren==0 ) // the node is a leaf, that is a species
-        if ( node->idx > 0 )
+        if ( node->idx >= 0 )
         {
           if ( inPar->verbose )
             fprintf(stderr, "--- [%d] Processing %s idx=%d depth=%d\n", nodeCount, node->label.c_str(), node->idx, node->depth_m);

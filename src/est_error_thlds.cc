@@ -463,7 +463,7 @@ int main(int argc, char **argv)
           errorThld = offset + min(lpp05, refMinLpp);
         }
 
-        if ( node->idx > 0 ) // the node is a species
+        if ( node->idx >= 0 ) // the node is a species
         {
           #if OUTPUT_LPPS_TO_FILE
           string lppFile = lppDir + node->label + string(".csv");
