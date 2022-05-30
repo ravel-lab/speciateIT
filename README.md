@@ -23,11 +23,17 @@ modify LDFLAGS.
 ### Build models:
 To build models & estimate error thresholds with V3V4, for example:
 
-  buildModelTree -l post_merge_reference_files/V3V4_spp_new.lineage -i  reference_sequences/V3V4_trimmed_noEuks_nr_Complete.fa -t post_merge_reference_files/V3V4_spp_new.tx -o V3V4
+% cd ~/devel/speciateIT/data
+% buildModelTree -l ../post_merge_reference_files/V3V4_spp_new.lineage -i  ../reference_sequences/V3V4_trimmed_noEuks_nr_Complete.fa -t ../post_merge_reference_files/V3V4_spp_new.tx -o sIT_models_V3V4
 
-  buildMC -v -t V3V4/spp_paths.txt -k 8 -d V3V4
+% buildMC -v -d sIT_models_V3V4
 
-  est_error_thlds -v -d V3V4 -c 0.9
+% est_error_thlds -v -d sIT_models_V3V4 -c 1.0
+
+% classify --skip-err-thld -v -i ~/projects/ASV_files/data/CONTRA_ASVs_nr.fa -d sIT_models_V3V4 -o CONTRA_ASVs_sIT
+
+% classify -v -i ~/projects/ASV_files/data/CONTRA_ASVs_nr.fa -d sIT_models_V3V4 -o CONTRA_ASVs_sIT
+
 
 ### Classify sequences:
 
