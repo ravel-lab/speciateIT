@@ -102,19 +102,19 @@ class MarkovChains2_t
 {
 public:
   MarkovChains2_t( int order,
-		   vector<char *> &trgFiles,
-		   char *dir,
-		   int maxNumAmbCodes=5,
-		   int pseudoCountType=zeroOffset4mk );
+                   vector<char *> &trgFiles,
+                   char *dir,
+                   int maxNumAmbCodes=5,
+                   int pseudoCountType=zeroOffset4mk );
 
   MarkovChains2_t( int order,
-		   const char *seqID, // seq ID of a sequence to be excluded from model building (it will be used for leave-one-out validation)
-		   char *&seq,        // sequence with seqID
-		   int &seqLen,
-		   vector<char *> &trgFiles,
-		   char *dir,
-		   int maxNumAmbCodes=5,
-		   int pseudoCountType=zeroOffset4mk );
+                   const char *seqID, // seq ID of a sequence to be excluded from model building (it will be used for leave-one-out validation)
+                   char *&seq,        // sequence with seqID
+                   int &seqLen,
+                   vector<char *> &trgFiles,
+                   char *dir,
+                   int maxNumAmbCodes=5,
+                   int pseudoCountType=zeroOffset4mk );
 
   ~MarkovChains2_t();
 
@@ -212,9 +212,9 @@ inline const vector<char *> & MarkovChains2_t::modelIds()
 
 inline void MarkovChains2_t::modelIds( vector<string> &v )
 {
-  int n = modelIds_m.size();
-  for ( int i = 0; i < n; i++ )
-    v.push_back(string(modelIds_m[i]));
+    int n = modelIds_m.size();
+    for ( int i = 0; i < n; i++ )
+      v.push_back(string(modelIds_m[i]));
 }
 
 inline const vector<vector<char *> > & MarkovChains2_t::wordStrgs() const
@@ -222,55 +222,55 @@ inline const vector<vector<char *> > & MarkovChains2_t::wordStrgs() const
 
 inline int MarkovChains2_t::hashFnUL( int L )
 {
-  int h = 0;
-  for ( int p = 1, i = 0; i < L; ++i, p *= 4 )
-    h += p;
+    int h = 0;
+    for ( int p = 1, i = 0; i < L; ++i, p *= 4 )
+      h += p;
 
-  return --h;
+    return --h;
 }
 
 inline int MarkovChains2_t::hashFn(const char *s, int sLen)
 {
-  //int h = hashFnUL(sLen);
-  int h = hashUL_m[sLen-1];
+    //int h = hashFnUL(sLen);
+    int h = hashUL_m[sLen-1];
 
-  for ( unsigned p = 1; *s && (intACGTLookup[int(*s)]>-1); ++s, p *= 4 )
-    h += intACGTLookup[int(*s)]*p;
+    for ( unsigned p = 1; *s && (intACGTLookup[int(*s)]>-1); ++s, p *= 4 )
+      h += intACGTLookup[int(*s)]*p;
 
-  if ( *s )
-    h = -1;
+    if ( *s )
+      h = -1;
 
-  return h;
+    return h;
 }
 
 inline int MarkovChains2_t::hashFn(const char c)
 {
-  return intACGTLookup[int(c)];
+    return intACGTLookup[int(c)];
 }
 
 inline void MarkovChains2_t::printCounts()
 {
-  printCounts_m = true;
+    printCounts_m = true;
 }
 
 inline double MarkovChains2_t::normLog10prob( const char *frag, int fragLen, int modelIdx )
 {
-  return log10prob( frag, fragLen, modelIdx ) / fragLen;
+    return log10prob( frag, fragLen, modelIdx ) / fragLen;
 }
 
 inline double MarkovChains2_t::normLog10probIUPAC( const char *frag, int fragLen, int modelIdx )
 {
-  return log10probIUPAC( frag, fragLen, modelIdx ) / fragLen;
+    return log10probIUPAC( frag, fragLen, modelIdx ) / fragLen;
 }
 
 inline double MarkovChains2_t::normLog10probR( char *frag, int fragLen, int modelIdx )
 {
-  return log10probR( frag, fragLen, modelIdx ) / fragLen;
+    return log10probR( frag, fragLen, modelIdx ) / fragLen;
 }
 
 inline int MarkovChains2_t::order()
 {
-  return order_m;
+    return order_m;
 }
 
 
