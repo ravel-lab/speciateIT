@@ -66,7 +66,7 @@ create-bin-dir := $(shell $(CHK_DIR_EXISTS) $(BINDIR) || $(MKDIR) $(BINDIR))
 OBJECTS = $(BUILDDIR)/buildMC.o \
           $(BUILDDIR)/IOCUtilities.o \
           $(BUILDDIR)/IOCppUtilities.o \
-          $(BUILDDIR)/MarkovChains2.o \
+          $(BUILDDIR)/MarkovChains.o \
           $(BUILDDIR)/CUtilities.o \
           $(BUILDDIR)/CppUtilities.o \
           $(BUILDDIR)/strings.o \
@@ -115,7 +115,7 @@ $(BUILDDIR)/Newick.o: $(SRCDIR)/Newick.hh $(SRCDIR)/Newick.cc
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/Newick.o $(SRCDIR)/Newick.cc
 
 
-$(BUILDDIR)/MarkovChains2.o: $(SRCDIR)/MarkovChains2.cc $(SRCDIR)/MarkovChains2.hh \
+$(BUILDDIR)/MarkovChains.o: $(SRCDIR)/MarkovChains.cc $(SRCDIR)/MarkovChains.hh \
 			$(SRCDIR)/CUtilities.h \
 			$(SRCDIR)/CUtilities.c \
 			$(SRCDIR)/CppUtilities.hh \
@@ -124,7 +124,7 @@ $(BUILDDIR)/MarkovChains2.o: $(SRCDIR)/MarkovChains2.cc $(SRCDIR)/MarkovChains2.
 			$(SRCDIR)/strings.cc \
 			$(SRCDIR)/DNAsequence.hh \
 			$(SRCDIR)/DNAsequence.cc
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/MarkovChains2.o $(SRCDIR)/MarkovChains2.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/MarkovChains.o $(SRCDIR)/MarkovChains.cc
 
 
 
