@@ -27,7 +27,13 @@
 #include "CUtilities.h"
 
 //----------------------------------------------- exists ----
-// testing if a file exists
+/*!
+  Tests if a file exists
+
+  \param fname - File name
+
+  Returns 1 on success and 0 on failure.
+*/
 int exists(const char *fname)
 {
     FILE *file;
