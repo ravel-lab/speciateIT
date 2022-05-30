@@ -41,7 +41,7 @@ src-make_default: src/Makefile_buildMC src/Makefile_buildModelTree src/Makefile_
 	cd src && $(MAKE) -f Makefile_pp_ref_sib_wr_ref_models
 	cd src && $(MAKE) -f Makefile_pp_wr_selected_models
 	cd src && $(MAKE) -f Makefile_rk_stats
-	cd src && $(MAKE) -f Makefile_vicut
+	#cd src && $(MAKE) -f Makefile_vicut
 
 src-clean:
 	$(DEL_FILE) $(BUILDDIR)/*.o
@@ -60,7 +60,7 @@ install: bin/buildMC bin/buildModelTree bin/clError bin/classify bin/cut_tree bi
 	$(COPY) bin/pp_ref_sib_wr_ref_models $(BIN_DIR)
 	$(COPY) bin/pp_wr_selected_models $(BIN_DIR)
 	$(COPY) bin/rk_stats $(BIN_DIR)
-	$(COPY) bin/vicut $(BIN_DIR)
+	#$(COPY) bin/vicut $(BIN_DIR)
 	$(COPY) perl/*.pl $(BIN_DIR)
 
 dist:
