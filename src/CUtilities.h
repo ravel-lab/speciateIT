@@ -50,8 +50,9 @@ void error_msg( const char *file, int line, const char *msg );
 #define errorMsg(x) error_msg( __FILE__, __LINE__, (x) )
 
 int dir_exists( const char *dir );
+int file_exists( const char *file );
 
-/// Exits if the pointer is NULL
+/// Exits (printing error message) if the pointer is NULL
 #define CHECK_PTR(p)                                     \
   do{                                                    \
   if ( !(p) ) {                                          \
@@ -60,12 +61,32 @@ int dir_exists( const char *dir );
     }                                                    \
   } while(0);                                            \
 
-/// Print current line and exit
-#define DIE()                                                           \
-  do {                                                                  \
+/// Prints current line and exit
+#define DIE()                                                       \
+  do {                                                              \
     fprintf(stderr,"ERROR in %s at line: %d\n",__FILE__,__LINE__);  \
-    exit(EXIT_FAILURE);                                                 \
-  } while(0)
+    exit(EXIT_FAILURE);                                             \
+  } while(0);                                                       \
+
+
+ /// Exits (printing error message) if the file does not exist
+#define CHECK_FILE(file)                  \
+  do {                                    \
+  if( !file_exists((file)) ) {         \
+      fprintf(stderr,"ERROR in %s at line: %d: File %s does not exist!\n",__FILE__,__LINE__, file); \
+      exit(EXIT_FAILURE);                 \
+    }                                     \
+  } while(0);                             \
+
+/// Exits (printing error message) if the directory, dir, does not exist
+#define CHECK_DIR(dir)                    \
+  do {                                    \
+  if( !dir_exists((dir)) ) {              \
+      fprintf(stderr,"ERROR in %s at line: %d: Directory %s does not exist!\n",__FILE__,__LINE__, dir); \
+      exit(EXIT_FAILURE);                 \
+    }                                     \
+  } while(0);                             \
+
 
 /// Print a message and then DIE()
 #define DIEM(m) do { fprintf(stderr,m"\n"); DIE(); } while(0)
@@ -88,10 +109,11 @@ int dir_exists( const char *dir );
 /// Strdup and DIE() if NULL
 #define STRDUP(d,s) DIENULL( (d) = strdup(s) )
 
-/// Check for a file by opening and closing a file
-void FileClose(FILE *fp, const char *file);
 
 /// Try to close a file, or DIE()
+void FileClose(FILE *fp, const char *file);
+
+/// Check for a file by opening and closing a file
 void FileCheck(const char *file, const char *mode);
 
 /// Try to open a file, or DIE()
