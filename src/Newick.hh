@@ -54,7 +54,7 @@ public:
   std::string label;
   int idx;          // numeric index; positive for leaves, negative for internal nodes.
   int depth_m;      // node's depth in a tree; Root's depth is 0
-  int model_idx;    // when node labels correspond to model labels model_idx is the index of the node label in MarkovChains2_t's modelIds_m
+  int model_idx;    // when node labels correspond to model labels model_idx is the index of the node label in MarkovChains_t's modelIds_m
 };
 
 // this is used in getSppProfs() and getTx() routines for taxonomic assignment
@@ -74,7 +74,7 @@ public:
 
   bool loadTree(const char *file);
   void loadFullTxTree(const char *file);
-  void loadFullTxTree2(const char *file);
+  void loadFullTxTree_noNodeCollapse(const char *file);
 
   void incrementLeafCount() { nLeaves_m++; }
   void rmNodesWith1child();
@@ -185,6 +185,7 @@ public:
   void updateLabels( strSet_t &tx2seqIDs );
 
   void inodeTx( const char *fullTxFile, map<string, string> &inodeTx );
+  void inodeTx2( const char *fullTxFile, map<string, string> &inodeTx );
 
 
 private:

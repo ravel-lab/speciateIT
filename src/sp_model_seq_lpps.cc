@@ -40,7 +40,7 @@
 #include "IOCppUtilities.hh"
 #include "CppUtilities.hh"
 #include "CppStatUtilities.hh"
-#include "MarkovChains2.hh"
+#include "MarkovChains.hh"
 #include "StatUtilities.hh"
 #include "Newick.hh"
 #include "CStatUtilities.h"
@@ -94,7 +94,7 @@ public:
   vector<int> kMerLens;     /// list of word lengths
   int maxNumAmbCodes;       /// maximal acceptable number of ambiguity codes for a sequence; above this number log10probIUPAC() returns 1;
   int randSampleSize;       /// number of random sequences of each model (seq length = mean ref seq). If 0, no random samples will be generated.
-  int pseudoCountType;      /// pseudo-count type; see MarkovChains2.hh for possible values
+  int pseudoCountType;      /// pseudo-count type; see MarkovChains.hh for possible values
   bool verbose;
 
   void print();
@@ -202,11 +202,10 @@ int main(int argc, char **argv)
 
     // Loading MC models
     int wordLen = 8;
-    MarkovChains2_t *probModel = new MarkovChains2_t(wordLen-1,
-                                                     inPar->trgFiles,
-                                                     inPar->mcDir,
-                                                     inPar->maxNumAmbCodes,
-                                                     inPar->pseudoCountType);
+    MarkovChains_t *probModel = new MarkovChains_t(wordLen-1,
+                                                   inPar->mcDir,
+                                                   inPar->maxNumAmbCodes,
+                                                   inPar->pseudoCountType);
     if (inPar->verbose )
       cerr << "done" << endl;
 

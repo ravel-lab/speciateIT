@@ -36,6 +36,19 @@ OR PERFORMANCE OF THIS SOFTWARE.
 #include <cstdio>
 #include <sstream>
 
+//--------------------------------------------------------------- FileCheck ----
+/// Checks if file exists by attempting to open it for reading.
+bool CppFileCheck(const string &file)
+{
+    FILE* fh = fopen(file.c_str(), "r");
+
+    bool ret = true;
+    if ( fh == NULL )
+      ret = false;
+
+    return ret;
+}
+
 //--------------------------------------------------------- join ----
 string join( const char *tok, vector<int> &v )
 {

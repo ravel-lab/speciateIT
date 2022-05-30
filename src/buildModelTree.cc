@@ -228,8 +228,8 @@ int main(int argc, char **argv)
     cmd += string("/fasta_files/");
     system(cmd.c_str());
 
-    if ( !inPar->quiet )
-      fprintf(stderr,"\n\tCreated output dir %s\n\n", cmd.c_str());
+    // if ( !inPar->quiet )
+    //  fprintf(stderr,"\n\tCreated output dir %s\n\n", cmd.c_str());
   }
   else
   {
@@ -246,7 +246,7 @@ int main(int argc, char **argv)
 
   // ==================================================================
   if ( !inPar->quiet )
-    printf("--- Generating model tree from %s\n",lineageFile);
+    printf("--- Creating a model tree from %s\n",lineageFile);
   NewickTree_t nt;
   nt.loadFullTxTree( lineageFile );
 
@@ -338,6 +338,7 @@ int main(int argc, char **argv)
     fprintf(out, "%s\t%s\n", (it1->first).c_str(), (it1->second).c_str());
   fclose(out);
 
+
   // ==================================================================
   if ( !inPar->quiet )
     printf("--- Loading ref fasta file %s\n",faFile);
@@ -373,7 +374,7 @@ int main(int argc, char **argv)
   // ==================================================================
   if ( !inPar->quiet )
     printf("\r--- Creating a file with absolute paths to just created fasta files\n");
-  string pathsFile = string(outDir) + string("/spp_paths.txt");
+  string pathsFile = string(outDir) + string("/tx_fasta_paths.txt");
   out = fOpen(pathsFile.c_str(), "w");
   for ( it3 = tx2seqIDs.begin(); it3 != tx2seqIDs.end(); it3++ )
   {

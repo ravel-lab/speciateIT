@@ -42,6 +42,19 @@ using namespace std;
 
 //================================================================= Globals ====
 
+/// Exits (printing error message) if the (string) file does not exist
+#define CPP_CHECK_FILE(file)              \
+  do {                                    \
+  if( !CppFileCheck((file)) ) {      \
+      fprintf(stderr,"ERROR in %s at line: %d: File %s does not exist!\n",__FILE__,__LINE__, file.c_str()); \
+      exit(EXIT_FAILURE);                 \
+    }                                     \
+  } while(0);                             \
+
+
+/// Check for a file by opening and closing a file
+bool CppFileCheck(const string &file);
+
 /// join
 string join( const char *tok, vector<int> &v );
 

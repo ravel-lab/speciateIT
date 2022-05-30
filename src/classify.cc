@@ -31,7 +31,7 @@ OR PERFORMANCE OF THIS SOFTWARE.
 #include "IOCUtilities.h"
 #include "IOCppUtilities.hh"
 #include "CppUtilities.hh"
-#include "MarkovChains2.hh"
+#include "MarkovChains.hh"
 #include "StatUtilities.hh"
 #include "Newick.hh"
 #include "CStatUtilities.h"
@@ -89,7 +89,7 @@ void printUsage( const char *s )
 
        << s << " -d vaginal_v2_MCdir -f vaginal_v2.fullTx -i vaginal_v2.1.fa -o testDir" << endl << endl
        << s << " -d vaginal_v2_MCdir -r vaginal_v2_dir/model.tree -i vaginal_v2.1.fa -o testDir" << endl << endl
-       << s << " -e 2BVBACT-97 -t vaginal_v2_dir/spp_paths.txt -k 8 -r vaginal_sppCondensed_v2i.tree -o testDir" << endl << endl;
+       << s << " -e 2BVBACT-97 -t vaginal_v2_dir/tx_fasta_paths.txt -k 8 -r vaginal_sppCondensed_v2i.tree -o testDir" << endl << endl;
 }
 
 
@@ -139,7 +139,7 @@ public:
   int skipErrThld;          /// ignore classification error condition - with this option on each sequence is classified to the species with the highest p(x|M)
   int maxNumAmbCodes;       /// maximal acceptable number of ambiguity codes for a sequence; above this number log10probIUPAC() returns 1;
   int randSampleSize;       /// number of random sequences of each model (seq length = mean ref seq). If 0, no random samples will be generated.
-  int pseudoCountType;      /// pseudo-count type; see MarkovChains2.hh for possible values
+  int pseudoCountType;      /// pseudo-count type; see MarkovChains.hh for possible values
   bool verbose;
   bool quiet;
   bool revComp;             /// reverse-complement query sequences before processing
@@ -458,12 +458,10 @@ int main(int argc, char **argv)
       else
         fprintf(stderr,"\r--- Generating k-mer frequency tables for k=1: ... %d", wordLen);
     }
-    MarkovChains2_t *probModel;
-    probModel = new MarkovChains2_t(wordLen-1,
-                                    inPar->trgFiles,
-                                    inPar->mcDir,
-                                    inPar->maxNumAmbCodes,
-                                    inPar->pseudoCountType );
+    MarkovChains_t *probModel = new MarkovChains_t(wordLen-1,
+                                                   inPar->mcDir,
+                                                   inPar->maxNumAmbCodes,
+                                                   inPar->pseudoCountType );
     if ( inPar->verbose )
       fprintf(stderr,"done\n");
 

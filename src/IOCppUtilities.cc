@@ -133,10 +133,16 @@ void childrenMap( char ***tbl, int nRows, int nCols, map<string, set<string> > &
 
 //---------------------------------------------------------- charTbl2strVect ----
 void charTbl2strVect( char ***tbl, int nRows, int nCols, map<string, vector<string> > &id2rest)
-/*
-  tbl has at least two columns
+/*!
 
-  id2rest maps element of the first column to the vector of the remaining ones
+  Given a table, tbl, with at least two columns, id2rest maps each element of the first
+  column of tbl to the vector of the remaining columns of the given row of tbl.
+
+  \param tbl     -  A table with at least two columns
+  \param nRows   - The number of rows of tbl.
+  \param nCols   - The number of columns of tbl.
+  \param id2rest - The output map that maps each element of the first
+                   column of tbl to the vector of the remaining columns of the given row of tbl.
 */
 {
   for ( int i = 0; i < nRows; ++i )
