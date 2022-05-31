@@ -44,6 +44,9 @@ file
 ##    18546
 
 
+## clstr_to_clstr2.pl -i CONTRA_ASVs_nr.fasta.clstr -o CONTRA_ASVs_nr.clstr2
+
+
 ##
 ## DOUCHING
 ##
