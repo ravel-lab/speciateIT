@@ -187,7 +187,7 @@ foreach my $tid (@tIds)
    }
    $colSums{$tid} = $sum;
 }
-print "\r                              \n";
+print "\r                                                                                                                         \n";
 
 my $nTids = @tIds;
 my @otus = sort { $colSums{$b} <=> $colSums{$a} } @tIds;
@@ -197,7 +197,7 @@ my @otus = sort { $colSums{$b} <=> $colSums{$a} } @tIds;
 
 my $n = min(scalar(@tIds), 20);
 my $n1 = $n - 1;
-print "\r\tFrequencies of the $n most abundant phylotypes\n\n";
+print "\n\tFrequencies of the $n most abundant phylotypes\n\n";
 
 my %maximums;
 $maximums{"riboID"} = 0;
