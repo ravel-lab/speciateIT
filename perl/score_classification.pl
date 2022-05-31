@@ -6,12 +6,12 @@
 
 =head1 DESCRIPTION
 
-  Compares the expected versus the observed taxonomic classifications for a set of sequences 
+  Compares the expected versus the observed taxonomic classifications for a set of sequences
   from CV runs considering the entire lineage of the expected taxonomy as follows:
 
     - Each species has 7 levels of taxonomy, so correct classification to each of those levels
-      equals a point of 1.00/8 = 0.125 x the level reached. 
-    - Correct classification to each level receives a score as follows: 
+      equals a point of 1.00/8 = 0.125 x the level reached.
+    - Correct classification to each level receives a score as follows:
         Domain (d_):    1 x 0 = 0
         Phylum (p_):    2 x 0.125 = 0.25
         Class (c_):     3 x 0.125 = 0.325
@@ -21,7 +21,7 @@
         Subgenus (sg_): 7 x 0.125 = 0.875
         Species (s_):   8 x 0.125 = 1
 
-        Where 1 is the best score, and 0.125 is the worst score. 
+        Where 1 is the best score, and 0.125 is the worst score (0 should be the worst score).
 
     - Use the observed classification (following classify with error thresholds), and determine
       the accuracy of that classification.
@@ -32,7 +32,7 @@
 
   score_classification.pl -i <input dir> -o <output dir>
 
-  **Currently, looks for testSeqID.lineage and MC_order7_results.txt 
+  **Currently, looks for testSeqID.lineage and MC_order7_results.txt
     as input from the in directory.
 
 =head1 OPTIONS
@@ -104,7 +104,7 @@ if ($help)
   exit 0;
 }
 
-if (!$lineageFile || !$pecanFile) 
+if (!$lineageFile || !$pecanFile)
 {
   print "\nPlease provide a *_sppSeqID.lineage file (-l) and the PECAN classification file (-p)";
   exit 0;
@@ -131,11 +131,11 @@ else
 }
 
 my $clScore_sum = sum values %clScore;
-my $clScore_perc =  100 * $clScore_sum /  scalar @clIDs; 
+my $clScore_perc =  100 * $clScore_sum /  scalar @clIDs;
 my $rounded = sprintf "%.1f", $clScore_perc;
 print "Mean overall classification score: " . $rounded;
 
-my $nCorrect = 0; 
+my $nCorrect = 0;
 foreach my $s (values %clScore)
 {
   if ($s == "1")
@@ -218,7 +218,7 @@ sub read2colTbl{
   return %tbl;
 }
 
-sub score_classification{ 
+sub score_classification{
   my $rclIDs = shift;
   my $rtestLineage = shift;
   my $rclTx = shift;
@@ -240,7 +240,7 @@ sub score_classification{
       {
         print "\nWARNING: $s not found in $clTxFile\n";
       }
-    } 
+    }
     else
     {
       ##print "The value of $s is $clTx{$s}.\n";
@@ -259,46 +259,46 @@ sub score_classification{
     my $r = $a[6];
     ## if the classified taxa is found in the reference lineage
     my $value = 0;
-    if ( grep /$t/, @a) 
-    {   
-      if ($clTx{$s} =~ /^d_/) 
+    if ( grep /$t/, @a)
+    {
+      if ($clTx{$s} =~ /^d_/)
         {
           $clScore{$s} = 0;
         }
-        elsif ($clTx{$s} =~ /^p_/) 
+        elsif ($clTx{$s} =~ /^p_/)
         {
           $clScore{$s} = 0.17;
         }
-        elsif ($clTx{$s} =~ /^c_/) 
+        elsif ($clTx{$s} =~ /^c_/)
         {
           $clScore{$s} = 0.33;
         }
-        elsif ($clTx{$s} =~ /^o_/) 
+        elsif ($clTx{$s} =~ /^o_/)
         {
           $clScore{$s} = 0.5;
         }
-        elsif ($clTx{$s} =~ /^f_/) 
+        elsif ($clTx{$s} =~ /^f_/)
         {
           $clScore{$s} = 0.66;
         }
-        elsif ($clTx{$s} =~ /^g_/) 
+        elsif ($clTx{$s} =~ /^g_/)
         {
           $clScore{$s} = 0.83;
-        }          
-        else 
+        }
+        else
         {
           $clScore{$s} = 1;
         }
-    } 
+    }
     else ## And of course, these have to be correct with the lineage. If they are not correct, they get a zero.
     {
       $clScore{$s} = 0;
-    } 
+    }
   }
-print "Scores for ". scalar(keys %clScore) . " completed\n"; 
+print "Scores for ". scalar(keys %clScore) . " completed\n";
 return %clScore;
 }
-sub score_classification_w_cluster{ 
+sub score_classification_w_cluster{
   my $rclIDs = shift;
   my $rtestLineage = shift;
   my $rclTx = shift;
@@ -331,57 +331,57 @@ sub score_classification_w_cluster{
     {
       my @lineage = split(/\t/, $refLin);
       #print Dumper \@lineage;
-      $refsp = $lineage[6]; 
+      $refsp = $lineage[6];
     }
 
     my $g;
     my $sp;
     #print "classification is $class\n";
-    
+
     ($g, $sp) = split(/_/, $class);
 
     ## a is equal to the reference lineage
-    
+
     #print "\nThe value of $s is $testLineage{$s}\n";
     ## if the classified taxa is found in the reference lineage
 
     my $value = 0;
-    if ( grep /.*$class.*/, $refLin) 
-    {   
+    if ( grep /.*$class.*/, $refLin)
+    {
       $value++;
       if ( $value > 0) ##If the classifed taxonomy is found in the array
       {
-        if ($clTx{$s} =~ /^d_/) 
+        if ($clTx{$s} =~ /^d_/)
         {
           $clScore{$s} = 0;
         }
-        elsif ($clTx{$s} =~ /^p_/) 
+        elsif ($clTx{$s} =~ /^p_/)
         {
           $clScore{$s} = 0.17;
         }
-        elsif ($clTx{$s} =~ /^c_/) 
+        elsif ($clTx{$s} =~ /^c_/)
         {
           $clScore{$s} = 0.33;
         }
-        elsif ($clTx{$s} =~ /^o_/) 
+        elsif ($clTx{$s} =~ /^o_/)
         {
           $clScore{$s} = 0.5;
         }
-        elsif ($clTx{$s} =~ /^f_/) 
+        elsif ($clTx{$s} =~ /^f_/)
         {
           $clScore{$s} = 0.66;
         }
-        elsif ($clTx{$s} =~ /^g_/) 
+        elsif ($clTx{$s} =~ /^g_/)
         {
           $clScore{$s} = 0.83;
-        }          
-        else 
+        }
+        else
         {
           $clScore{$s} = 1;
         }
-      } 
+      }
       #print "\n1 The score for $s is $clScore{$s}\n";
-    } 
+    }
     elsif ($class =~ /Cluster/)
     {
       $class = $cluster{$class};
@@ -412,10 +412,10 @@ sub score_classification_w_cluster{
     }
     if ($debug)
     {
-      print "$s is $refsp and was classified as $class and given score of $clScore{$s}\n"; 
+      print "$s is $refsp and was classified as $class and given score of $clScore{$s}\n";
     }
   }
-print "Scores for ". scalar(keys %clScore) . " completed\n"; 
+print "Scores for ". scalar(keys %clScore) . " completed\n";
 return %clScore;
 }
 exit 0;
