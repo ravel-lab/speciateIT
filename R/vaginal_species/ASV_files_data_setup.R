@@ -110,7 +110,6 @@ file <- paste0(asvs.dir,"Douching_all_runs_dada2_abundance_table.rda")
 save(pt, file=file)
 
 
-
 ##
 ## GALE
 ##
