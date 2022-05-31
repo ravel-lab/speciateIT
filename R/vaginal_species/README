@@ -1,0 +1,49 @@
+How vagianal species should be selected to build a vaginal speciateIT DB?
+
+
+
+A possible strategy
+
+
+Use ASV files from several project.
+
+For each ASV file generated 'cos' metric embedding of ASV relative abundance profiles.
+
+Cluster ASV's using the above embeddings.
+
+Take the longest sequence in each cluster as a representative of that cluster.
+
+Gather all these cluster represenetative ASVs from all projects and create a fasta file of the corresponding sequences.
+
+Run speciateIT on that file no-error-threshold flag
+
+Create a list of the resulting tentative vaginal species
+
+Use the tentative vaginal species to generate a sIT DB of input files for creation of sIT MC models
+
+Run sp_model_seq_lpps on the DB
+
+Identify species or species clusters using pp of model sequence distributions
+
+
+
+
+On May 13, 2022, at 10:35 AM, Holm, Johanna <JHolm@som.umaryland.edu> wrote:
+
+Hi Jacques,
+
+Using 21 projects worth of data, there are relatively fewer species present in
+100% of projects, as expected, and as the prevalence of species decrease, so do
+the number of ASVs that they represent.
+
+If we required species to be present in at least 20% of projects, there would be
+802 species, 30% would be 542 species, and 40% would be 431 species. Species
+such as Gemella_sanguinis, Megasphaera_massiliensis, Prevotella_buccae, and
+Mycoplasma_genitalium are present in only ~28% of projects. Below this value,
+there are not many species we would be expect in the vagina. Given this, I
+propose we round down to 25% which would result in 651 species. It will take a
+little testing from here to see how the models do, but I believe this is a good
+starting place.
+
+Best,
+Johanna
