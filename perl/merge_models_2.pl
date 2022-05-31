@@ -6,26 +6,26 @@
 
 =head1 DESCRIPTION
 
-  Using the classification scores produced by score_classification.pl, determine which PECAN 
+  Using the classification scores produced by score_classification.pl, determine which PECAN
   models can be merged by determining the reference species that are misclassified, which species the
   reference sequences are misclassified to, and merging the models together by re-labeling the
   associated taxonomy and altering the species annotation in the lineage file.
 
-  1. For each sequence, determine if the PECAN and reference classification match. 
-      -Use clScore.txt to get seqIDs w/score of 0
-  2. For each key of the hash of arrays, call the array and for each item, attach it to a single label. 
+  1. For each sequence, determine if the PECAN and reference classification match.
+      -> Use clScore.txt to get seqIDs w/score of 0
+  2. For each key of the hash of arrays, call the array and for each item, attach it to a single label.
   3. Grep the taxonomy file hash for values equal to the keys of the hash of arrays, and for each of them, re-associated the
       sequence ID to the new, concanated label.
       -> print hash to new taxonomy file. (spp_new.tx)
-  4. Grep the lineage hash file for keys equal to the keys of the hash of arrays, and for each of these, re-associate the 
-      sequence ID to the new, concatenated label. 
+  4. Grep the lineage hash file for keys equal to the keys of the hash of arrays, and for each of these, re-associate the
+      sequence ID to the new, concatenated label.
       -> print hash to new lineage file (spp_new.lineage)
 
 =head1 SYNOPSIS
 
   merge_models.pl -i <input dir> -o <output dir>
 
-  **Currently, looks for sppSeqID.lineage and MC_order7_results.txt 
+  **Currently, looks for sppSeqID.lineage and MC_order7_results.txt
     as input from the in directory.
 
   "lineage-file|l=s"    => \my $LineageFile,
@@ -48,7 +48,7 @@
 =over
 
 =item B<--input-dir, -i>
-  Input directory containing spp.tx, and spp.lineage, clScore.txt, and MC_order7_results.txt files. 
+  Input directory containing spp.tx, and spp.lineage, clScore.txt, and MC_order7_results.txt files.
 
 =item B<--output-dir, -o>
   Output directory.
