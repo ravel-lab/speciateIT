@@ -103,9 +103,10 @@ class MarkovChains_t
 public:
   // Attempts to read already created models from model files
   MarkovChains_t( int order,
-                   char *dir,
-                   int maxNumAmbCodes=5,
-                   int pseudoCountType=zeroOffset4mk );
+                  char *dir,
+                  int maxNumAmbCodes=5,
+                  int pseudoCountType=zeroOffset4mk,
+                  bool verbose = true);
 
   // Creates models from traing fasta files overwriting existing model files
   MarkovChains_t( int order,

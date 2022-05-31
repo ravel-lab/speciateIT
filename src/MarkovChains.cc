@@ -41,7 +41,8 @@ using namespace std;
 MarkovChains_t::MarkovChains_t(int order,
                                char *dir,
                                int maxNumAmbCodes,
-                               int pseudoCountType)
+                               int pseudoCountType,
+                               bool verbose)
   : order_m(order), dir_m(dir), maxNumAmbCodes_m(maxNumAmbCodes), pseudoCountType_m(pseudoCountType)
 {
     #define DEBUG_MARKOVCHAINS1 0
@@ -50,8 +51,16 @@ MarkovChains_t::MarkovChains_t(int order,
 
     int maxWordLen = order_m+1;
 
+    // ------------------------------------------------
+    if ( verbose )
+      fprintf(stderr,"\t\tCreating all k-mers ... ");
+
     getAllKmers( 1, nucs_m );
 
+    if ( verbose )
+      fprintf(stderr,"DONE\n");
+
+    // ------------------------------------------------
     // wordStrgs_m is needed only for the header of cProbFile_m's
     wordStrgs_m.resize(maxWordLen);
     for ( int k = 1; k <= maxWordLen; ++k )
@@ -67,23 +76,67 @@ MarkovChains_t::MarkovChains_t(int order,
     #endif
 
     setupIOfiles();
+
+    // ------------------------------------------------
+    if ( verbose )
+      fprintf(stderr,"\t\tCreating model IDs ... ");
+
     readModelIds();
+
+    if ( verbose )
+      fprintf(stderr,"DONE\n");
+
+
+    // ------------------------------------------------
+    if ( verbose )
+      fprintf(stderr,"\t\tCreating Moore Machines ... ");
+
     createMooreMachine();
+
+    if ( verbose )
+      fprintf(stderr,"DONE\n");
+
+
     MALLOC(cProb_m, double*, nAllWords_m * sizeof(double));
+
+    // ------------------------------------------------
+    if ( verbose )
+      fprintf(stderr,"\t\tInitializing IUPAC hash values ... ");
+
     initIUPACambCodeHashVals();
 
+    if ( verbose )
+      fprintf(stderr,"DONE\n");
+
+
+    // ------------------------------------------------
+    if ( verbose )
+      fprintf(stderr,"\t\tReading MC models of oder 0 ... ");
+
     bool ok = readLog10condProbTbl(0, cProbFile_m[0].c_str());
-    if ( !ok ){
+    if ( !ok ) {
       fprintf(stderr, "ERROR: in file %s at line %d: cannot read order 0 MC models table",__FILE__, __LINE__);
       exit(EXIT_FAILURE);
     }
 
+    if ( verbose )
+      fprintf(stderr,"DONE\n");
+
+
     for ( int i = 1; i < maxWordLen; ++i )
     {
+      if ( verbose )
+        fprintf(stderr,"\t\tReading MC models of oder %d ... ",i);
+
       ok = readLog10condProbTbl(i, cProbFile_m[i].c_str());
-      fprintf(stderr, "ERROR: in file %s at line %d: cannot read order %d MC models table",
-              __FILE__, __LINE__, i);
-      exit(EXIT_FAILURE);
+      if ( !ok ) {
+        fprintf(stderr, "ERROR: in file %s at line %d: cannot read order %d MC models table",
+                __FILE__, __LINE__, i);
+        exit(EXIT_FAILURE);
+      }
+
+      if ( verbose )
+        fprintf(stderr,"DONE\n");
     }
 }
 
@@ -969,11 +1022,11 @@ double MarkovChains_t::log10probR( char *frag, int fragLen, int modelIdx )
 ///
 bool MarkovChains_t::readLog10condProbTbl( int kIdx, const char *inFile )
 {
-#define DEBUG_RLCPT 0
+    #define DEBUG_RLCPT 0
 
-#if DEBUG_RLCPT
+    #if DEBUG_RLCPT
     fprintf(stderr, "Entering readLog10condProbTbl(%d, %s)\n", kIdx, inFile);
-#endif
+    #endif
 
     FILE *fp = fopen(inFile, "r");
 
@@ -1041,9 +1094,9 @@ bool MarkovChains_t::readLog10condProbTbl( int kIdx, const char *inFile )
       modelIdx++;
     }
 
-#if DEBUG_RLCPT
+    #if DEBUG_RLCPT
     fprintf(stderr, "Done parsing %s\n", inFile);
-#endif
+    #endif
 
     fclose(fp);
     free(data);
