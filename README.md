@@ -28,11 +28,24 @@ To build models & estimate error thresholds with V3V4, for example:
 
 % buildMC -v -d sIT_models_V3V4
 
-% est_error_thlds -v -d sIT_models_V3V4 -c 1.0
+% est_error_thlds -v -d sIT_models_V3V4 -c 0.9
 
 % classify --skip-err-thld -v -i ~/projects/ASV_files/data/CONTRA_ASVs_nr.fa -d sIT_models_V3V4 -o CONTRA_ASVs_sIT
 
+
 % classify -v -i ~/projects/ASV_files/data/CONTRA_ASVs_nr.fa -d sIT_models_V3V4 -o CONTRA_ASVs_sIT
+
+% classify -v -i ~/projects/ASV_files/data/DOUCHING_ASVs_nr.fa -d sIT_models_V3V4 -o DOUCHING_ASVs_sIT
+
+% classify -v -i ~/projects/ASV_files/data/GALE_ASVs_nr.fa -d sIT_models_V3V4 -o GALE_ASVs_sIT
+
+% classify -v -i ~/projects/ASV_files/data/HMP_ASVs_nr.fa -d sIT_models_V3V4 -o HMP_ASVs_sIT
+
+% classify -v -i ~/projects/ASV_files/data/LSVF_ASVs_nr.fa -d sIT_models_V3V4 -o LSVF_ASVs_sIT
+
+% classify -v -i ~/projects/ASV_files/data/V400_ASVs_nr.fa -d sIT_models_V3V4 -o V400_ASVs_sIT
+
+
 
 
 ### Classify sequences:
