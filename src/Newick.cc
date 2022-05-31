@@ -849,14 +849,15 @@ bool NewickTree_t::loadTree(const char *file)
       #endif
 
       cur = cur->addChild();
-      cur->idx = nLeaves_m++;
-      cur = cur->parent_m;
       cur->label += c;
 
       while ((c = fgetc(fp)) != ':')
       {
         cur->label += c;
       }
+
+      cur->idx = nLeaves_m++;
+      cur = cur->parent_m;
 
       #if DEBUGLT
       fprintf(stderr,"in name:bl label=%s\n", cur->label.c_str());
