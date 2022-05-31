@@ -219,17 +219,46 @@ int main(int argc, char **argv)
       {
         fprintf(stderr,"\n\n\tERROR: Could not load Newick tree from %s\n\n", inPar->treeFile);
         printHelp(argv[0]);
-        exit(1);
+        exit(EXIT_FAILURE);
       }
     }
 
     int depth = nt.getDepth();
-    if ( inPar->debug )
+    if ( inPar->verbose )
+    {
       cerr << "--- Depth of the tree: " << depth << endl;
+      #if 0
+      { // traversing tree
+        queue<NewickNode_t *> bfs; // breath first search queue
+        NewickNode_t *root = nt.root();
+        bfs.push(root);
+
+        NewickNode_t *node;
+        int nodeCount = 1;
+        while ( !bfs.empty() )
+        {
+          node = bfs.front();
+          bfs.pop();
+
+          fprintf(stderr, "--- [%d] Visiting %s idx=%d depth=%d\n", nodeCount, node->label.c_str(), node->idx, node->depth_m);
+          nodeCount++;
+
+          if ( nodeCount == 20 )
+            break;
+          if ( node->idx < 0 )
+          {
+            int numChildren = node->children_m.size();
+            for (int i = 0; i < numChildren; i++)
+              bfs.push(node->children_m[i]);
+          }
+        }
+      }
+      exit(EXIT_FAILURE);
+      #endif
+    }
 
     int nModels = 0;
-
-    if ( inPar->mcDir ) // extracting number of models and k-mer size
+    if ( inPar->verbose ) // extracting number of models and k-mer size
     {
       string inFile(inPar->mcDir);
       inFile += "/modelIds.txt";
@@ -269,62 +298,36 @@ int main(int argc, char **argv)
         //inPar->kMerLens.clear();
         inPar->kMerLens.push_back(k);
       }
-    }
-    else
-    {
-      fprintf(stderr, "\n\n\tERROR: in %s at line %d: Please specify a directory with MC model files using -d flag.\n\n", __FILE__, __LINE__);
-      printHelp(argv[0]);
-      exit(1);
-    } // END OF if ( inPar->mcDir )
 
-#if 0
-    if ( inPar->kMerLens.size() == 0 )
-    {
-      int kMers[] = {8};
-      fprintf(stderr, "\n\tWARNING: Setting k-mer size to %d.\n", kMers[0]);
-      int n = sizeof(kMers) / sizeof(int);
-      for ( int i = 0; i < n; ++i )
-        inPar->kMerLens.push_back(kMers[i]);
+      if ( inPar->verbose )
+        cerr << "--- nModels: " << nModels << endl;
     }
-#endif
+
+    int kMerLen = inPar->kMerLens[0];
 
     if ( inPar->verbose )
-      cerr << "nModels: " << nModels << endl;
-
-    int wordLen = inPar->kMerLens[0];
-
-    if ( inPar->debug )
     {
-      cerr << "\rk=" << wordLen << "\n";
-
-      if ( inPar->mcDir && !inPar->trgFiles.size() )
-        cerr << "\r--- Reading k-mer frequency tables from " << inPar->mcDir << " ... ";
-      else
-        cerr << "\r--- Generating k-mer frequency tables for k=1:" << wordLen << " ... ";
+      cerr << "--- max k-mer: " << kMerLen << "\n";
+      cerr << "--- Reading k-mer frequency tables from " << inPar->mcDir << endl;
     }
 
-#if 0
-    size_t alloc = 1024*1024;
-    char *data, *seq;
-    MALLOC(data, char*, alloc * sizeof(char));
-    MALLOC(seq, char*, alloc * sizeof(char));
-#endif
-
     // Loading MC models
-    MarkovChains_t *probModel = new MarkovChains_t( wordLen-1,
+    MarkovChains_t *probModel = new MarkovChains_t( kMerLen-1,
                                                     inPar->mcDir,
                                                     inPar->maxNumAmbCodes,
-                                                    inPar->pseudoCountType );
-    if (inPar->debug )
-      cerr << "done" << endl;
+                                                    inPar->pseudoCountType,
+                                                    inPar->verbose );
+    if (inPar->verbose )
+      cerr << "DONE" << endl;
 
     vector<char *> modelIds = probModel->modelIds();
     vector<string> modelStrIds;
     probModel->modelIds( modelStrIds );
     nt.modelIdx( modelStrIds );
 
-
+    //
     // Converting offset coefficients into a string so we can use it as a suffix of the error_thlds file
+    //
     string str = to_string(inPar->offsetCoef);
     auto it = std::remove_if(str.begin(), str.end(), [](char const &c) {
         return std::ispunct(c);
@@ -367,8 +370,9 @@ int main(int argc, char **argv)
     filesystem::create_symlink(fullpath, symblink.c_str());
     if ( inPar->verbose )
       fprintf(stderr, "DONE\n");
+    //
     // END OF symbolic link code
-
+    //
 
     //
     // Setting up traversal of the model tree using breath first search
