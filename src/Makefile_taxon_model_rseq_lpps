@@ -1,6 +1,6 @@
 
 #############################################################################
-# Makefile for building pp_wr_selected_models
+# Makefile for building taxon_model_rseq_lpps
 #############################################################################
 
 # Copyright (C) 2017 Pawel Gajer pgajer@gmail.com and Jacques Ravel jravel@som.umaryland.edu
@@ -29,9 +29,9 @@ CC            = clang #gcc #gcc-4.0
 CXX           = clang #g++ #g++-4.0
 LINK          = clang #g++
 LDFLAGS       = -std=c++11 -lc++abi -lstdc++
-FLAGS         = -g -Wall -D__SIM_SSE3 -msse3 -O2 -D_GNU_SOURCE -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -O2 # -g -O2  -Wunused-parameter
+FLAGS         = -g -D__SIM_SSE3 # -Wall -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -msse3 -O2 # -D_GNU_SOURCE -g -O2 -D__SIM_SSE3 -Wunused-parameter
 CFLAGS        = $(FLAGS)
-CXXFLAGS      = $(FLAGS)
+CXXFLAGS      = -std=c++1z $(FLAGS)
 INCPATH       = -Isrc
 LIBS          = -lm # -L../../lib -lkmerstats
 AR            = ar cq
@@ -61,7 +61,7 @@ BUILDDIR= .build
 create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))
 create-bin-dir := $(shell $(CHK_DIR_EXISTS) $(BINDIR) || $(MKDIR) $(BINDIR))
 
-OBJECTS = $(BUILDDIR)/pp_wr_selected_models.o \
+OBJECTS = $(BUILDDIR)/taxon_model_rseq_lpps.o \
           $(BUILDDIR)/IOCUtilities.o \
           $(BUILDDIR)/IOCppUtilities.o \
           $(BUILDDIR)/MarkovChains.o \
@@ -76,11 +76,11 @@ OBJECTS = $(BUILDDIR)/pp_wr_selected_models.o \
 
 ####### Build rules
 
-pp_wr_selected_models: $(OBJECTS)
-	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/pp_wr_selected_models
+taxon_model_rseq_lpps: $(OBJECTS)
+	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/taxon_model_rseq_lpps
 
-$(BUILDDIR)/pp_wr_selected_models.o: $(SRCDIR)/pp_wr_selected_models.cc
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/pp_wr_selected_models.o $(SRCDIR)/pp_wr_selected_models.cc
+$(BUILDDIR)/taxon_model_rseq_lpps.o: $(SRCDIR)/taxon_model_rseq_lpps.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/taxon_model_rseq_lpps.o $(SRCDIR)/taxon_model_rseq_lpps.cc
 
 $(BUILDDIR)/IOCppUtilities.o: $(SRCDIR)/IOCppUtilities.cc
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/IOCppUtilities.o $(SRCDIR)/IOCppUtilities.cc
