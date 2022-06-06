@@ -1,0 +1,44 @@
+# Makefile for readTable_test
+
+CC       = clang
+CXX      = clang
+LINK     = clang
+LDFLAGS  = -std=c++11 -lc++abi -lstdc++
+FLAGS    = -g -Wall -D__SIM_SSE3 -msse3 -O2 -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type
+CFLAGS   = $(FLAGS)
+CXXFLAGS = $(FLAGS)
+LIBS     = -lm # -L../../../lib -lkmerstats -L/usr/local/lib -llapackpp -lR -L$(INVUEDIR) -lCommon
+SRCDIR   = /Users/pgajer/devel/speciateIT/src
+INCPATH       = -I$(SRCDIR)
+DEL_FILE      = rm -f
+SYMLINK       = ln -sf
+DEL_DIR       = rmdir
+MOVE          = mv -f
+CHK_DIR_EXISTS= test -d
+MKDIR         = mkdir -p
+
+####### Files
+
+
+BINDIR  = .
+BUILDDIR= .build
+
+create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))
+
+OBJECTS = $(BUILDDIR)/readTable_test.o \
+          $(BUILDDIR)/IOUtilities.o \
+          $(BUILDDIR)/CUtilities.o \
+
+####### Build rules
+
+readTable_test: $(OBJECTS)
+	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/readTable_test
+
+$(BUILDDIR)/readTable_test.o: readTable_test.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/readTable_test.o readTable_test.cc
+
+$(BUILDDIR)/IOUtilities.o: $(SRCDIR)/IOUtilities.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o $(BUILDDIR)/IOUtilities.o $(SRCDIR)/IOUtilities.c
+
+$(BUILDDIR)/CUtilities.o: $(SRCDIR)/CUtilities.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o $(BUILDDIR)/CUtilities.o $(SRCDIR)/CUtilities.c
