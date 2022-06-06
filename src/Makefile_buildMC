@@ -54,8 +54,6 @@ MKDIR         = mkdir -p
 
 ####### Files
 
-create-build-dir := $(shell $(CHK_DIR_EXISTS) .build || $(MKDIR) .build)
-
 SRCDIR  = .
 BINDIR  = ../bin
 BUILDDIR= .build
