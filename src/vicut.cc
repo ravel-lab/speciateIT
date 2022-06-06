@@ -39,13 +39,10 @@
 
 #include <iostream>
 #include <map>
+#include <iterator>
 #include <string>
 #include <vector>
 #include <queue>
-
-#include <boost/foreach.hpp>
-//#include <boost/static_assert.hpp>
-//#include <tr1/unordered_map>
 
 using namespace std;
 
@@ -800,8 +797,6 @@ double vicut(vector<int> &nodeCut, map<int, NewickNode_t *> &idx2node, int *annI
     // L(x) is the set of leaves in the subtree rooted at x, that have known annotation
     // and A(d) is the set of leaves (in the whole tree) that are known to have annotation d.
 
-    //BOOST_STATIC_ASSERT(true) __attribute__((unused));
-
 #define VICUT_DEBUG 0
 
     // computing nAnnLeaves and A(d)
@@ -850,8 +845,7 @@ double vicut(vector<int> &nodeCut, map<int, NewickNode_t *> &idx2node, int *annI
       minCut[i] = 1;
 
     int minIdx = 0;
-    pair<int, NewickNode_t *> pr;
-    BOOST_FOREACH(pr, idx2node)
+    for ( pair<int, NewickNode_t *> pr : idx2node )
     {
       if ( pr.first < minIdx )
         minIdx = pr.first;
@@ -1146,8 +1140,7 @@ double vicut(vector<int> &nodeCut, map<int, NewickNode_t *> &idx2node, int *annI
 
 #if VICUT_DEBUG
     fprintf(stderr,"minCut: ");
-    pair<int, bool> pi;
-    BOOST_FOREACH(pi, minCut)
+    for(pair<int, bool> pi : minCut)
     {
       if ( pi.second )
         fprintf(stderr,"%d ",pi.first);

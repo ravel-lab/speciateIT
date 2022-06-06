@@ -31,8 +31,8 @@ LINK          = clang #g++
 LDFLAGS       = -std=c++11 -lc++abi -lstdc++
 FLAGS         = -g -Wall -D__SIM_SSE3 -msse3 -O2 -D_GNU_SOURCE -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -O2 # -g -O2  -Wunused-parameter
 CFLAGS        = $(FLAGS)
-CXXFLAGS      = $(FLAGS)
-INCPATH       = -Isrc -I/Users/pgajer/devel/boost_1_79_0
+CXXFLAGS      = -std=c++11 $(FLAGS)
+INCPATH       = -Isrc
 LIBS          = -lm # -pthread -L../../lib -lkmerstats
 AR            = ar cq
 RANLIB        = ranlib -s
@@ -54,8 +54,6 @@ MKDIR         = mkdir -p
 
 ####### Files
 
-create-build-dir := $(shell $(CHK_DIR_EXISTS) .build || $(MKDIR) .build)
-
 SRCDIR  = .
 BINDIR  = ../bin
 BUILDDIR= .build
@@ -76,7 +74,7 @@ vicut: $(OBJECTS)
 	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/vicut
 
 $(BUILDDIR)/vicut.o: vicut.cc $(SRCDIR)/IOUtilities.c $(SRCDIR)/IOCppUtilities.cc
-	$(CXX) -c $(FLAGS) -I$(SRCDIR) $(INCPATH) -o $(BUILDDIR)/vicut.o vicut.cc
+	$(CXX) -c $(CXXFLAGS) -I$(SRCDIR) $(INCPATH) -o $(BUILDDIR)/vicut.o vicut.cc
 
 $(BUILDDIR)/IOUtilities.o: $(SRCDIR)/IOUtilities.c
 	$(CC) -c $(FLAGS) -o $(BUILDDIR)/IOUtilities.o $(SRCDIR)/IOUtilities.c
