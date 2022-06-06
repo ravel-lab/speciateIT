@@ -84,9 +84,18 @@ double * percentiles( const double * data, int dataLen, const double * prob, int
 void hist( double *x, int xSize, int nBins, double **hx, double **hy );
 
 void hist( double *x, int xSize,
-	   double *y, int ySize,
-	   int nBins, double **_hmid, double **_hx, double **_hy );
+           double *y, int ySize,
+           int nBins,
+           double **_hmid,
+           double **_hx,
+           double **_hy );
 
+void hist( double *x, int xSize,
+           double *y, int ySize,
+           int nBins,
+           double *hmid,
+           double *hx,
+           double *hy );
 
 //------------------------------------------------------- median ----
 //! minimum of vector v

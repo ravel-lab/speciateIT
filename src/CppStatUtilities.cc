@@ -28,6 +28,8 @@ OR PERFORMANCE OF THIS SOFTWARE.
 using namespace std;
 
 //==================================================== summaryStats_t ====
+
+
 //---------------------------------------------------- summaryStats_t ----
 summaryStats_t::summaryStats_t()
   : min(0), max(0), med(0), mean(0), mad(0), q1(0), q3(0)
@@ -66,7 +68,11 @@ void summaryStats_t::print( FILE * f ) const
 }
 
 //---------------------------------------------------------- summaryStats ----
-void summaryStats( double * data, int dataSize, summaryStats_t &summary, int sample, double constant )
+void summaryStats( double * data,
+                   int dataSize,
+                   summaryStats_t &summary,
+                   int sample,
+                   double constant )
 {
   int len = sample;
   int xLen = ( dataSize < len ) ? dataSize : len;
@@ -405,9 +411,16 @@ double * percentiles( const double *data, int dataLen, const double *prob, int p
 }
 
 //----------------------------------------------------------------- hist ----
-//! compute histogram for array x of size xSize using nBins
-// hx - array of bin mid points
-// hy - array of relative frequencies of elements of x in each bin
+/*!
+  Computes histogram for an array x of size xSize using nBins
+
+  \param x     - A double array of size xSize
+  \param xSize - The number of elements in x.
+  \param nBins - The number of bins of the histogram.
+  \param _hx   - An array of bin mid points
+  \param _hy   - An array of relative frequencies of elements of x in each bin
+
+*/
 void hist( double *x, int xSize, int nBins, double **_hx, double **_hy )
 {
   double xmin = min( x, xSize );
@@ -438,14 +451,27 @@ void hist( double *x, int xSize, int nBins, double **_hx, double **_hy )
 }
 
 //----------------------------------------------------------------- hist ----
-//! compute histogram for arrays x, y of sizes xSize and ySize respoctively
-//  using nBins
-//  hmid - array of bin mid points
-//  hx - array of relative frequencies of elements of x in each bin
-//  hy - array of relative frequencies of elements of y in each bin
+/*!
+
+  Computes two histograms, one for array x and one for array y using with bins
+  over the union of the domains of x and y.
+
+  \param x     - A double array of size xSize
+  \param xSize - The number of elements in x.
+  \param y     - A double array of size ySize
+  \param ySize - The number of elements in y.
+  \param nBins - The number of bins of the histogram.
+  \param _hmid - An array of bin mid points for both histograms.
+  \param _hx   - An array of relative frequencies of elements of x in each bin.
+  \param _hy   - An array of relative frequencies of elements of y in each bin.
+
+*/
 void hist( double *x, int xSize,
-	   double *y, int ySize,
-	   int nBins, double **_hmid, double **_hx, double **_hy )
+           double *y, int ySize,
+           int nBins,
+           double **_hmid,
+           double **_hx,
+           double **_hy )
 {
   double xmin = min( x, xSize );
   double xmax = max( x, xSize );
@@ -490,6 +516,70 @@ void hist( double *x, int xSize,
   *_hmid = hmid;
   *_hx = hx;
   *_hy = hy;
+}
+
+//----------------------------------------------------------------- hist ----
+/*!
+
+  Computes two histograms, one for array x and one for array y using with bins
+  over the union of the domains of x and y.
+
+  It is a version of hist() that differs from the above by the fact that the
+  memory for hmid, hx and hy is allocated outside of the routine that makes is
+  more memory allocation safe (simplifies memory deallocation).
+
+  \param x     - A double array of size xSize
+  \param xSize - The number of elements in x.
+  \param y     - A double array of size ySize
+  \param ySize - The number of elements in y.
+  \param nBins - The number of bins of the histogram.
+  \param hmid  - An array of bin mid points for both histograms.
+  \param hx    - An array of relative frequencies of elements of x in each bin.
+  \param hy    - An array of relative frequencies of elements of y in each bin.
+
+*/
+void hist( double *x, int xSize,
+           double *y, int ySize,
+           int nBins,
+           double *hmid,
+           double *hx,
+           double *hy )
+{
+  double xmin = min( x, xSize );
+  double xmax = max( x, xSize );
+
+  double ymin = min( y, ySize );
+  double ymax = max( y, ySize );
+
+  double tmin = (xmin < ymin) ? xmin : ymin;
+  double tmax = (xmax > ymax) ? xmax : ymax;
+
+  double dt  = (tmax - tmin)/nBins;
+  double dt2 = dt/2;
+
+  //fprintf(stderr,"xmin=%f\txmax=%f\tdt=%f\tdt2=%f\n",xmin,xmax,dt,dt2);
+
+  for ( int i = 0; i < nBins; ++i )
+    hmid[i] = tmin + dt2 + i*dt;
+
+  // computing frequencies of x elements within each bin
+  for ( int i = 0; i < xSize; ++i )
+    ++hx[ (int)floor( (x[i] - tmin)/dt ) ];
+
+  // computing frequencies of y elements within each bin
+  for ( int i = 0; i < ySize; ++i )
+    ++hy[ (int)floor( (y[i] - tmin)/dt ) ];
+
+
+  // computing relative frequencies
+  double fx = xSize * dt;
+  double fy = ySize * dt;
+
+  for ( int i = 0; i < nBins; ++i )
+  {
+    hx[i] /= fx;
+    hy[i] /= fy;
+  }
 }
 
 //--------------------------------------------------------- signalPeakPar ----
