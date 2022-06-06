@@ -35,7 +35,7 @@ extern "C"
 
 /* DEFINITIONS */
 #define MAX_SIG_SIZE   1000
-#define MAX_ITERATIONS 500
+#define MAX_ITERATIONS 1000
 #define EMDINFINITY    1e20
 #define EPSILON        1e-12
 
@@ -56,7 +56,7 @@ typedef struct
 {
   int n;                /* Number of features in the signature */
   feature_t *Features;  /* Pointer to the features vector */
-  float *Weights;       /* Pointer to the weights of the features */
+  double *Weights;      /* Pointer to the weights of the features */
 } signature_t;
 
 
@@ -64,14 +64,15 @@ typedef struct
 {
   int from;             /* Feature number in signature 1 */
   int to;               /* Feature number in signature 2 */
-  float amount;         /* Amount of flow from "from" to "to" */
+  double amount;        /* Amount of flow from "from" to "to" */
 } flow_t;
 
 
 
-float emd(signature_t *Signature1, signature_t *Signature2,
-	  float (*func)(feature_t *, feature_t *),
-	  flow_t *Flow, int *FlowSize);
+double emd(signature_t *Signature1,
+           signature_t *Signature2,
+           double (*func)(feature_t *, feature_t *),
+           flow_t *Flow, int *FlowSize);
 
 #ifdef __cplusplus
 }
