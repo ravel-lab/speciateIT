@@ -51,6 +51,19 @@ double maxAbsDer( const double *sllr, int start, int end );
 
 double TukeyBiweight( double * x, int len, double c);
 
+void ecdf(double *x,
+          int nx,
+          double *y,
+          int ny,
+          double *exy);
+
+
+void cJS(double *x,
+         int nx,
+         double *y,
+         int ny,
+         double *_js);
+
 #ifdef __cplusplus
 }
 #endif

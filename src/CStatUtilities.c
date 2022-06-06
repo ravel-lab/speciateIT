@@ -465,3 +465,132 @@ double maxAbsDer( const double *sllr, int start, int end )
 
     return maxAbsDer;
 }
+
+
+
+// structure to hold a value of an array and its label
+typedef struct {
+  double x;
+  char c;
+} xc_t;
+
+
+// This allows sorting xc_t's in the ascending order
+int cmp_asc_xc_t (const void *a, const void *b)
+{
+  xc_t *xa = (xc_t *)a;
+  xc_t *xb = (xc_t *)b;
+
+  if ( xb->x < xa->x ){
+    return 1;
+  } else if ( xb->x > xa->x ){
+    return -1;
+  } else {
+    return 0;
+  }
+}
+
+
+//-------------------------------------------------------------- ecdf ----
+/*!
+   Empirical cumulative distribution function of x estimated over the sorted array
+   of x combined with y
+
+   \param x    - A double array of length nx.
+   \param nx   - The length of x.
+   \param y    - A double array of length ny.
+   \param ny   - The length of y.
+   \param exy  - An output double array of length nx + ny of ecdf of x evaluated over the sorted array
+   of x combined with y.
+*/
+void ecdf(double *x,
+          int nx,
+          double *y,
+          int ny,
+          double *exy)
+{
+    #define DEBUG_ECDF 1
+
+    int nxy = nx + ny;
+
+    xc_t *xy;
+    MALLOC(xy, xc_t*, nxy * sizeof(xc_t));
+
+    for ( int i = 0; i < nx; i++ )
+    {
+      xy[i].x = x[i];
+      xy[i].c = 'x';
+    }
+
+    for ( int i = 0; i < ny; i++ )
+    {
+      xy[i].x = y[i];
+      xy[i].c = 'y';
+    }
+
+    qsort(xy, nxy, sizeof(xc_t), cmp_asc_xc_t );
+
+    #if DEBUG_ECDF
+    fprintf(stderr, "xy\n");
+    for( int i = 0; i < nxy; i++ )
+      fprintf(stderr, "%.2lf\t%c\n",xy[i].x, xy[i].c);
+    fprintf(stderr,"\n");
+    #endif
+
+    if ( xy[0].c == 'x' )
+      exy[0] = 1;
+    else
+      exy[0] = 0;
+
+    for( int i = 1; i < nxy; i++ )
+    {
+      if ( xy[i].c == 'x' )
+        exy[i] = exy[i-1] + 1;
+      else
+        exy[i] = exy[i-1];
+    }
+
+    for( int i = 1; i < nxy; i++ )
+      exy[i] /= nx;
+
+    free(xy);
+}
+
+//-------------------------------------------------------------- cJS ----
+/*!
+   Cumulative Jensen-Shannon divergence estimating the Jensen-Shannon divergence
+   between the density functions of x and y.
+
+   \param x    - A double array of length nx.
+   \param nx   - The length of x.
+   \param y    - A double array of length ny.
+   \param ny   - The length of y.
+   \param js   - An estimate of the Jensen-Shannon divergence between the density functions of x and y.
+*/
+void cJS(double *x,
+         int nx,
+         double *y,
+         int ny,
+         double *_js)
+{
+    #define DEBUG_CJS 1
+
+    int nxy = nx + ny;
+
+    double *exy;
+    MALLOC(exy, double*, nxy * sizeof(double));
+    ecdf(x, nx, y, ny, exy);
+
+    double *eyx;
+    MALLOC(eyx, double*, nxy * sizeof(double));
+    ecdf(y, ny, x, nx, eyx);
+
+    double js = 0;
+    for ( int i = 0; i < nxy; i++ )
+      js += exy[i] * (log2(exy[i]) - log2(0.5*(exy[i] + eyx[i]))) + 0.5/log(2) * (eyx[i] - exy[i]);
+
+    *_js = js;
+
+    free(exy);
+    free(eyx);
+}
