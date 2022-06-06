@@ -46,6 +46,20 @@ To build models & estimate error thresholds with V3V4, for example:
 % classify -v -i ~/projects/ASV_files/data/V400_ASVs_nr.fa -d sIT_models_V3V4 -o V400_ASVs_sIT
 
 
+### Building vaginal sIT models
+
+% cd ~/devel/speciateIT/data
+
+% buildModelTree -l V3V4_db/V3V4_trimmed_noEuks_nr_Complete_vaginal.lineage -i  V3V4_db/V3V4_trimmed_noEuks_nr_Complete_vaginal.fa -t V3V4_db/V3V4_trimmed_noEuks_nr_Complete_vaginal.tx -o vag_sIT_models_V3V4
+
+% buildMC -v -d vag_sIT_models_V3V4
+
+% cd ~/devel/speciateIT/src_tests
+
+% readTable_test /Users/pgajer/devel/speciateIT/data/vag_sIT_models_V3V4/rLpps/Abiotrophia_defectiva.csv
+
+
+### Gnerating lpp's of model random samples
 
 
 ### Classify sequences:
