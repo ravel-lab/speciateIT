@@ -26,8 +26,10 @@
 #include "CUtilities.h"
 
 //----------------------------------------------------------------- fOpen ----
-//! open a file handle and throw an error message if it cannot be opened
-FILE *_fOpen ( const char *file, const char *format, const char * cppfile, int line )
+/*!
+  Opens a file handle and throws an error message if it cannot be opened
+*/
+FILE *_fOpen(const char *file, const char *format, const char * cppfile, int line)
 {
     FILE *f;
 
@@ -49,37 +51,53 @@ FILE *_fOpen ( const char *file, const char *format, const char * cppfile, int l
     return f;
 }
 
-char* GetLine(FILE* inputfile)
-/*
-  The function GetLine reads one line from the inputfile, and returns it as a
-  null-terminated string. If inputfile is at EOF, a null pointer is returned.
-  The calling routine should free the char* returned by GetLine.
+//----------------------------------------------------------------- GetLine ----
+/*!
+   Reads one line from the inputfile, and returns it as a null-terminated
+   string. If inputfile is at EOF, a null pointer is returned. The calling
+   routine should free the char* returned by GetLine.
+
+   The disadvantage of this routine is that each read of a line results in at
+   least one call to malloc.
+   The advantage of this routine is that it can read arbitrarily long lines.
 */
-{ int c;
-  int n = 0;
-  int size = 1023;
-  char* line = malloc((size+1)*sizeof(char));
-  while ((c = getc(inputfile))!=EOF && c!='\r' && c!='\n')
-  { if (n == size)
-    { size *= 2;
-      line = realloc(line,(size+1)*sizeof(char));
+char* GetLine(FILE* inputfile)
+{
+    int c;
+    int n = 0;
+    int size = 1023;
+    char* line = malloc((size+1)*sizeof(char));
+
+    while ((c = getc(inputfile))!=EOF && c!='\r' && c!='\n')
+    {
+      if (n == size)
+      {
+        size *= 2;
+        line = realloc(line,(size+1)*sizeof(char));
+      }
+      line[n] = (char)c;
+      n++;
     }
-    line[n] = (char)c;
-    n++;
-  }
-  if (c=='\r')
-  { c = getc(inputfile);
-    if (c!='\n' && c!=EOF) ungetc(c,inputfile);
-  }
-  if (n==0 && c==EOF)
-  { free(line);
-    return 0;
-  }
-  line[n] = '\0';
-  line = realloc(line,(n+1)*sizeof(char));
-  return line;
+
+    if (c=='\r')
+    {
+      c = getc(inputfile);
+      if (c!='\n' && c!=EOF) ungetc(c,inputfile);
+    }
+
+    if (n==0 && c==EOF)
+    {
+      free(line);
+      return 0;
+    }
+
+    line[n] = '\0';
+    line = realloc(line,(n+1)*sizeof(char));
+
+    return line;
 }
 
+//----------------------------------------------------------------- tokenize ----
 static char* tokenize(char* s)
 {
   char* p = s;
@@ -97,12 +115,12 @@ static char* tokenize(char* s)
   return NULL;
 }
 
+//----------------------------------------------------------------- readTable ----
+/*!
+  Reads a tab delimited table with row and column names
 
-char * readTable( const char *inFile, double ***matrix, int *nRows, int *nCols,
-		  char ***rowNames, char ***colNames )
-/*
-  Read a table with row and column names
-  Input format
+  Input format:
+
   PtId  \tcol1name\tcol2name\t ... \tcolNname
   row1Id\tx_1     \tx_2     \t ... \tx_dim
 
@@ -118,263 +136,270 @@ char * readTable( const char *inFile, double ***matrix, int *nRows, int *nCols,
   necessary. The reason is that any error message then can (and should) be
   safely freed.
 */
+char * readTable( const char *inFile,
+                  double ***matrix,
+                  int *nRows,
+                  int *nCols,
+                  char ***rowNames,
+                  char ***colNames )
 {
-  int row, column;           /* Counters for data matrix */
-  int fileRow, fileColumn;   /* Counters for rows and columns in the file */
-  int n;
-  int nFileColumns;
-  char* line;
-  char* s;
-  char* token;
+    int row, column;           /* Counters for data matrix */
+    int fileRow, fileColumn;   /* Counters for rows and columns in the file */
+    int n;
+    int nFileColumns;
+    char* s;
+    char* token;
 
-  FILE *file = fOpen(inFile,"r");
+    FILE *file = fOpen(inFile,"r");
 
-  // Parse header line (first line) to find out what the columns are
+    // Parse header line (first line) to find out what the columns are
 
-  line=GetLine(file);
-  if(!line)
-  {
-    const char text[] = "Error: Attempt to read empty file";
-    const int m = strlen(text) + 1;
-    char* error = malloc(m*sizeof(char));
-    strcpy(error,text);
-    return error;
-  }
+    char* line = GetLine(file);
 
-  while(line[0]=='\0') /* Ignore completely empty lines */
-  {
-    free(line);
-    line = GetLine(file);
     if(!line)
     {
-      const char text[] = "Error: Failed to find first line in file";
+      const char text[] = "Error: Attempt to read empty file";
       const int m = strlen(text) + 1;
       char* error = malloc(m*sizeof(char));
       strcpy(error,text);
       return error;
     }
-  }
 
-  s = tokenize(line);
-  fileColumn = 1;
-
-  while (s)
-  {
-    s = tokenize(s);
-    fileColumn++;
-  }
-  free(line);
-
-  nFileColumns = fileColumn;
-
-
-  // check the number of elements in the second row
-  // it can be either = nFileColumns
-  // or
-  // = nFileColumns+1
-  line=GetLine(file);
-  s = tokenize(line);
-  fileColumn = 1;
-  fileRow = 1;
-
-  while (s)
-  {
-    s = tokenize(s);
-    fileColumn++;
-  }
-  free(line);
-
-  if (fileColumn < nFileColumns)
-  {
-    int n = 1024;
-    char* text = malloc(n*sizeof(char));
-    sprintf (text,
-	     "Error reading line %d: only %d columns available (%d needed)",
-	     fileRow, fileColumn, nFileColumns);
-    n = strlen(text) + 1;
-    text = realloc(text,n*sizeof(char));
-    return text;
-  }
-
-  if (fileColumn > nFileColumns+1)
-  {
-    int n = 1024;
-    char* text = malloc(n*sizeof(char));
-    sprintf (text,
-	     "Error reading line %d: %d columns given (%d needed)",
-	     fileRow, fileColumn, nFileColumns);
-    n = strlen(text) + 1;
-    text = realloc(text,n*sizeof(char));
-    return text;
-  }
-
-  int hasRowIdlabel = 0;
-  if ( fileColumn == nFileColumns )
-    hasRowIdlabel = 1;
-
-  nFileColumns = fileColumn;
-
-  if (nFileColumns < 2)
-  { const char text[] = "Error: less than two columns found in the file";
-    const int m = strlen(text) + 1;
-    char* error = malloc(m*sizeof(char));
-    strcpy(error,text);
-    return error;
-  }
-
-  /* Check if the other rows in the file have the same number of columns */
-  fileRow = 2;
-  while ((line = GetLine(file)))
-  { if (line[0]=='\0') free(line); /* Ignore completely empty lines */
-    else
-      /* Parse the first column to find out what the rows contain */
+    while(line[0]=='\0') /* Ignore completely empty lines */
     {
-      fileColumn = 1; /* One more columns than tabs */
-      for (s=line; (*s)!='\0'; s++) if(*s=='\t') fileColumn++;
       free(line);
-      fileRow++;
-
-      if (s==NULL)
+      line = GetLine(file);
+      if(!line)
       {
-	int n = 1024;
-        char* text = malloc(n*sizeof(char));
-        sprintf (text, "Error reading line %d: Gene name is missing", fileRow);
-	n = strlen(text) + 1;
-        text = realloc(text,n*sizeof(char));
- 	return text;
-      }
-
-      if (fileColumn < nFileColumns)
-      {
-	int n = 1024;
-        char* text = malloc(n*sizeof(char));
-        sprintf (text,
-                 "Error reading line %d: only %d columns available (%d needed)",
-                 fileRow, fileColumn, nFileColumns);
-	n = strlen(text) + 1;
-        text = realloc(text,n*sizeof(char));
-	return text;
-      }
-
-      if (fileColumn > nFileColumns)
-      {
-	int n = 1024;
-        char* text = malloc(n*sizeof(char));
-        sprintf (text,
-                 "Error reading line %d: %d columns given (%d needed)",
-                 fileRow, fileColumn, nFileColumns);
-	n = strlen(text) + 1;
-        text = realloc(text,n*sizeof(char));
-	return text;
+        const char text[] = "Error: Failed to find first line in file";
+        const int m = strlen(text) + 1;
+        char* error = malloc(m*sizeof(char));
+        strcpy(error,text);
+        return error;
       }
     }
-  }
 
-  int nNumRows = fileRow-1;
-  *nRows = nNumRows;
+    s = tokenize(line);
+    fileColumn = 1;
 
-  int nNumCols = nFileColumns-1;
-  *nCols = nNumCols;
-
-
-  /* Read the first line into a string */
-  fseek (file, 0, SEEK_SET);
-  line = GetLine(file);
-
-  if(!line)
-  {
-    char text[] = "Error finding UniqID keyword";
-    const int m = strlen(text) + 1;
-    char* error = malloc(m*sizeof(char));
-    strcpy(error,text);
-    return error;
-  }
-
-  /* Allocate space for column labels and save them */
-
-  char **colLabel = (char **)malloc(nNumCols*sizeof(char*)); // don't save rowIdlabel
-
-  column = 0;
-  s = line;
-
-  if ( !hasRowIdlabel )
-  {
-    token = s;
-    s = tokenize(s);
-    n = strlen(token);
-    colLabel[column] = malloc((n+1)*sizeof(char));
-    strcpy(colLabel[column],token);
-    column++;
-  }
-
-  while (column < nNumCols)
-  {
-    token = s;
-    s = tokenize(s);
-    n = strlen(token);
-    colLabel[column] = malloc((n+1)*sizeof(char));
-    strcpy(colLabel[column],token);
-    column++;
-  }
-  free(line);
-
-  /* Allocate space for data */
-  double **data = (double **)malloc(nNumRows*sizeof(double*));
-  for (row = 0; row < nNumRows; row++)
-    data[row] = malloc(nNumCols*sizeof(double));
-
-  /* Allocate space for row labels */
-  char **rowLabel = (char **)malloc(nNumRows*sizeof(char*));
-
-  // read numerical data and row labels
-  row = 0;
-  while ((line=GetLine(file)))
-  {
-    if (strlen(line) > 1) /* Ignore completely empty lines */
+    while (s)
     {
-      column = 0;
-      fileColumn = 0;
-      s = line;
-
-      while (s)
-      {
-	token = s;
-	s = tokenize(s);
-
-	if (fileColumn==0)
-	{
-	  const int n = strlen(token) + 1;
-	  rowLabel[row] = malloc(n*sizeof(char));
-	  strcpy (rowLabel[row],token);
-	}
-	else
-	{
-	  char* error = NULL;
-	  data[row][column] = 0;
-
-	  if (token[0]!='\0') /* Otherwise it is a missing value */
-	  {
-	    double number = strtod(token, &error);
-
-	    if (!(*error))
-	      data[row][column] = number;
-	  }
-	  column++;
-	}
-
-	fileColumn++;
-      }
-      row++;
-      free(line);
+      s = tokenize(s);
+      fileColumn++;
     }
-  }
+    free(line);
 
-  *rowNames = rowLabel;
-  *colNames = colLabel;
-  *matrix   = data;
-  fclose(file);
+    nFileColumns = fileColumn;
 
-  return 0;
+
+    // check the number of elements in the second row
+    // it can be either = nFileColumns
+    // or
+    // = nFileColumns+1
+    line=GetLine(file);
+    s = tokenize(line);
+    fileColumn = 1;
+    fileRow = 1;
+
+    while (s)
+    {
+      s = tokenize(s);
+      fileColumn++;
+    }
+    free(line);
+
+    if (fileColumn < nFileColumns)
+    {
+      int n = 1024;
+      char* text = malloc(n*sizeof(char));
+      sprintf (text,
+               "Error reading line %d: only %d columns available (%d needed)",
+               fileRow, fileColumn, nFileColumns);
+      n = strlen(text) + 1;
+      text = realloc(text,n*sizeof(char));
+      return text;
+    }
+
+    if (fileColumn > nFileColumns+1)
+    {
+      int n = 1024;
+      char* text = malloc(n*sizeof(char));
+      sprintf (text,
+               "Error reading line %d: %d columns given (%d needed)",
+               fileRow, fileColumn, nFileColumns);
+      n = strlen(text) + 1;
+      text = realloc(text,n*sizeof(char));
+      return text;
+    }
+
+    int hasRowIdlabel = 0;
+    if ( fileColumn == nFileColumns )
+      hasRowIdlabel = 1;
+
+    nFileColumns = fileColumn;
+
+    if (nFileColumns < 2)
+    { const char text[] = "Error: less than two columns found in the file";
+      const int m = strlen(text) + 1;
+      char* error = malloc(m*sizeof(char));
+      strcpy(error,text);
+      return error;
+    }
+
+    /* Check if the other rows in the file have the same number of columns */
+    fileRow = 2;
+    while ((line = GetLine(file)))
+    {
+      if (line[0]=='\0') free(line); /* Ignore completely empty lines */
+      else
+        /* Parse the first column to find out what the rows contain */
+      {
+        fileColumn = 1; /* One more columns than tabs */
+        for (s=line; (*s)!='\0'; s++) if(*s=='\t') fileColumn++;
+        free(line);
+        fileRow++;
+
+        if (s==NULL)
+        {
+          int n = 1024;
+          char* text = malloc(n*sizeof(char));
+          sprintf (text, "ERROR reading line %d: Gene name is missing", fileRow);
+          n = strlen(text) + 1;
+          text = realloc(text,n*sizeof(char));
+          return text;
+        }
+
+        if (fileColumn < nFileColumns)
+        {
+          int n = 1024;
+          char* text = malloc(n*sizeof(char));
+          sprintf (text,
+                   "Error reading line %d: only %d columns available (%d needed)",
+                   fileRow, fileColumn, nFileColumns);
+          n = strlen(text) + 1;
+          text = realloc(text,n*sizeof(char));
+          return text;
+        }
+
+        if (fileColumn > nFileColumns)
+        {
+          int n = 1024;
+          char* text = malloc(n*sizeof(char));
+          sprintf (text,
+                   "Error reading line %d: %d columns given (%d needed)",
+                   fileRow, fileColumn, nFileColumns);
+          n = strlen(text) + 1;
+          text = realloc(text,n*sizeof(char));
+          return text;
+        }
+      }
+    }
+
+    int nNumRows = fileRow-1;
+    *nRows = nNumRows;
+
+    int nNumCols = nFileColumns-1;
+    *nCols = nNumCols;
+
+
+    /* Read the first line into a string */
+    fseek(file, 0, SEEK_SET);
+    line = GetLine(file);
+
+    if(!line)
+    {
+      char text[] = "Error finding UniqID keyword";
+      const int m = strlen(text) + 1;
+      char* error = malloc(m*sizeof(char));
+      strcpy(error,text);
+      return error;
+    }
+
+    /* Allocate space for column labels and save them */
+
+    char **colLabel = (char **)malloc(nNumCols*sizeof(char*)); // don't save rowIdlabel
+
+    column = 0;
+    s = line;
+
+    if ( !hasRowIdlabel )
+    {
+      token = s;
+      s = tokenize(s);
+      n = strlen(token);
+      colLabel[column] = malloc((n+1)*sizeof(char));
+      strcpy(colLabel[column],token);
+      column++;
+    }
+
+    while (column < nNumCols)
+    {
+      token = s;
+      s = tokenize(s);
+      n = strlen(token);
+      colLabel[column] = malloc((n+1)*sizeof(char));
+      strcpy(colLabel[column],token);
+      column++;
+    }
+    free(line);
+
+    /* Allocate space for data */
+    double **data = (double **)malloc(nNumRows*sizeof(double*));
+    for (row = 0; row < nNumRows; row++)
+      data[row] = malloc(nNumCols*sizeof(double));
+
+    /* Allocate space for row labels */
+    char **rowLabel = (char **)malloc(nNumRows*sizeof(char*));
+
+    // read numerical data and row labels
+    row = 0;
+    while ((line=GetLine(file)))
+    {
+      if (strlen(line) > 1) /* Ignore completely empty lines */
+      {
+        column = 0;
+        fileColumn = 0;
+        s = line;
+
+        while (s)
+        {
+          token = s;
+          s = tokenize(s);
+
+          if (fileColumn==0)
+          {
+            const int n = strlen(token) + 1;
+            rowLabel[row] = malloc(n*sizeof(char));
+            strcpy (rowLabel[row],token);
+          }
+          else
+          {
+            char* error = NULL;
+            data[row][column] = 0;
+
+            if (token[0]!='\0') /* Otherwise it is a missing value */
+            {
+              double number = strtod(token, &error);
+
+              if (!(*error))
+                data[row][column] = number;
+            }
+            column++;
+          }
+
+          fileColumn++;
+        }
+        row++;
+        free(line);
+      }
+    }
+
+    *rowNames = rowLabel;
+    *colNames = colLabel;
+    *matrix   = data;
+    fclose(file);
+
+    return 0;
 }
 
 
@@ -387,8 +412,7 @@ typedef struct tblRow
 } tblRow_t;
 
 //--------------------------------- readCharTbl ---------------------------
-int readCharTbl( const char *inFile, char ****tbl, int *nRows, int *nCols)
-/*
+/*!
   Reads a tab delimited character table with no header.
 
   (*tbl)[i] is the i-th row of a table (hence char ** array)
@@ -396,6 +420,7 @@ int readCharTbl( const char *inFile, char ****tbl, int *nRows, int *nCols)
 
   Return value is 0 on success and 1 on error.
 */
+int readCharTbl( const char *inFile, char ****tbl, int *nRows, int *nCols)
 {
   char* line;
   char* s;
@@ -498,8 +523,10 @@ int readCharTbl( const char *inFile, char ****tbl, int *nRows, int *nCols)
 }
 
 //---------------------------------------------------------- printCharTbl ----
+/*!
+   Prints to stdout character table
+*/
 void printCharTbl(char ***tbl, int nRows, int nCols)
-// prints to stdout character table
 {
   int i, j;
   for ( i = 0; i < nRows; ++i )
@@ -513,18 +540,36 @@ void printCharTbl(char ***tbl, int nRows, int nCols)
 
 
 //---------------------------------------------------------- writeCharTbl ----
+/*!
+   Writes a character table to a space delimited file
+*/
 void writeCharTbl(char *inFile, const char ***tbl, int nRows, int nCols )
-// writes character table to a file
+
 {
   FILE *out = fOpen(inFile, "w");
-  int i, j;
-  for ( i = 0; i < nRows; ++i )
+  for ( int i = 0; i < nRows; ++i )
   {
-    for ( j = 0; j < nCols; ++j )
+    for ( int j = 0; j < nCols; ++j )
       fprintf(out, "%s ", tbl[i][j]);
     fprintf(out, "\n");
   }
   fprintf(out, "\n");
 
   fclose(out);
+}
+
+
+//---------------------------------------------------------- printDoubleTbl ----
+/*!
+   Prints to stdout character table
+*/
+void printDoubleTbl(const double **tbl, int nRows, int nCols)
+{
+  for ( int i = 0; i < nRows; ++i )
+  {
+    for ( int j = 0; j < nCols; ++j )
+      printf("%lf ", tbl[i][j]);
+    printf("\n");
+  }
+  printf("\n");
 }

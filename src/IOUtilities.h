@@ -42,6 +42,7 @@ FILE *_fOpen ( const char *file, const char *format, const char * cppfile, int l
 int readCharTbl( const char *inFile, char ****tbl, int *nRows, int *nCols);
 
 void printCharTbl(char ***tbl, int nRows, int nCols);
+void printDoubleTbl(const double **tbl, int nRows, int nCols);
 void writeCharTbl(char *inFile, const char ***tbl, int nRows, int nCols );
 
 char * readTable( const char *inFile, double ***matrix, int *nrow, int *ncol,
