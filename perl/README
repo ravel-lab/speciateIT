@@ -1,0 +1,24 @@
+
+Perl projects
+
+[~/projects]% find . -d -name "perl"
+find . -d -name "perl"
+./CST_assignment/perl
+./U01_metabolome/perl
+./microbicide_nature_medicine_2011/perl
+./controls/perl
+./postal_study/perl
+./qPCR/perl
+./HMP/Rav156_157_Analysis/perl
+
+[~/devel]% find . -d -name "perl"
+find . -d -name "perl"
+./.igs_svn/pgajer/cluster/perl
+./.igs_svn/pgajer/MCclassifier/perl
+./.igs_svn/pgajer/GolayCode/perl
+./.igs_svn/pgajer/k-merStats/perl
+./.igs_svn/pgajer/strainClassifier/perl
+./.igs_svn/pgajer/errorCorrectingCodes/perl
+./tensorflow/tensorflow/java/src/gen/perl
+./packages/ralee-0.7/perl
+./speciateIT/perl
