@@ -12,3 +12,5 @@ docs/*.docx
 src_tests/scratch.cc
 src_tests/*_test
 R/rLpps_vs_observed_llps/pics/
+presentations/
+src/Archives/
