@@ -4,3 +4,10 @@ data/
 tmp/
 bin/
 R/vaginal_species/.Rhistory
+docs/*.aux
+docs/*.log
+docs/*.out
+docs/*.pdf
+docs/*.docx
+src_tests/scratch.cc
+src_tests/*_test
