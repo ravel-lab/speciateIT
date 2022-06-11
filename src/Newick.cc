@@ -1167,7 +1167,7 @@ void NewickTree_t::indexNewickNodes( map<int, NewickNode_t*> & idx2node)
 
         idx2node_m[node->idx] = node;
 
-        if ( node->idx >= 0 ) // leaf
+        if ( node->idx < 0 ) // internal node
         {
           int numChildren = node->children_m.size();
           for (int i = 0; i < numChildren; i++)
