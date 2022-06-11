@@ -77,6 +77,10 @@ To build models & estimate error thresholds with V3V4, for example:
   classify -v -i test10k_V3V4.fa -d V3V4_vaginal_Mar2021/V3V4_vag_mcDir -o txclass_test10k_V3V4
 
 
+### renaming leaves of a tree
+
+/Users/pgajer/opt/anaconda3/bin/nw_rename
+
 ### Debugging
 
 cd ~/devel/speciateIT/data/V3V4_vaginal_Mar2021
@@ -86,15 +90,10 @@ lldb -- sp_model_seq_lpps -v -d V3V4_vag_mcDir -s 1000
 
 ### ToDo's
 
-1) check correctness of model tree building in buildModelTree
+* Encapsulate the timing routine in el_time()
 
-2) get rid of q01 and replace it by a constant number of iteration where timing
-is reported
+* Remove from inPar_t parameters not used in the given program
 
-3) encapsulate the timing routine in el_time()
+* Check input parameters within inPar_t::check_parameters()
 
-4) remove from inPar_t parameters not used in the given program
-
-5) organize the code and simplify
-
-6) get rid of boost in vicut !!!
+* Organize the code and simplify
