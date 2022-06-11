@@ -91,8 +91,8 @@ void printUsage( const char *s )
 void printHelp( const char *s )
 {
     cout << endl
-         << "vicut performs vi-cut clustering of a non-necessary binary tree with anannotation data.\n"
-         << "The input must consists of a tree file (newick format) with an annotation file."
+         << "vicut performs vi-cut clustering of a non-necessary binary tree with an annotation data.\n"
+         << "The input must consists of a tree file (Newick format) with an annotation file."
          << "For more info on vi-cut clustering see http://www.cbcb.umd.edu/VICut\n\n";
 
     printUsage(s);
@@ -797,7 +797,7 @@ double vicut(vector<int> &nodeCut, map<int, NewickNode_t *> &idx2node, int *annI
     // L(x) is the set of leaves in the subtree rooted at x, that have known annotation
     // and A(d) is the set of leaves (in the whole tree) that are known to have annotation d.
 
-#define VICUT_DEBUG 0
+    #define VICUT_DEBUG 0
 
     // computing nAnnLeaves and A(d)
     int nAnnLeaves = 0;
@@ -819,9 +819,9 @@ double vicut(vector<int> &nodeCut, map<int, NewickNode_t *> &idx2node, int *annI
     for ( int i = 0; i < nuAnn; ++i )
       HA += H( Acount[i]/(double)nAnnLeaves );
 
-#if VICUT_DEBUG
+    #if VICUT_DEBUG
     fprintf(stderr,"\n\tNumber of leaves: %d\n\tNumber of annotated leaves: %d\n\tNumber of unique labels: %d\n\n", nLeaves, nAnnLeaves, nuAnn);
-#endif
+    #endif
 
     // first lets compute q(x) at the leaves, which in the tree are represented
     // by integers 0, 1, ... , (nLeaves-1)
@@ -851,16 +851,16 @@ double vicut(vector<int> &nodeCut, map<int, NewickNode_t *> &idx2node, int *annI
         minIdx = pr.first;
     }
 
-#if VICUT_DEBUG
+    #if VICUT_DEBUG
     fprintf(stderr,"\tminIdx: %d\n", minIdx);
     fprintf(stderr,"\tH(p): %.3f\n", Hp);
-#endif
+    #endif
 
     for( int i = minIdx; i < 0; i++ )
       minCut[i] = 0;
 
     // min-node-cut internal node index
-    //vector<vector<int> > minCutIdx; // minCutIdx[i] vector of indices of elements of i-th internal node subtree that are members of min-node-cut
+    // vector<vector<int> > minCutIdx; // minCutIdx[i] vector of indices of elements of i-th internal node subtree that are members of min-node-cut
     // in high mode we don't have to keep it
     // as a node is promoted to min-node-cut when
     // q(x) <= q(x.left) + q(x.right)
@@ -912,8 +912,8 @@ double vicut(vector<int> &nodeCut, map<int, NewickNode_t *> &idx2node, int *annI
       vector<string> leaves;
       nt.leafLabels(node, leaves);
 
-#if VICUT_DEBUG
-      fprintf(stderr,"\n-----------------------------\nRound %d  Internal Node %d\nChildren: ",round, i);
+      #if VICUT_DEBUG
+      fprintf(stderr,"\n-----------------------------\nInternal Node %d\nChildren: ", i);
       for (int j = 0; j < (nChildren-1); j++)
         if ( (node->children_m[j])->idx < 0 )
           fprintf(stderr,"%d, ", (node->children_m[j])->idx);
@@ -931,7 +931,7 @@ double vicut(vector<int> &nodeCut, map<int, NewickNode_t *> &idx2node, int *annI
       //fprintf(stderr,"\n");
 
       fprintf(stderr,"-----------------------------\n");
-#endif
+      #endif
 
       //#if VICUT_DEBUG
 #if 0
@@ -1052,10 +1052,10 @@ double vicut(vector<int> &nodeCut, map<int, NewickNode_t *> &idx2node, int *annI
         p = countMap[i]/(double)nAnnLeaves;
         qMap[i] = -H(p);
 
-#if VICUT_DEBUG
+        #if VICUT_DEBUG
         printf("p=%d/%d=%.3f\t-H(p)=%.3f\n", countMap[i], nAnnLeaves, p, qMap[i]);
         //       printf("%*s\tFreq\tTotal\t2H(Freq/nAnn)\n", maxAnnStrLen, "Label");
-#endif
+        #endif
 
         for ( int j = 0; j < nuAnn; ++j )
         {
@@ -1065,25 +1065,25 @@ double vicut(vector<int> &nodeCut, map<int, NewickNode_t *> &idx2node, int *annI
             double h = 2*H( AcountMap[i][j] / (double)nAnnLeaves );
             qMap[i] += h;
 
-#if VICUT_DEBUG
+            #if VICUT_DEBUG
             // label frequency total 2H(freq/total)
-            fprintf(stderr,"%d\t%.3f\n", AcountMap[i][j], Acount[j], h);
+            fprintf(stderr,"%d\t%d\t%.3f\n", AcountMap[i][j], Acount[j], h);
             //printf("p[%d]=A[%d]/n=%d/%d=%.3f\t2*H(A[%d]/n)=%.3f\tq[%d]=%.3f\n",
             //	 j,j,AcountMap[i][j], nAnnLeaves,(AcountMap[i][j] / (double)nAnnLeaves),j,(2*H( AcountMap[i][j] / (double)nAnnLeaves )),i,qMap[i]);
-#endif
+            #endif
           }
           else
           {
-#if VICUT_DEBUG
+            #if VICUT_DEBUG
             // label frequency total 2H(freq/total)
             fprintf(stderr,"%d\t0\n", Acount[j]);
-#endif
+            #endif
           }
         }
 
-#if VICUT_DEBUG
-        fprintf(stderr,"%d\t%.3f\t[= -H(p)]\n", countMap[i], nAnnLeaves, -H(p));
-#endif
+        #if VICUT_DEBUG
+        fprintf(stderr,"%d\t%d\t%.3f\t[= -H(p)]\n", countMap[i], nAnnLeaves, -H(p));
+        #endif
       }
       else
       {
@@ -1110,11 +1110,12 @@ double vicut(vector<int> &nodeCut, map<int, NewickNode_t *> &idx2node, int *annI
         qMap[i] = qChildren;
       }
 
-#if VICUT_DEBUG
+      #if VICUT_DEBUG
       fprintf(stderr,"minCut[%d]=%d\tqMap[%d]=%.3f\n",i, minCut[i], i, qMap[i]);
-#endif
+      #endif
 
       // finding the highest frequency annotation index
+      #if 0
       int j1 = -1, j2 = -1;
       int *r = NULL;
       if ( AcountMap[i] )
@@ -1129,6 +1130,7 @@ double vicut(vector<int> &nodeCut, map<int, NewickNode_t *> &idx2node, int *annI
             j2 = j;
         }
       }
+      #endif
 
       i--;
     } // end of while ( ) loop
