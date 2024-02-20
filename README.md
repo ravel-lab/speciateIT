@@ -24,16 +24,31 @@ Holm, Johanna (2024). speciateIT: vSpeciateDB Models. figshare. Dataset. https:/
 
 ### To use: 
 
-classify -d < vSpeciateDB dir > -i < fasta file > -o < outDir >
+1. Classification:  
+   classify -d < vSpeciateDB dir > -i < fasta file > -o < outDir >  
+&nbsp;&nbsp;&nbsp;&nbsp;Example: classify -d vSpeciateDB_models/vSpeciateIT_V3V4 -i MyProject_ASV.fasta -o MyProject   
+&nbsp;&nbsp;&nbsp;&nbsp;Output file name is always "MC_order7_results.txt". Format: "Sequence ID" "Classification" "posterior probability" "number of Decisions".  
 
-&nbsp;&nbsp;&nbsp;&nbsp;Example: classify -d vSpeciateDB_models/vSpeciateIT_V3V4 -i MyProject_ASV.fasta -o MyProject 
-
-&nbsp;&nbsp;&nbsp;&nbsp;Output file name is always "MC_order7_results.txt". Format: "Sequence ID" "Classification" "posterior probability" "number of Decisions".
-
-To force species-level annotations (i.e. ignore error thresholds): 
-
+&nbsp;&nbsp;&nbsp;&nbsp;To force species-level annotations (i.e. ignore error thresholds):   
 &nbsp;&nbsp;&nbsp;&nbsp;classify -d < vSpeciateDB dir > -i < fasta file > -o < outDir > --skip-err-thld
 
-To make a sample x taxon count table: 
-
+2. Make sample x taxon count table using classifications:   
 &nbsp;&nbsp;&nbsp;&nbsp;count_table.py -s < MC_order7_results.txt > -c < sample x ASV count table >
+
+### To test:
+
+classify -d vSpeciateDB_models/vSpeciateIT_V3V4 -i test.fasta -o test
+
+more test/MC_order7_results.txt
+<pre>
+ASV1	Lactobacillus_iners	0.970448	50  
+ASV2	Lactobacillus_crispatus	0.974671	50  
+ASV3	Lactobacillus_mulieris	0.976813	50  
+ASV4	Ca_Lachnocurva_vaginae	0.969937	187  
+ASV5	Gardnerella_vaginalis	0.974747	27  
+ASV6	Lactobacillus_crispatus	0.965138	50  
+ASV7	Lactobacillus_iners	0.973368	50  
+ASV8	Fannyhessea_vaginae	0.984829	24  
+ASV9	Leptotrichia_shahii	0.916945	26  
+ASV10	Megasphaera_lornae	0.973400	27  
+</pre>
