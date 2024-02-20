@@ -22,17 +22,18 @@ Holm, Johanna (2024). speciateIT: vSpeciateDB Models. figshare. Dataset. https:/
 
 classify -d < vSpeciateDB dir > -i < fasta file > -o < outDir >
 
-  Example: classify -d vSpeciateDB_models/vSpeciateIT_V3V4 -i MyProject_ASV.fasta -o MyProject 
+&nbsp;&nbsp;&nbsp;&nbsp;Example: classify -d vSpeciateDB_models/vSpeciateIT_V3V4 -i MyProject_ASV.fasta -o MyProject 
 
-   Classifier will produce output directory if needed.
-
-   Output file name always "MC_order7_results.txt"
-
-   Output file contains 4 columns: "Sequence ID" "Classification" "posterior probability" "number of Decisions"
+&nbsp;&nbsp;&nbsp;&nbsp;Output file name is always "MC_order7_results.txt". Format: "Sequence ID" "Classification" "posterior probability" "number of Decisions".
 
 To force species-level annotations (i.e. ignore error thresholds): 
 
-classify -d < vSpeciateDB dir > -i < fasta file > -o < outDir > --skip-err-thld
+&nbsp;&nbsp;&nbsp;&nbsp;classify -d < vSpeciateDB dir > -i < fasta file > -o < outDir > --skip-err-thld
+
+To make a sample x taxon count table: 
+&nbsp;&nbsp;&nbsp;&nbsp;count_table.py -s < MC_order7_results.txt > -c < ASV count table >
+
+&nbsp;&nbsp;&nbsp;&nbsp; Where -c is a sample x ASV count table. 
 
 NOTE: All Makefile's are configured for macosx. If you are on linux machine,
 change CC, CXX and LINK to gcc, g++ and g++, respectively. You may also need to
