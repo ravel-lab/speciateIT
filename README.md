@@ -31,6 +31,7 @@ classify -d < vSpeciateDB dir > -i < fasta file > -o < outDir >
    Output file contains 4 columns: "Sequence ID" "Classification" "posterior probability" "number of Decisions"
 
 To force species-level annotations (i.e. ignore error thresholds): 
+
 classify -d < vSpeciateDB dir > -i < fasta file > -o < outDir > --skip-err-thld
 
 NOTE: All Makefile's are configured for macosx. If you are on linux machine,
