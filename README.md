@@ -8,7 +8,7 @@ Holm, Johanna (2024). speciateIT: vSpeciateDB Models. figshare. Dataset. https:/
 
 ### To install:
 1. Clone repository.
-2. Download vSpeciateDB and place into "vSpeciateDB_models". 
+2. Download vSpeciateDB (https://doi.org/10.6084/m9.figshare.25254229.v1) and place into "vSpeciateDB_models". 
 3. From parent directory
    
    make all
