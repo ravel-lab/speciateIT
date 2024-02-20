@@ -31,9 +31,8 @@ To force species-level annotations (i.e. ignore error thresholds):
 &nbsp;&nbsp;&nbsp;&nbsp;classify -d < vSpeciateDB dir > -i < fasta file > -o < outDir > --skip-err-thld
 
 To make a sample x taxon count table: 
-&nbsp;&nbsp;&nbsp;&nbsp;count_table.py -s < MC_order7_results.txt > -c < ASV count table >
 
-&nbsp;&nbsp;&nbsp;&nbsp; Where -c is a sample x ASV count table. 
+&nbsp;&nbsp;&nbsp;&nbsp;count_table.py -s < MC_order7_results.txt > -c < sample x ASV count table >
 
 NOTE: All Makefile's are configured for macosx. If you are on linux machine,
 change CC, CXX and LINK to gcc, g++ and g++, respectively. You may also need to
