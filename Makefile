@@ -6,6 +6,7 @@
 
 # Set this to your installation directory.
 BIN_DIR = /usr/local/bin
+UNZIP_DIR = vSpeciateDB_models
 
 first: make_default
 MAKEFILE        = Makefile
@@ -27,51 +28,40 @@ MKDIR           = mkdir -p
 
 BUILDDIR= src/.build
 
-src-make_default: src/Makefile_buildMC src/Makefile_buildModelTree src/Makefile_clError src/Makefile_classify src/Makefile_cut_tree src/Makefile_est_error_thlds  src/Makefile_fp_fn_rates src/Makefile_pp_embedding src/Makefile_pp_ref_sib_wr_ref_models src/Makefile_pp_wr_selected_models src/Makefile_rk_stats src/Makefile_tree_stitcher src/Makefile_vicut
-	cd src && $(MAKE) -f Makefile_taxon_model_rseq_lpps
-	cd src && $(MAKE) -f Makefile_buildMC
+all: src-make_default install unzip
+
+src-make_default: src/Makefile_buildMC src/Makefile_buildModelTree src/Makefile_classify  src/Makefile_pp_embedding src/Makefile_vicut
 	cd src && $(MAKE) -f Makefile_buildMC
 	cd src && $(MAKE) -f Makefile_buildModelTree
-	cd src && $(MAKE) -f Makefile_clError
 	cd src && $(MAKE) -f Makefile_classify
-	cd src && $(MAKE) -f Makefile_cut_tree
-	cd src && $(MAKE) -f Makefile_est_error_thlds
-	cd src && $(MAKE) -f Makefile_fp_fn_rates
 	cd src && $(MAKE) -f Makefile_pp_embedding
-	cd src && $(MAKE) -f Makefile_pp_ref_sib_wr_ref_models
-	cd src && $(MAKE) -f Makefile_pp_wr_selected_models
-	cd src && $(MAKE) -f Makefile_rk_stats
 	cd src && $(MAKE) -f Makefile_vicut
 
 src-clean:
 	$(DEL_FILE) $(BUILDDIR)/*.o
 
-install: bin/buildMC bin/buildModelTree bin/clError bin/classify bin/cut_tree bin/est_error_thlds bin/fp_fn_rates bin/pp_embedding bin/pp_ref_sib_wr_ref_models bin/pp_wr_selected_models bin/rk_stats bin/tree_stitcher bin/vicut
+unzip:
+	# Unzip files into the specified directory
+	cd $(UNZIP_DIR) && unzip -Xo vSpeciateIT_V1V3.zip
+	cd $(UNZIP_DIR) && unzip -Xo vSpeciateIT_V3V4.zip
+	cd $(UNZIP_DIR) && unzip -Xo vSpeciateIT_V4V4.zip
+
+install: bin/buildMC bin/buildModelTree bin/classify bin/pp_embedding bin/vicut bin/count_table.py
 	$(shell $(CHK_DIR_EXISTS) $(BIN_DIR) || $(MKDIR) $(BIN_DIR))
 	$(COPY) bin/buildMC $(BIN_DIR)
 	$(COPY) bin/buildModelTree $(BIN_DIR)
-	$(COPY) bin/clError $(BIN_DIR)
 	$(COPY) bin/classify $(BIN_DIR)
-	$(COPY) bin/cut_tree $(BIN_DIR)
-	$(COPY) bin/est_error_thlds $(BIN_DIR)
-	$(COPY) bin/taxon_model_rseq_lpps $(BIN_DIR)
-	$(COPY) bin/fp_fn_rates $(BIN_DIR)
 	$(COPY) bin/pp_embedding $(BIN_DIR)
-	$(COPY) bin/pp_ref_sib_wr_ref_models $(BIN_DIR)
-	$(COPY) bin/pp_wr_selected_models $(BIN_DIR)
-	$(COPY) bin/rk_stats $(BIN_DIR)
 	$(COPY) bin/vicut $(BIN_DIR)
-	$(COPY) perl/*.pl $(BIN_DIR)
-
-dist:
-	cd .. && tar zcvfX speciateIT-0.1.tgz speciateIT/.speciateIT_exclude speciateIT
+	$(COPY) bin/count_table.py $(BIN_DIR)
 
 print:
-	echo speciateIT-0.1
+	@echo speciateIT-0.1
 
 make_default: src-make_default FORCE
 all: src-make_default FORCE
 clean: src-clean FORCE
-distclean: dist-clean FORCE
+unzip: unzip FORCE
+.PHONY: unzip
 
 FORCE:
