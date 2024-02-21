@@ -8,19 +8,29 @@ Holm, Johanna (2024). speciateIT: vSpeciateDB Models. figshare. Dataset. https:/
 
 ### To install:
 1. Clone repository.
-2. Download vSpeciateDB (https://doi.org/10.6084/m9.figshare.25254229.v1) and place into "vSpeciateDB_models". 
-3. From parent directory of cloned repository ("speciateIT" or location of "Makefile")
+2. Download vSpeciateDB (https://doi.org/10.6084/m9.figshare.25254229.v1) and place into "vSpeciateDB_models".
+3. Unzip vSpeciateDB directories.  
+
+   cd /path/to/speciateIT  
+   unzip vSpeciateDB_models/vSpeciateIT_V1V3  
+   unzip vSpeciateDB_models/vSpeciateIT_V3V4  
+   unzip vSpeciateDB_models/vSpeciateIT_V4V4
+
+5. From parent directory of cloned repository ("speciateIT" or location of "Makefile")
    
    make all
    
-   This will compile all classification scripts, add them to /usr/local/bin, and unarchive vSpeciateDB.
+   This will compile all classification scripts.
 
-   NOTE: May require "sudo" to access /usr/local/bin
-   sudo make all
-
-   NOTE: All Makefile's are configured for macosx. If you are on linux machine,
+   NOTE1: May require "sudo" to access /usr/local/bin
+   sudo make all  
+   NOTE2: All Makefile's are configured for macosx. If you are on linux machine,
    change CC, CXX and LINK to gcc, g++ and g++, respectively. You may also need to
    modify LDFLAGS.
+
+6. Add classify to PATH:
+
+   export PATH="/path/to/speciateIT/bin/:$PATH"
 
 ### To use: 
 
