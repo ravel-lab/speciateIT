@@ -1,0 +1,1478 @@
+---
+title: "speciateIT: vSpeciateDB"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+---
+title: "vSpeciateDB Curation"
+output: html_notebook
+author: Johanna B. Holm, PhD, University of Maryland School of Medicine, Institute for Genome Sciences
+---
+
+# Package and Date
+```{r, warning=FALSE}
+today <- strsplit(date(), " ")
+month <- today[[1]][2]
+if(today[[1]][3] %in% ""){
+    day <- today[[1]][4]
+    year <- today[[1]][6]
+    }else{
+    day <- today[[1]][3]
+    year <- today[[1]][5]
+    }
+today2 <- paste(day,month,year, sep="")
+
+require(dplyr)
+require(ggplot2)
+require(stringr)
+require(Biostrings)
+require(EnvStats)
+# Import required libraries  
+require(ggbreak) 
+require(data.table)
+require(vegan)
+require(philentropy)
+require(pheatmap)
+```
+ssu_all_<release>.tar.gz
+        FASTA file containing 16S rRNA sequences identified across the set of GTDB genomes passing QC. The assigned taxonomy 
+        reflects the GTDB classification of the genome. Sequences are identified using nhmmer with the 16S rRNA model (RF00177) 
+        from the RFAM database. All sequences with a length >=200 bp and an E-value <= 1e-06 are reported.
+
+```{bash}
+grep ">" ssu_all_r214.fna | sed 's/>//g' > ssu_all_r214_headers.txt
+```
+
+# 1. ssu -> speciateIT using VIRGO taxon table, 708813 to 308502
+```{r}
+virgo.tx<-read.delim("1.VIRGO2.taxon.txt", header=T)
+virgo.taxa<-as.data.frame(cbind(names=gsub("Gardnerella", "Bifidobacterium", unique(virgo.tx$Taxa))))
+virgo.taxa<-as.data.frame(cbind(names=virgo.taxa[!virgo.taxa$names %in% c("", virgo.taxa$names[grep("uncultured", virgo.taxa$names)]), ])) ## 766 taxa (species + genera)
+virgo.taxa$names<-gsub("Bifidobacterium_swidsinkii", "Bifidobacterium_swidsinskii", virgo.taxa$names)
+virgo.taxa$names<-gsub("Bifidobacterium_vaginalis", "Bifidobacterium_vaginale", virgo.taxa$names)
+virgo.taxa$genus<-str_split_fixed(pattern = "_", string = virgo.taxa$names, n=2)[,1]
+virgo.taxa$species<-str_split_fixed(pattern = "_", string = virgo.taxa$names, n=2)[,2]
+names<-unique(virgo.taxa$names)
+genera<-unique(virgo.taxa$genus)
+species<-unique(virgo.taxa$species)
+
+headers<-read.delim("ssu_all_r214_headers.txt", header=F, sep=c(" "))
+lineage1<-as.data.frame(cbind(headers$V1, str_split_fixed(headers$V2, ";", n=7), headers$V3))
+lineage1<-as.data.frame(apply(lineage1, 2, function(x) gsub("__", "_", x)))
+lineage1$V10<-paste(gsub(pattern = "s_", replacement = "", x = lineage1$V8), lineage1$V9, sep="_")
+
+lineage<-as.data.frame(cbind(headers$V1, str_split_fixed(headers$V2, ";[A-Za-z]__", n=7), headers$V3))
+lineage$V7<-NULL
+lineage$V10<-paste(lineage$V8, lineage$V9, sep="_")
+
+pick1<-lineage[lineage$V10 %in% names, ] # 298753
+length(setdiff(names, unique(pick1$V10))) # 278 of 765 names missing
+
+pick2<-lineage[pmatch(x = genera, table = lineage$V8, duplicates.ok = TRUE), ] # 327140
+length(setdiff(genera, unique(pick2$V8))) # 278 of 765 names missing
+
+pick3<-lineage[lineage$V6 %in% setdiff(genera, unique(pick2$V8)), ] # 10933
+pick3<-pick3[!pick3$V1 %in% pick2$V1, ] # 6204
+length(setdiff(setdiff(genera, unique(pick2$V8)), unique(pick3$V6))) 
+
+length(unique(c(pick1$V1, pick2$V1, pick3$V1)))
+
+vSpeciateIT<-lineage1[lineage1$V1 %in% unique(c(pick1$V1, pick2$V1, pick3$V1)), ]
+tx<-vSpeciateIT[,c("V1", "V10")]
+write.table(tx, "vSpeciateIT.tx", quote=F, row.names = F, col.names = F, sep="\t")
+lineage<-unique(vSpeciateIT[,c("V10", "V8", "V6", "V5", "V4", "V3", "V2")])
+lineage$V8<-gsub("s_", "g_", lineage$V8)
+write.table(lineage, "vSpeciateIT.lineage", quote=F, row.names = F, col.names = F, sep="\t")
+
+seqlineage<-unique(vSpeciateIT[,c("V1", "V10", "V8", "V6", "V5", "V4", "V3", "V2")])
+seqlineage$V8<-gsub("s_", "g_", seqlineage$V8)
+write.table(seqlineage, "vSpeciateIT.sppSeqIDlineage", quote=F, row.names = F, col.names = F, sep="\t")
+```
+
+From here, we can subset the ssu fasta file to include only the above sequences... 
+
+# 2. trim to V1V4, 308502 to 308216 (2216 taxa) (_FL)
+```{bash}
+select_seqs.pl -i ssu_all_r214.fna -s vSpeciateIT.tx -o vSpeciateIT.fa
+
+#0. FL: The resulting mean length is 1031 bp with 286 sequences lost (no primer found)
+		tagcleaner.pl -fasta vSpeciateIT.fa -out vSpeciateIT_27F -line_width 0 -verbose -tag5 AGAGTTTGATCATGGCTCAG -mm5 9 -trim_within 300
+		
+#		Input/Output stats:
+#	Input sequences: 308,474
+#	Input bases: 379,609,988
+#	Input mean length: 1230.61
+#	Output sequences: 308,462
+#	Output bases: 366,227,443
+#	Output mean length: 1187.27
+
+## truncate to V4 (806R) since that's the last one we need right now (may keep more sequences)
+		tagcleaner.pl -fasta vSpeciateIT_27F.fasta -out vSpeciateIT_V1V4 -line_width 0 -verbose -tag3 ATTAGATACCCTGGTAGTCC -mm3 17 -trim_within 2000
+#Input/Output stats:
+#	Input sequences: 308,490
+#	Input bases: 366,265,602
+#	Input mean length: 1187.29
+#	Output sequences: 290,830
+#	Output bases: 181,509,034
+#	Output mean length: 624.11
+
+#		tagcleaner.pl -fasta vSpeciateIT_27F.fasta -out vSpeciateIT_FL -line_width 0 -verbose -tag3 GYGCAGCAGAGCGGACG -mm3 9 -trim_within 300
+		
+#		Input/Output stats:
+#	Input sequences: 308,462
+#	Input bases: 366,227,443
+#	Input mean length: 1187.27
+#	Output sequences: 308,188
+#	Output bases: 317,772,060
+#	Output mean length: 1031.10
+select_tx.pl -i vSpeciateIT.tx -s <(grep ">" vSpeciateIT_V1V4.fasta | awk -F' ' '{print$1}' | sed 's/>//g') -o vSpeciateIT_V1V4.tx ##
+```
+
+# 3. screen & derep FL
+```{bash}
+mothur "#count.seqs(name=vSpeciateIT_V1V4.tx)"
+mothur "#summary.seqs(fasta=vSpeciateIT_V1V4.fasta, count=vSpeciateIT_V1V4.count_table)"
+mothur "#screen.seqs(fasta=vSpeciateIT_V1V4.fasta, maxambig=0, minlength=250, maxlength= 1000, count=vSpeciateIT_V1V4.count_table)"
+mothur "#summary.seqs(fasta=vSpeciateIT_V1V4.good.fasta, count=vSpeciateIT_V1V4.good.count_table)"
+mothur "#unique.seqs(fasta=vSpeciateIT_V1V4.good.fasta, format=name)"
+mothur "#summary.seqs(fasta=vSpeciateIT_V1V4.good.unique.fasta, name=vSpeciateIT_V1V4.good.names)"
+```
+
+
+# 4. Truncate, screen & derep each variable region.
+1/30/2024: I don't think dereping at this step is helpful because we lose the species classifications of the sequences that are remove (which in some cases results in merging)
+```{bash}
+#1. V3V4: 
+tagcleaner.pl -fasta vSpeciateIT_V1V4.good.unique.fasta -out vSpeciateIT_V3V4 -line_width 0 -verbose -tag5 ACTCCTACGGGAGGCAGCAG -mm5 9 -trim_within 700
+select_tx.pl -i vSpeciateIT.tx -s <(grep ">" vSpeciateIT_V3V4.fasta | awk -F' ' '{print$1}' | sed 's/>//g') -o vSpeciateIT_V3V4.tx
+mothur "#count.seqs(name=vSpeciateIT_V3V4.tx)"
+mothur "#summary.seqs(fasta=vSpeciateIT_V3V4.fasta, count=vSpeciateIT_V3V4.count_table)"
+mothur "#screen.seqs(fasta=vSpeciateIT_V3V4.fasta, count=vSpeciateIT_V3V4.count_table, minlength=400, maxlength=500)"
+mothur "#summary.seqs(fasta=vSpeciateIT_V3V4.good.fasta, count=vSpeciateIT_V3V4.good.count_table)"
+mothur "#unique.seqs(fasta=vSpeciateIT_V3V4.good.fasta, format=name)"
+mothur "#summary.seqs(fasta=vSpeciateIT_V3V4.good.unique.fasta, names=vSpeciateIT_V3V4.good.names)"
+
+#2. V1V3: AUUACCGCGGCUGCUGG
+AUUACCGCGGCUGCUGG
+
+tagcleaner.pl -fasta vSpeciateIT_V1V4.good.unique.fasta -out vSpeciateIT_V1V3 -line_width 0 -verbose -tag3 CCAGCAGCCGCGGTAAT -mm3 3 -trim_within 400
+		select_tx.pl -i vSpeciateIT.tx -s <(grep ">" vSpeciateIT_V1V3.fasta | awk -F' ' '{print$1}' | sed 's/>//g') -o vSpeciateIT_V1V3.tx ##
+mothur "#count.seqs(name=vSpeciateIT_V1V3.tx)"
+mothur "#summary.seqs(fasta=vSpeciateIT_V1V3.fasta, count=vSpeciateIT_V1V3.count_table)"
+mothur "#screen.seqs(fasta=vSpeciateIT_V1V3.fasta, count=vSpeciateIT_V1V3.count_table, minlength=400, maxlength=600)"
+mothur "#summary.seqs(fasta=vSpeciateIT_V1V3.good.fasta, count=vSpeciateIT_V1V3.good.count_table)"
+mothur "#unique.seqs(fasta=vSpeciateIT_V1V3.good.fasta, format=name)"
+mothur "#summary.seqs(fasta=vSpeciateIT_V1V3.good.unique.fasta, name=vSpeciateIT_V1V3.good.names)"
+
+#3. V4V4: 
+tagcleaner.pl -fasta vSpeciateIT_V1V4.good.unique.fasta -out vSpeciateIT_V4V4 -line_width 0 -verbose -tag5 GTGCCAGCAGCCGCGGTAA -mm3 5 -trim_within 700
+select_tx.pl -i vSpeciateIT.tx -s <(grep ">" vSpeciateIT_V4V4.fasta | awk -F' ' '{print$1}' | sed 's/>//g') -o vSpeciateIT_V4V4.tx
+mothur "#count.seqs(name=vSpeciateIT_V4V4.tx)"
+mothur "#summary.seqs(fasta=vSpeciateIT_V4V4.fasta, count=vSpeciateIT_V4V4.count_table)"
+mothur "#screen.seqs(fasta=vSpeciateIT_V4V4.fasta, count=vSpeciateIT_V4V4.count_table, minlength=240, maxlength=260)"
+mothur "#summary.seqs(fasta=vSpeciateIT_V4V4.good.fasta, count=vSpeciateIT_V4V4.good.count_table)"
+mothur "#unique.seqs(fasta=vSpeciateIT_V4V4.good.fasta, format=name)"
+mothur "#summary.seqs(fasta=vSpeciateIT_V4V4.good.unique.fasta, name=vSpeciateIT_V4V4.good.names)"
+```
+
+# 5: Build models from these
+These models show that there this is a good step to determine inclusion based on sequence similarity of a local alignment for each species (not all taxonomic levels)
+```{bash}
+for f in vSpeciateIT_V*V*.good.unique.fasta; do select_tx.pl -i ${f/.good.unique.fasta}.tx -s <(grep ">" $f | awk -F' ' '{print$1}' | sed 's/>//g') -o ${f/.fasta}.tx; done
+
+## Update lineage files to remove extra genera
+for f in vSpeciateIT_V*V*.good.unique.tx; do select_fullTx.pl -t $f -f vSpeciateIT.lineage -o ${f/.tx}.lineage; done
+
+## Rm existing data
+#for f in gtdb_speciateIT_V*V*.good.unique_mafft_clean.filter_renamed; do rm -rf $f/*; done
+
+## build new model tree
+for f in vSpeciateIT_V*V*.good.unique.tx; do buildModelTree -l ${f/.tx}.lineage -t $f -i ${f/.tx}.fasta -o ${f/.tx}; done
+
+## build new models
+for f in vSpeciateIT_V*V*.good.unique; do buildMC -d $f -k 8; done
+
+## self-classify, no error thresholds
+for f in vSpeciateIT_V*V*.good.unique; do ./bin/classify -d $f -i $f.fasta -o $f --skip-err-thld --pp-embedding; done
+
+## rename self-classified results
+for f in vSpeciateIT_V*V*.good.unique; do mv $f/MC_order7_results.txt $f/MC_order7_results_noErr.txt; done
+
+for f in vSpeciateIT_V*V*.good.unique; do rm $f/*log10cProb; done
+```
+
+# 6. Determine self-class no err thlds
+```{r}
+class<-data.frame()
+for (i in c("V1V4", "V1V3", "V3V4", "V4V4")){
+  files<-list.files(pattern = ".good.unique.tx")
+  new.tx<-read.delim(files[grepl(paste("_", i, sep=""), files)], header = F)
+  names(new.tx)[2]<-"actual"
+  new.tx$var<-i
+  files<-list.files(path = paste("vSpeciateIT_", i, ".good.unique/", sep=""), pattern = "_noErr.txt", full.names = T)
+  start<-read.delim(files, header = F)
+  start$var<-i
+  start<-merge(start, new.tx, all.y=TRUE)
+  class<-rbind(class, start)
+}
+class$correct<-factor(ifelse(class$V2 == class$actual, 1, 0))
+prop.table(table(class$correct, class$var), 2)
+```
+
+# 7. Determine which taxa models need work and remove those sequences
+```{r}
+class$correct_num<-as.numeric(as.character(class$correct))
+class.taxa<-as.data.frame(class %>% group_by(var, actual) %>% summarise(nSeqs=length(unique(V1)), nCorrect=sum(correct_num)))
+to.fix<-class.taxa[class.taxa$nCorrect < class.taxa$nSeqs, ]
+```
+
+Remove sequences that didn't classify -- seems a good way to find true outliers! 
+```{r}
+for (i in c("V1V3", "V3V4", "V4V4")){
+  to.rm<-class[class$var %in% i & class$correct %in% "0", "V1"]
+  files<-list.files(pattern = ".good.unique.tx")
+  new.tx<-read.delim(files[grepl(paste("_", i, sep=""), files)], header = F)
+  new.tx<-new.tx[!new.tx$V1 %in% to.rm, ]
+  write.table(new.tx, paste("vSpeciateIT_", i, ".good.unique.keep.tx",sep=""), quote=F, row.names = F, col.names = F, sep="\t")
+}
+```
+
+# 8. Re-build models with streamlined data. 
+```{bash}
+## Update lineage files to remove extra genera
+for f in vSpeciateIT_V*V*.good.unique.keep.tx; do select_seqs.pl -s $f -i ${f/.keep.tx}.fasta -o ${f/.tx}.fasta; done
+
+## Update lineage files to remove extra genera
+for f in vSpeciateIT_V*V*.good.unique.keep.tx; do select_fullTx.pl -t $f -f vSpeciateIT.lineage -o ${f/.tx}.lineage; done
+
+## build new model tree
+for f in vSpeciateIT_V*V*.good.unique.keep.tx; do buildModelTree -l ${f/.tx}.lineage -t $f -i ${f/.tx}.fasta -o ${f/.tx}; done
+
+## build new models
+for f in vSpeciateIT_V*V*.good.unique.keep; do buildMC -d $f -k 8; done
+
+## self-classify, no error thresholds
+for f in vSpeciateIT_V*V*.good.unique.keep; do ./bin/classify -d $f -i $f.fasta -o $f --skip-err-thld --pp-embedding; done
+
+## rename self-classified results
+for f in vSpeciateIT_V*V*.good.unique.keep; do mv $f/MC_order7_results.txt $f/MC_order7_results_noErr.txt; done
+
+for f in vSpeciateIT_V*V*.good.unique.keep; do rm $f/*log10cProb; done
+```
+
+Determine self-class no err thlds
+```{r}
+class<-data.frame()
+for (i in c("V1V3", "V3V4", "V4V4")){
+  files<-list.files(pattern = ".good.unique.keep.tx")
+  new.tx<-read.delim(files[grepl(i, files)], header = F)
+  names(new.tx)[2]<-"actual"
+  new.tx$var<-i
+  files<-list.files(path = paste("vSpeciateIT_", i, ".good.unique.keep/", sep=""), pattern = "_noErr.txt", full.names = T)
+  start<-read.delim(files, header = F)
+  start$var<-i
+  start<-merge(start, new.tx, all.y=TRUE)
+  class<-rbind(class, start)
+}
+class$correct<-factor(ifelse(class$V2 == class$actual, 1, 0))
+table(class$correct, class$var)
+prop.table(table(class$correct, class$var), 2)
+```
+Determine which taxa models need work
+```{r}
+class$correct_num<-as.numeric(as.character(class$correct))
+class.taxa<-as.data.frame(class %>% group_by(var, actual) %>% summarise(nSeqs=length(unique(V1)), nCorrect=sum(correct_num)))
+```
+
+Anything species with > 10 sequences (which includes less-important vaginal species), pick one sequence at random which had not been misclassified. 
+ - to pick the sequence at random, first get a list of all of the sequences for the species that are correctly identified. Then find a sequence used in all of the variable regions
+```{bash}
+for f in *.good.unique.keep.tx; do cp $f ${f/.tx}2.tx; done
+```
+ 
+```{r}
+to.fix<-class.taxa[class.taxa$nCorrect < class.taxa$nSeqs, ]
+to.fix<-to.fix[to.fix$nSeqs >= 10, ]
+to.fix.taxa<-unique(to.fix$actual)
+to.fix.taxa<-class.taxa[class.taxa$nSeqs > 50, "actual"]
+#for (i in c("V1V3", "V3V4", "V4V4")){
+#  poss<-unique(to.fix[to.fix$var %in% i, "actual"])
+taxa.seqs<-as.data.frame(class[class$correct %in% "1", ] %>% group_by(actual, V1) %>% summarise(nVars=length(unique(var))))
+for(taxon in to.fix.taxa){
+  #print(taxon)
+  poss<-class[class$actual %in% taxon & class$correct %in% "1", ]
+  #vars<-unique(to.fix[to.fix$actual %in% taxon, "var"])
+  seqs<-taxa.seqs[taxa.seqs$actual %in% taxon & taxa.seqs$nVars %in% 3, "V1"]
+  seqs.scores<-class[class$V1 %in% seqs, ]
+  seq<-seqs.scores[seqs.scores$V3 == max(seqs.scores$V3) , "V1"]
+#  for (i in vars){
+ for (i in c("V1V3", "V3V4", "V4V4")){
+    files<-list.files(pattern = ".good.unique.keep2.tx")
+    new.tx<-read.delim(files[grepl(i, files)], header = F)
+    spp<-new.tx[new.tx$V2 %in% taxon, "V1"]
+    spp<-spp[!spp %in% seq]
+    new.tx<-new.tx[!new.tx$V1 %in% spp, ]
+    write.table(new.tx, paste("vSpeciateIT_", i, ".good.unique.keep2.tx",sep=""), quote=F, row.names = F, col.names = F, sep="\t")
+  }
+}
+```
+
+```{bash}
+## Update fasta files to remove extra genera
+for f in vSpeciateIT_V*V*.good.unique.keep2.tx; do select_seqs.pl -s $f -i ${f/.keep2.tx}.fasta -o ${f/.tx}.fasta; done
+for f in vSpeciateIT_V*V*.good.unique.keep2.tx; do mothur "#count.seqs(name=$f)"; done
+for f in vSpeciateIT_V*V*.good.unique.keep2.fasta; do mothur "#summary.seqs(fasta=$f, count=${f/.fasta}.count_table)"; done
+
+## Update lineage files to remove extra genera
+for f in vSpeciateIT_V*V*.good.unique.keep2.tx; do select_fullTx.pl -t $f -f vSpeciateIT.lineage -o ${f/.tx}.lineage; done
+
+## build new model tree
+for f in vSpeciateIT_V*V*.good.unique.keep2.tx; do buildModelTree -l ${f/.tx}.lineage -t $f -i ${f/.tx}.fasta -o ${f/.tx}; done
+```
+
+## 11a. Check PID within each species to remove extreme outlier sequences (seqs should at least have PID > 90%)
+```{r}
+pid.df<-data.frame()
+for(i in list.files(pattern=".good.unique.keep2.tx")){
+  var<-str_split_fixed(i, "\\.", 2)[1]
+  var<-str_split_fixed(string = var, pattern = "_", n = 2)[2]
+  tx<-read.delim(i, header=F)
+  spp<-as.vector(sort(unique(tx$V2)))
+  for(species in spp){
+    sequences <- readDNAStringSet(filepath = paste("vSpeciateIT_", var, ".good.unique.keep2/fasta_files/", species, ".fa", sep=""))
+    # Calculate pairwise PID
+    if(length(sequences) > 1){
+      for (n in 1:(length(sequences) - 1)) {
+        for (j in (n + 1):length(sequences)) {
+          pid.df<-rbind(pid.df, 
+                        cbind(species=species, 
+                              var=var, 
+                              seq1=names(sequences)[n], 
+                              seq2=names(sequences)[j], 
+                              pid=pid(pairwiseAlignment(sequences[n], sequences[j]))))
+        }
+      }
+    }
+  }
+}
+pid.df$pid<-as.numeric(pid.df$pid)
+pid.df$var<-as.factor(pid.df$var)
+saveRDS(pid.df, "pid.df.RDS")
+```
+
+Now get the mean pid associated with each sequence to find the outlier. 
+```{r}
+seqs.mean1<-as.data.frame(pid.df %>% group_by(species, var, seq1) %>% summarise(meanPID=mean(pid)))
+names(seqs.mean1)[3]<-"seqID"
+seqs.mean2<-as.data.frame(pid.df %>% group_by(species, var, seq2) %>% summarise(meanPID=mean(pid)))
+names(seqs.mean2)[3]<-"seqID"
+seqs.mean<-rbind(seqs.mean1, seqs.mean2)
+seqs.mean.df<-as.data.frame(seqs.mean %>% group_by(species, var, seqID) %>% summarise(minPID=min(meanPID), max=max(meanPID), medPID=median(meanPID), q1=quantile(meanPID, probs=0.25), q3=quantile(meanPID, probs=0.75)))
+
+for (i in c("V1V3", "V3V4", "V4V4")){
+  to.rm<-seqs.mean.df[seqs.mean.df$var %in% i & seqs.mean.df$medPID < 90, "seqID"]
+  files<-list.files(pattern=".good.unique.keep2.tx", full.names = T)
+  new.tx<-read.delim(files[grepl(paste("_", i, sep=""), files)], header = F)
+  new.tx<-new.tx[!new.tx$V1 %in% to.rm, ]
+  write.table(new.tx, paste("vSpeciateIT_", i, ".good.unique.keep2.tx",sep=""), quote=F, row.names = F, col.names = F, sep="\t")
+}
+```
+
+#10. VICUT
+```{bash}
+for f in vSpeciateIT_V*V*.good.unique.keep2.tx; do select_tx.pl -i vSpeciateIT.sppSeqIDlineage -s $f -o ${f/.tx}_sppSeqID.lineage; done
+
+for f in *keep2.fasta; do "/usr/local/bin/mafft" --auto --reorder $f > ${f/.fasta}_mafft.fasta; done
+for f in *_mafft.fasta; do FastTree -nt $f > ${f/.fasta}.nwk.tree; done
+```
+
+```{bash}
+for f in *.nwk.tree; do vicut -t $f -a ${f/_mafft.nwk.tree}.tx -o ${f/.nwk.tree}_vicut; done
+```
+
+From the vicut results (minNodeCut.cltrs), identify the most common taxonomic annotation in a cluster and rename all others as that, then, when a species represents > 1 cluster, remove all sequences in clusters that are smaller (fewer sequences). 
+
+This needs to be altered .. the order of operations is deleting sequences. For example, in V3V4, L. helveticus is present in multiple clusters, one in which it is the only species name. In another cluster where its present, there are more of the helveticus annotations than kefir.. and so kefir gets removed even though helveticus is present elsewhere already. 
+
+It may be better to first define and maintain all clusters with a single species name, and then for all remaining clusters, determine if the species exists from the first set, and if not, then use that name to rename all seq's in the cluster. 
+
+18Feb -- what needs to happen is a look at the clstr numbers when species are present in multiple clusters. if two species clusters surround another species clsuter, those should be merged. 
+```{r}
+tx.seqs<-data.frame()
+clstrs.new.df<-data.frame()
+tx.all<-data.frame()
+catted.df<-data.frame()
+
+for (var in c("V3V4", "V4V4", "V1V3")){
+  catted<-data.frame()
+  print(var)
+  files<-list.files(pattern = "keep2.tx")
+  old.tx<-read.delim(files[grepl(var, files)], header = F)
+  files<-list.files(pattern = "_vicut$")
+  clstrs<-read.delim(paste(files[grepl(var, files)], "/minNodeCut.cltrs",sep=""), header = T)
+  clstrs.new<-clstrs
+  clstrs.new$new<-clstrs.new$annot
+  for (tax in sort(unique(clstrs$annot))){ ## this loop renames all seqIDs in a cluster to that of the most frequent name. 
+    a<-clstrs[clstrs$annot %in% tax, ]
+    ## If there is a species in more than one cluster:
+      # 1. Do the clusters represent a merging of species, for example, if cluster 1 and 3 has species A, and species B is in cluster 2, species A and B should be merged. 
+      # 2. If a cluster also contains multiple species, these should be concatenated.  
+    if(tax %in% "Lactobacillus_gasseri"){
+      new<-"Lactobacillus_gasseri/Lactobacillus_paragasseri" ## concatenate the names
+      # Capture in cat map
+      catted<-rbind(catted, cbind(tax1=new, tax2="Lactobacillus_gasseri", var=var))
+      # Update for .tx file
+      clstrs.new$new[clstrs.new$new %in% c("Lactobacillus_gasseri", "Lactobacillus_paragasseri")] <- "Lactobacillus_gasseri"
+    }
+    
+    if(length(unique(a$clstr)) > 1){
+      b<-clstrs[clstrs$clstr %in% unique(a$clstr), ]
+      # Sort b by clstr for easier evaluation
+      b <- b[order(b$clstr), ]
+      
+      # Evaluate clusters in b
+      cluster_sizes <- table(b$clstr)  # Count number of sequences in each cluster
+      cluster_numbers <- as.integer(names(cluster_sizes))  # Get cluster numbers
+      
+      # Check if cluster numbers are consecutive or near consecutive
+      if (any(diff(cluster_numbers) %in% c(1:2))) { 
+        #cat("Cluster numbers are nearby. Merging species annotations.\n")
+        
+        # Identify clusters with other species in between them
+        diff_clusters <- which(diff(cluster_numbers) %in% c(1:2))
+        
+        for (i in diff_clusters) {
+          start_cluster <- cluster_numbers[i]
+          end_cluster <- cluster_numbers[i + 1]
+          
+          # Update species annotation for clusters in between
+          new<-paste(sort(unique(clstrs$annot[clstrs$clstr %in% start_cluster:end_cluster])), collapse="/") ## concatenate the names
+          # Capture in cat map
+          if(str_count(new, pattern = "/") > 0){
+            catted<-rbind(catted, cbind(tax1=new, tax2=sort(unique(clstrs$annot[clstrs$clstr %in% start_cluster:end_cluster]))[1], var=var))
+          }
+          # Update for .tx file
+          clstrs.new$new[clstrs.new$clstr %in% start_cluster:end_cluster] <- sort(unique(clstrs$annot[clstrs$clstr %in% start_cluster:end_cluster]))[1]
+          
+          # Update all species annotations in DB to represent merge
+          for(rn in unique(clstrs$annot[clstrs$clstr %in% start_cluster:end_cluster])){
+            clstrs.new$new[grepl(rn, clstrs.new$annot)]<-sort(unique(clstrs$annot[clstrs$clstr %in% start_cluster:end_cluster]))[1]
+          }
+          ## Now add remove any other clusters
+          clstrs.new <- clstrs.new[!clstrs.new$clstr %in% cluster_numbers[which(diff(cluster_numbers) > 2)], ]
+        }
+      } 
+      
+      b<-clstrs.new[clstrs.new$clstr %in% unique(a$clstr), ]
+      # Sort b by clstr for easier evaluation
+      b <- b[order(b$clstr), ]
+      
+      # Check if a single cluster contains more than one annotation
+      clusters_with_multiple_annotations <- b %>%
+        group_by(clstr) %>%
+        summarize(unique_annotations = n_distinct(new)) %>%
+        filter(unique_annotations > 1)
+      
+      if (nrow(clusters_with_multiple_annotations) > 0) {
+        #cat("Clusters with more than one annotation:\n")
+        # Update species annotation for clusters in between
+        for ( s in unique(clusters_with_multiple_annotations$clstr)){
+            
+            new<-paste(sort(unique(clstrs$annot[clstrs$clstr %in% s])), collapse="/") ## concatenate the names
+            # Capture in cat map
+            catted<-rbind(catted, cbind(tax1=new, tax2=sort(unique(clstrs$annot[clstrs$clstr %in% s]))[1], var=var))
+            # Update for .tx file
+            clstrs.new$new[clstrs.new$clstr %in% s] <- sort(unique(clstrs$annot[clstrs$clstr %in% s]))[1] 
+        }
+      } else {
+        #cat("All clusters contain only one annotation.")
+      }
+    } 
+  }
+  clstrs.new$var<-var
+  clstrs.new.df<-unique(rbind(clstrs.new.df, clstrs.new))
+  catted<-unique(catted)
+  catted.df<-rbind(catted.df, catted)
+  new.tx<-clstrs.new[,c("readId", "new")]
+  write.table(new.tx[!is.na(new.tx$new), ], paste("vSpeciateIT_", var, ".good.unique.keep2.vicut.tx",sep=""), quote=F, row.names = F, col.names = F, sep="\t")
+  write.table(catted, paste("vSpeciateIT_", var, "_catmap.txt",sep=""), quote=F, row.names = F, col.names = F, sep="\t")
+  new.tx$variable.reg<-var
+  tx.seqs<-rbind(tx.seqs, new.tx)
+}
+```
+
+
+## 10a. Update annotations from GTDB
+TO CHANGE:
+Bifido -> Gardnerella
+UBA629_sp005465875 -> Ca_Lachnocurva_vaginae cmp to Stomatobaculum_sp002892395
+KA00274_sp001552885 - Amygdalobacter nucleatus
+ - Amygdalobacter indicium
+PeptoniphiluA_harei_A -> Peptoniphilus
+```{bash}
+## Update fasta files to remove extra genera
+for f in vSpeciateIT_V*V*.good.unique.keep2.vicut.tx; do select_seqs.pl -s $f -i ${f/.vicut.tx}.fasta -o ${f/.tx}.fasta; done
+for f in vSpeciateIT_V*V*.good.unique.keep2.vicut.tx; do mothur "#count.seqs(name=$f)"; done
+for f in vSpeciateIT_V*V*.good.unique.keep2.vicut.tx; do mothur "#summary.seqs(fasta=${f/.tx}.fasta, count=${f/.tx}.count_table)"; done
+
+## Update lineage files to remove extra genera
+for f in vSpeciateIT_V*V*.good.unique.keep2.vicut.tx; do select_fullTx.pl -t $f -f vSpeciateIT.lineage -o ${f/.tx}.lineage; done
+```
+
+```{r}
+for(i in list.files(pattern="good.unique.keep2.vicut.tx")){
+  tx<-read.delim(i, header=F)
+  tx$V2<-gsub("Bifidobacterium_leopoldii", "Gardnerella_vaginalis", tx$V2)
+  tx$V2<-gsub("Bifidobacterium_piotii", "Gardnerella_vaginalis", tx$V2)
+  tx$V2<-gsub("Bifidobacterium_swidsinskii", "Gardnerella_vaginalis", tx$V2)
+  tx$V2<-gsub("Bifidobacterium_vaginale_[A-Za-z]", "Gardnerella_vaginalis", tx$V2)
+  tx$V2<-gsub("Bifidobacterium_vaginale", "Gardnerella_vaginalis", tx$V2)
+  tx$V2<-gsub("KA00274_sp001552885", "Amygdalobacter_nucleatus", tx$V2)
+  tx$V2<-gsub("PeptoniphiluA", "Peptoniphilus", tx$V2)
+  tx$V2<-gsub("Peptoniphilug", "Peptoniphilus", tx$V2)
+  tx$V2<-gsub("PeptoniphiluC", "Peptoniphilus", tx$V2)
+  tx$V2<-gsub("PeptoniphiluE", "Peptoniphilus", tx$V2)
+  tx$V2<-gsub("PeptoniphiluB", "Peptoniphilus", tx$V2)
+  tx$V2<-gsub("UBA629_sp005465875", "Ca_Lachnocurva_vaginae", tx$V2)
+  tx$V2<-gsub("RuminococcuB", "Ruminococcus", tx$V2)
+  tx$V2<-gsub("Lacrimispora_sphenoides_A", "Lacrimispora_sphenoides", tx$V2)
+  tx$V2<-gsub("Actinomyces_oris_A", "Actinomyces_oris", tx$V2)
+  tx$V2<-gsub("Actinomyces_oris_B", "Actinomyces_oris", tx$V2)
+  tx$V2<-gsub("Actinomyces_oris_C", "Actinomyces_oris", tx$V2)
+  tx$V2<-gsub("Actinomyces_oris_D", "Actinomyces_oris", tx$V2)
+  tx$V2<-gsub("Actinomyces_oris_E", "Actinomyces_oris", tx$V2)
+  tx$V2<-gsub("Aerococcus_viridans_B", "Aerococcus_viridans", tx$V2)
+  tx$V2<-gsub("Aerococcus_viridans_C", "Aerococcus_viridans", tx$V2)
+  tx$V2<-gsub("Actinotignum_schaalii_A", "Actinotignum_schaalii", tx$V2)
+  tx$V2<-gsub("Actinomyces_bowdenii_B", "Actinomyces_bowdenii", tx$V2)
+  tx$V2<-gsub("Bariatricus_comes_A", "Bariatricus_comes", tx$V2)
+  tx$V2<-gsub("Peptoniphilus_harei_A", "Peptoniphilus_harei", tx$V2)
+  tx$V2<-gsub("Lactobacillus_paragasseri", "Lactobacillus_gasseri", tx$V2)
+  if(grepl("V4", i)){
+    tx$V2<-gsub("Lactobacillus_acidophilus", "Lactobacillus_crispatus", tx$V2)
+    tx$V2<-gsub("Lactobacillus_helveticus", "Lactobacillus_crispatus", tx$V2)
+    tx$V2<-gsub("Lactobacillus_kitasatonis", "Lactobacillus_crispatus", tx$V2)
+    tx$V2<-gsub("Lactobacillus_johnsonii", "Lactobacillus_gasseri", tx$V2)
+  }
+  write.table(tx, i, quote=F, row.names = F, col.names = F, sep="\t")
+}
+
+for(i in list.files(pattern="good.unique.keep2.vicut.lineage")){
+  tx<-read.delim(i, header=F)
+  tx$V1<-gsub("Bifidobacterium_leopoldii", "Gardnerella_vaginalis", tx$V1)
+  tx$V1<-gsub("Bifidobacterium_piotii", "Gardnerella_vaginalis", tx$V1)
+  tx$V1<-gsub("Bifidobacterium_swidsinskii", "Gardnerella_vaginalis", tx$V1)
+  tx$V1<-gsub("Bifidobacterium_vaginale_[A-Za-z]", "Gardnerella_vaginalis", tx$V1)
+  tx$V1<-gsub("Bifidobacterium_vaginale", "Gardnerella_vaginalis", tx$V1)
+  tx$V1<-gsub("KA00274_sp001552885", "Amygdalobacter_nucleatus", tx$V1)
+  tx$V1<-gsub("PeptoniphiluA", "Peptoniphilus", tx$V1)
+  tx$V1<-gsub("Peptoniphilug", "Peptoniphilus", tx$V1)
+  tx$V1<-gsub("PeptoniphiluC", "Peptoniphilus", tx$V1)
+  tx$V1<-gsub("PeptoniphiluE", "Peptoniphilus", tx$V1)
+  tx$V1<-gsub("PeptoniphiluB", "Peptoniphilus", tx$V1)
+  tx$V1<-gsub("UBA629_sp005465875", "Ca_Lachnocurva_vaginae", tx$V1)
+  tx$V1<-gsub("RuminococcuB", "Ruminococcus", tx$V1)
+  tx$V1<-gsub("Lacrimispora_sphenoides_A", "Lacrimispora_sphenoides", tx$V1)
+  tx$V1<-gsub("Actinomyces_oris_A", "Actinomyces_oris", tx$V1)
+  tx$V1<-gsub("Actinomyces_oris_B", "Actinomyces_oris", tx$V1)
+  tx$V1<-gsub("Actinomyces_oris_C", "Actinomyces_oris", tx$V1)
+  tx$V1<-gsub("Actinomyces_oris_D", "Actinomyces_oris", tx$V1)
+  tx$V1<-gsub("Actinomyces_oris_E", "Actinomyces_oris", tx$V1)
+  tx$V1<-gsub("Aerococcus_viridans_B", "Aerococcus_viridans", tx$V1)
+  tx$V1<-gsub("Aerococcus_viridans_C", "Aerococcus_viridans", tx$V1)
+  tx$V1<-gsub("Actinotignum_schaalii_A", "Actinotignum_schaalii", tx$V1)
+  tx$V1<-gsub("Actinomyces_bowdenii_B", "Actinomyces_bowdenii", tx$V1)
+  tx$V1<-gsub("Bariatricus_comes_A", "Bariatricus_comes", tx$V1)
+  tx$V1<-gsub("Peptoniphilus_harei_A", "Peptoniphilus_harei", tx$V1)
+  tx$V1<-gsub("Lactobacillus_paragasseri", "Lactobacillus_gasseri", tx$V1)
+  tx$V2<-ifelse(grepl("Gardnerella_vaginalis", tx$V1), "g_Gardnerella", as.character(tx$V2))
+  if(grepl("V4", i)){
+    tx$V1<-gsub("Lactobacillus_acidophilus", "Lactobacillus_crispatus", tx$V1)
+    tx$V1<-gsub("Lactobacillus_helveticus", "Lactobacillus_crispatus", tx$V1)
+    tx$V1<-gsub("Lactobacillus_kitasatonis", "Lactobacillus_crispatus", tx$V1)
+    tx$V1<-gsub("Lactobacillus_johnsonii", "Lactobacillus_gasseri", tx$V1)
+  }
+  write.table(unique(tx), i, quote=F, row.names = F, col.names = F, sep="\t")
+}
+
+#Missing from fasta, but present in count table. 
+#GB_GCA_000389925.1~CP005386.1
+#RS_GCF_000528475.1~NZ_KI968454.1
+# grep "GB_GCA_000389925.1~CP005386.1" vSpeciateIT_V1V3.good.unique.keep2.tx
+# GB_GCA_000389925.1~CP005386.1	Mycobacterium_tuberculosis
+# grep "RS_GCF_000528475.1~NZ_KI968454.1" vSpeciateIT_V1V3.good.unique.keep2.tx
+# RS_GCF_000528475.1~NZ_KI968454.1	Staphylococcus_aureus
+```
+
+# 11b. Re-build models
+```{bash}
+rm -rf final_models
+mkdir final_models
+for f in vSpeciateIT_V*V*.good.unique.keep2.vicut.tx; do cp $f final_models; done
+for f in vSpeciateIT_V*V*.good.unique.keep2.vicut.lineage; do cp $f final_models; done
+for f in vSpeciateIT_V*V*.good.unique.keep2.vicut.fasta; do cp $f final_models; done
+
+## build new model tree
+for f in final_models/vSpeciateIT_V*V*.good.unique.keep2.vicut.tx; do buildModelTree -l ${f/.tx}.lineage -t $f -i ${f/.tx}.fasta -o ${f/.good.unique.keep2.vicut.tx}; done
+
+## build new models
+for f in final_models/vSpeciateIT_V*V*; do buildMC -d $f -k 8; done
+
+## self-classify, no error thresholds
+for f in final_models/vSpeciateIT_V*V*; do classify -d $f -i $f.good.unique.keep2.vicut.fasta -o $f --skip-err-thld --pp-embedding; done
+
+## rename self-classified results
+for f in final_models/vSpeciateIT_V*V*; do mv $f/MC_order7_results.txt $f/MC_order7_results_noErr.txt; done
+
+#for f in final_models/vSpeciateIT_V*V*; do rm -rf $f/fasta_files; done
+#for f in final_models/vSpeciateIT_V*V*; do rm -rf $f/tx_fasta_paths.txt; done
+```
+
+Check self-classification accuracy
+```{r}
+class<-data.frame()
+for (i in c("V1V3", "V3V4", "V4V4")){
+  files<-list.files(path = "final_models/", pattern = ".tx$", full.names = T)
+  new.tx<-read.delim(files[grepl(i, files)], header = F)
+  names(new.tx)[2]<-"actual"
+  new.tx$var<-i
+  files<-list.files(path = paste("final_models/vSpeciateIT_", i, sep=""), pattern = "_noErr.txt", full.names = T)
+  start<-read.delim(files, header = F)
+  start$var<-i
+  start<-merge(start, new.tx, all.y=TRUE)
+  class<-rbind(class, start)
+}
+class$correct<-factor(ifelse(class$V2 == class$actual, 1, 0))
+table(class$correct, class$var)
+prop.table(table(class$correct, class$var), 2)
+
+class$correct_num<-as.numeric(as.character(class$correct))
+class.taxa<-as.data.frame(class %>% group_by(var, actual) %>% summarise(nSeqs=length(unique(V1)), nCorrect=sum(correct_num)))
+```
+# 12. Error thresholds
+```{r}
+err.thld<-data.frame()
+for (i in c("V1V3", "V3V4", "V4V4")){
+  print(i)
+  a<-class[class$var %in% i, ]
+  for (taxon in unique(a$actual)){
+    s<-a[a$actual %in% taxon & a$correct %in% "1", ]
+    #t<-a[a$actual %in% taxon & a$correct %in% "0", ]
+    if(nrow(s) > 0){ 
+      pp<-as.vector(s$V3) ## if all seq's are correct, loosen the threshold a little (reduce by adding log10)
+      err.thld<-rbind(err.thld, cbind(Taxon=taxon, Threshold=log10(min(pp))-0.05, var=i))
+    }
+  }
+}
+write.table(err.thld[err.thld$var %in% "V1V3", c("Taxon", "Threshold")], "final_models/vSpeciateIT_V1V3/error_thlds.txt", sep="\t", quote=F, row.names = F)
+write.table(err.thld[err.thld$var %in% "V3V4", c("Taxon", "Threshold")], "final_models/vSpeciateIT_V3V4/error_thlds.txt", sep="\t", quote=F, row.names = F)
+write.table(err.thld[err.thld$var %in% "V4V4", c("Taxon", "Threshold")], "final_models/vSpeciateIT_V4V4/error_thlds.txt", sep="\t", quote=F, row.names = F)
+```
+
+# 13a. Summary Stats Taxa
+```{r}
+summary2<-read.delim("ssu_all_r214.summary")
+summary(summary2$nbases)
+summary2$species<-lineage1[match(summary2$seqname, lineage1$V1), "V10"]
+follow.the.taxa<-summary2 %>% group_by(species) %>% summarise(minL=min(nbases), maxL=max(nbases), mean(nbases), nSeqs=length(unique(seqname)))
+follow.the.taxa$step="original"
+
+summary<-read.delim("vSpeciateIT_V1V4.summary")
+summary(summary$nbases)
+summary$species<-vSpeciateIT[match(summary$seqname, vSpeciateIT$V1), "V10"]
+summary.taxa<-as.data.frame(summary %>% group_by(species) %>% summarise(minL=min(nbases), maxL=max(nbases), mean(nbases), nSeqs=length(unique(seqname))))
+summary.taxa$step="trunc to V1V4"
+follow.the.taxa<-merge(follow.the.taxa, summary.taxa, all=TRUE)
+
+summary2<-read.delim("vSpeciateIT_V1V4.good.unique.summary")
+summary(summary2$nbases)
+summary2$species<-vSpeciateIT[match(summary2$seqname, vSpeciateIT$V1), "V10"]
+summary2.taxa<-summary2 %>% group_by(species) %>% summarise(minL=min(nbases), maxL=max(nbases), mean(nbases), nSeqs=length(unique(seqname)))
+summary2.taxa$step="screen ambig length"
+follow.the.taxa<-merge(follow.the.taxa, summary2.taxa, all=TRUE)
+
+missing<-setdiff(sort(unique(summary.taxa$species)), sort(unique(summary2.taxa$species)))
+
+
+for (var in c("V1V3", "V3V4", "V4V4")){
+  summary<-read.delim(paste("vSpeciateIT_",var,".summary", sep=""))
+  summary(summary$nbases)
+  summary$species<-vSpeciateIT[match(summary$seqname, vSpeciateIT$V1), "V10"]
+  summary.taxa<-as.data.frame(summary %>% group_by(species) %>% summarise(minL=min(nbases), maxL=max(nbases), mean(nbases), nSeqs=length(unique(seqname))))
+  summary.taxa$step<-paste(var, " truncate",sep="")
+  follow.the.taxa<-rbind(follow.the.taxa, summary.taxa)
+  
+  summary<-read.delim(paste("vSpeciateIT_",var,".good.summary", sep=""))
+  summary(summary$nbases)
+  summary$species<-vSpeciateIT[match(summary$seqname, vSpeciateIT$V1), "V10"]
+  summary.taxa<-as.data.frame(summary %>% group_by(species) %>% summarise(minL=min(nbases), maxL=max(nbases), mean(nbases), nSeqs=length(unique(seqname))))
+  summary.taxa$step<-paste(var, " screen for length",sep="")
+  follow.the.taxa<-rbind(follow.the.taxa, summary.taxa)
+  
+  summary<-read.delim(paste("vSpeciateIT_",var,".good.unique.summary", sep=""))
+  summary(summary$nbases)
+  summary$species<-vSpeciateIT[match(summary$seqname, vSpeciateIT$V1), "V10"]
+  summary.taxa<-as.data.frame(summary %>% group_by(species) %>% summarise(minL=min(nbases), maxL=max(nbases), mean(nbases), nSeqs=length(unique(seqname))))
+  summary.taxa$step<-paste(var, " derep",sep="")
+  follow.the.taxa<-rbind(follow.the.taxa, summary.taxa)
+  
+  summary<-read.delim(paste("vSpeciateIT_",var,".good.unique.keep2.summary", sep=""))
+  summary(summary$nbases)
+  summary$species<-vSpeciateIT[match(summary$seqname, vSpeciateIT$V1), "V10"]
+  summary.taxa<-as.data.frame(summary %>% group_by(species) %>% summarise(minL=min(nbases), maxL=max(nbases), mean(nbases), nSeqs=length(unique(seqname))))
+  summary.taxa$step<-paste(var, " self class",sep="")
+  follow.the.taxa<-rbind(follow.the.taxa, summary.taxa)
+  
+  summary<-read.delim(paste("vSpeciateIT_",var,".good.unique.keep2.vicut.summary", sep=""))
+  summary(summary$nbases)
+  summary$species<-vSpeciateIT[match(summary$seqname, vSpeciateIT$V1), "V10"]
+  summary.taxa<-as.data.frame(summary %>% group_by(species) %>% summarise(minL=min(nbases), maxL=max(nbases), mean(nbases), nSeqs=length(unique(seqname))))
+  summary.taxa$step<-paste(var, " vicut",sep="")
+  follow.the.taxa<-rbind(follow.the.taxa, summary.taxa)
+}
+follow.the.taxa$species<-gsub(pattern = "Bifidobacterium_vaginale", replacement = "Gardnerella_vaginale", follow.the.taxa$species)
+follow.the.taxa$species<-gsub("Bifidobacterium_piotii", "Gardnerella_piotii", follow.the.taxa$species)
+follow.the.taxa$species<-gsub("Bifidobacterium_swidsinskii", "Gardnerella_swidsinskii", follow.the.taxa$species)
+follow.the.taxa$species<-gsub("Bifidobacterium_leopoldii", "Gardnerella_leopoldii", follow.the.taxa$species)
+
+follow.the.taxa$step<-factor(follow.the.taxa$step, levels=c("original", "trunc to V1V4", "screen ambig length", "V1V3 truncate", "V1V3 screen for length", "V1V3 derep", "V1V3 self class", "V1V3 vicut", "V3V4 truncate", "V3V4 screen for length", "V3V4 derep", "V3V4 self class", "V3V4 vicut", "V4V4 truncate", "V4V4 screen for length", "V4V4 derep",  "V4V4 self class", "V4V4 vicut"))
+
+follow.the.taxa.df<-dcast(follow.the.taxa, species~step, value.var="nSeqs")
+```
+
+# 13b. Summary Stats Sequences (requires data from chunk 1. ssu -> speciateIT)
+```{r}
+summary<-read.delim("ssu_all_r214.summary")
+summary$species<-lineage1[match(summary$seqname, lineage1$V1), "V10"]
+follow.the.seqs<-summary[, c("seqname", "species")]
+follow.the.seqs$step="original"
+
+summary<-read.delim("vSpeciateIT_V1V4.summary")
+summary$species<-vSpeciateIT[match(summary$seqname, vSpeciateIT$V1), "V10"]
+summary.seqs<-summary[, c("seqname", "species")]
+summary.seqs$step="trunc to V1V4"
+follow.the.seqs<-merge(follow.the.seqs, summary.seqs, all=TRUE)
+
+summary2<-read.delim("vSpeciateIT_V1V4.good.summary")
+tx<-read.delim("vSpeciateIT_V1V4.good.unique.tx", header=F)
+summary2$species<-vSpeciateIT[match(summary2$seqname, tx$V1), "V2"]
+summary.seqs<-summary[, c("seqname", "species")]
+summary.seqs$step="V1V4 screen ambig length"
+follow.the.seqs<-merge(follow.the.seqs, summary.seqs, all=TRUE)
+
+summary<-read.delim("vSpeciateIT_V1V4.good.names", sep="\t", header=F)
+summary.s<-data.frame()
+tx<-read.delim("vSpeciateIT.tx", header=F)
+for(row in 1:nrow(summary)){
+  rep<-as.vector(summary[row,1])
+  species<-tx[tx$V1 %in% rep, "V2"]
+  c<-as.data.frame(cbind(seqname=rep, species=species))
+  summary.s<-as.data.frame(rbind(summary.s, c))
+  l<-as.vector(summary[row,2])
+  a<-as.vector(str_split_fixed(l, ",", str_count(l, pattern = ",")+1))
+  c<-as.data.frame(cbind(seqname=a, species=species))
+  summary.s<-as.data.frame(rbind(summary.s, c))
+}
+summary.seqs<-unique(summary.s[, c("seqname", "species")])
+summary.seqs$step<-"V1V4 derep"
+follow.the.seqs<-rbind(follow.the.seqs, summary.seqs)
+
+#missing<-setdiff(sort(unique(summary.seqs$species)), sort(unique(summary2.taxa$species)))
+
+for (var in c("V1V3", "V3V4", "V4V4")){
+  summary<-read.delim(paste("vSpeciateIT_",var,".summary", sep=""))
+  tx<-read.delim(paste("vSpeciateIT_",var,".tx", sep=""), header=F)
+  summary$species<-tx[match(summary$seqname, tx$V1), "V2"]
+  summary.seqs<-summary[, c("seqname", "species")]
+  summary.seqs$step<-paste(var, " truncate",sep="")
+  follow.the.seqs<-rbind(follow.the.seqs, summary.seqs)
+  
+  summary<-read.delim(paste("vSpeciateIT_",var,".good.summary", sep=""))
+  tx<-read.delim(paste("vSpeciateIT_",var,".tx", sep=""), header=F)
+  summary$species<-tx[match(summary$seqname, tx$V1), "V2"]
+  summary.seqs<-summary[, c("seqname", "species")]
+  summary.seqs$step<-paste(var, " screen ambig length",sep="")
+  follow.the.seqs<-rbind(follow.the.seqs, summary.seqs)
+  
+  summary<-read.delim(paste("vSpeciateIT_",var,".good.names", sep=""), sep="\t", header=F)
+  summary.s<-data.frame()
+  tx<-read.delim(paste("vSpeciateIT_",var,".tx", sep=""), header=F)
+  for(row in 1:nrow(summary)){
+    rep<-as.vector(summary[row,1])
+    species<-tx[tx$V1 %in% rep, "V2"]
+    c<-as.data.frame(cbind(seqname=rep, species=species))
+    summary.s<-as.data.frame(rbind(summary.s, c))
+    l<-as.vector(summary[row,2])
+    a<-as.vector(str_split_fixed(l, ",", str_count(l, pattern = ",")+1))
+    c<-as.data.frame(cbind(seqname=a, species=species))
+    summary.s<-as.data.frame(rbind(summary.s, c))
+  }
+  summary.seqs<-unique(summary.s[, c("seqname", "species")])
+  summary.seqs$step<-paste(var, " derep",sep="")
+  follow.the.seqs<-rbind(follow.the.seqs, summary.seqs)
+  
+  summary<-read.delim(paste("vSpeciateIT_",var,".good.unique.keep2.summary", sep=""))
+  tx<-read.delim(paste("vSpeciateIT_",var,".good.unique.keep2.tx", sep=""), header=F)
+  summary$species<-tx[match(summary$seqname, tx$V1), "V2"]
+  summary.seqs<-summary[, c("seqname", "species")]
+  summary.seqs$step<-paste(var, " self class",sep="")
+  follow.the.seqs<-rbind(follow.the.seqs, summary.seqs)
+  
+  summary<-read.delim(paste("vSpeciateIT_",var,".good.unique.keep2.vicut.summary", sep=""))
+  tx<-read.delim(paste("vSpeciateIT_",var,".good.unique.keep2.vicut.tx", sep=""), header=F)
+  summary$species<-tx[match(summary$seqname, tx$V1), "V2"]
+  summary.seqs<-summary[, c("seqname", "species")]
+  summary.seqs$step<-paste(var, " vicut",sep="")
+  follow.the.seqs<-rbind(follow.the.seqs, summary.seqs)
+}
+
+follow.the.seqs$species<-gsub(pattern = "Bifidobacterium_vaginale", replacement = "Gardnerella_vaginale", follow.the.seqs$species)
+follow.the.seqs$species<-gsub("Bifidobacterium_piotii", "Gardnerella_piotii", follow.the.seqs$species)
+follow.the.seqs$species<-gsub("Bifidobacterium_swidsinskii", "Gardnerella_swidsinskii", follow.the.seqs$species)
+follow.the.seqs$species<-gsub("Bifidobacterium_leopoldii", "Gardnerella_leopoldii", follow.the.seqs$species)
+
+#follow.the.seqs$step<-factor(follow.the.seqs$step, levels=c("original", "trunc to V1V4", "screen ambig length", "V1V3 truncate", "V1V3 screen for length", "V1V3 derep", "V1V3 self class", "V1V3 vicut", "V3V4 truncate", "V3V4 screen for length", "V3V4 derep", "V3V4 self class", "V3V4 vicut", "V4V4 truncate", "V4V4 screen for length", "V4V4 derep",  "V4V4 self class", "V4V4 vicut"))
+follow.the.seqs$step<-factor(follow.the.seqs$step, levels=c("original", "trunc to V1V4", "V1V4 screen ambig length", "V1V4 derep", "V1V3 truncate", "V1V3 screen ambig length", "V1V3 derep", "V1V3 self class", "V1V3 vicut", "V3V4 truncate", "V3V4 screen ambig length", "V3V4 derep", "V3V4 self class", "V3V4 vicut", "V4V4 truncate", "V4V4 screen ambig length", "V4V4 derep",  "V4V4 self class", "V4V4 vicut"))
+
+follow.the.seqs.df<-reshape2::dcast(follow.the.seqs, seqname~step, value.var="species")
+saveRDS(follow.the.seqs.df, "follow.the.seqs.df.RDS")
+```
+
+
+#13c. Summarise lineage for each region database
+```{r}
+full<-read.delim("vSpeciateIT.lineage", header=F)
+full$reg<-"FL"
+v1v3<-read.delim("vSpeciateIT_V1V3.good.unique.keep2.vicut.lineage", header=F)
+v1v3$reg<-"V1V3"
+v3v4<-read.delim("vSpeciateIT_V3V4.good.unique.keep2.vicut.lineage", header=F)
+v3v4$reg<-"V3V4"
+v4v4<-read.delim("vSpeciateIT_V4V4.good.unique.keep2.vicut.lineage", header=F)
+v4v4$reg<-"V4V4"
+
+all.lin<-rbind(full, v1v3, v3v4, v4v4)
+
+all.lin %>% group_by(reg) %>% summarise(Sp=length(unique(V1)), G=length(unique(V2)), F=length(unique(V3)), O=length(unique(V4)), C=length(unique(V5)), P=length(unique(V6)))
+```
+
+#14. Cross Validation
+```{bash}
+for f in vSpeciateIT_V*V*.good.unique.keep2.vicut.tx; do ./pecan_cv5.pl -o ${f/.tx}_cv -f ${f/.tx}.fasta -a $f -l ${f/.tx}.lineage -n 10 -s 1; done
+```
+
+
+# 14a. CV Scoring 
+```{r}
+class<-data.frame()
+for (i in c("V1V3", "V3V4", "V4V4")){
+  files<-list.files(pattern = ".good.unique.keep2.vicut.tx$")
+  new.tx<-read.delim(files[grepl(i, files)], header = F)
+  names(new.tx)<-c("seqID", "s")
+  files<-list.files(pattern = ".good.unique.keep2.vicut.lineage$")
+  new.lin<-read.delim(files[grepl(i, files)], header = F)
+  names(new.lin)<-c("s", "g", "f", "o", "c", "p", "d")
+  seq.lin<-merge(new.tx, new.lin, all=TRUE)
+  dir<-list.files(pattern = "_cv")
+  dir<-list.files(path = dir[grepl(i, dir)], pattern = "reports", full.names = T)
+  files<-list.files(path=dir, pattern = "MC")
+  for(mc in files){
+    start<-read.delim(paste(dir, mc, sep="/"), header = F)
+    names(start)<-c("seqID", "class", "pp", "nDec")
+    start$cv<-gsub(".txt", "", str_split_fixed(mc, "_", 4)[,4])
+    #start$class[grepl("^Gardnerella", start$class)]<-"Gardnerella_vaginalis"
+    start$var<-i
+    dir1<-list.files(pattern = "_cv")
+    dir1<-list.files(path = dir1[grepl(i, dir1)], pattern = "cvDir", full.names = T)
+    train<-read.delim(paste(dir1, paste("train_", gsub(".txt", "", str_split_fixed(mc, "_", 4)[,4]), ".tx", sep=""), sep="/"), header = F)
+    names(train)<-c("seqID", "s")
+    train<-merge(train, seq.lin, all.x=TRUE)
+    start<-merge(start, seq.lin, all.x=TRUE)
+    #start$s[grepl("^Gardnerella", start$s)]<-"Gardnerella_vaginalis"
+    start$lin<-apply(start, 1, function(x) paste(x[7], x[8], x[9], x[10], x[11], x[12], x[13], sep=""))
+    # TP: sequences from species present in the training set that classified correctly classified to species
+    # TN: sequences from species not present in the training set that classified correctly to higher level
+    # FP: sequences from species not present in the training set that classified incorrectly to species
+    # FN: sequences from species present in the training set that classified incorrectly at a higher level
+    #err<-read.delim(paste(dir, paste("error_thlds_", gsub(".txt", "", str_split_fixed(mc, "_", 4)[,4]), ".txt", sep=""), sep="/"), header = T)
+    #start$errthld<-err[match(start$s, err$Taxon), "Threshold"]
+    #start$errthld[is.na(start$errthld)]<-0
+    #start$expected<-ifelse(start$s %in% train$s & log10(start$pp) > start$errthld, as.character(start$s), as.character(start$lin))
+    # start$expected<-ifelse(grepl("^g_", start$expected) & start$g %in% train$g, as.character(start$g), 
+    #                               ifelse(start$f %in% train$f, as.character(start$f), 
+    #                                      ifelse(start$o %in% train$o, as.character(start$o), 
+    #                                             ifelse(start$c %in% train$c, as.character(start$c),  
+    #                                                    ifelse(start$p %in% train$p, as.character(start$p),
+    #                                                           ifelse(start$d %in% train$d, as.character(start$d), NA)))))) ## if the species exists in the training set, then expect species classification, if not, determine what the expected assignment should be based on the classification
+    trainNseqs<- as.data.frame(train %>% group_by(s) %>% summarise(nSeqsTrain=length(unique(seqID))))
+    start$nSeqsTrain<-trainNseqs[match(start$s, trainNseqs$s), "nSeqsTrain"] 
+    start$spp_present <- ifelse(start$s %in% train$s, 1, 0)
+    start$spp_correct <- ifelse(start$class %in%  start$s, 1, 0)
+    start$lin_correct <-ifelse(mapply(grepl, start$class, start$lin), 1, 0)
+    class<-rbind(class, start)
+  }
+}
+
+class$nSeqsTrain[is.na(class$nSeqsTrain)]<-0
+class$nSeqsCat<-cut(class$nSeqsTrain, breaks=c(0, 1, 5, 10, 20, 30, 45), right = F)
+class1<-class[class$nSeqsTrain > 2, ]
+table(class1$lin_correct, class1$var)
+round(prop.table(table(class1$lin_correct, class1$var), 2), 3)
+#table(class1$spp_correct, class1$var)
+#round(prop.table(table(class1$spp_correct, class1$var), 2), 3)
+
+```
+
+### FIGURE 1: CV results
+```{r}
+known2<-class
+known2$total<-ifelse(known2$var %in% "V1V3", 4066, ifelse(known2$var %in% "V3V4", 2357, 1650))
+known2$level<-ifelse(grepl("^g_", known2$class), "Genus", 
+                     ifelse(grepl("^f_", known2$class), "Family", 
+                            ifelse(grepl("^o_", known2$class), "Order", 
+                                   ifelse(grepl("^c_", known2$class), "Class", 
+                                     ifelse(grepl("^p_", known2$class), "Phylum", 
+                                            ifelse(grepl("^d_", known2$class), "Domain", 
+                                                   "Species"))))))
+known2$level<-ifelse(known2$lin_correct == 1, as.character(known2$level), "Incorrect")
+known2$level<-factor(known2$level, levels=c("Domain","Phylum", "Class","Order", "Family", "Genus", "Species", "Incorrect"))
+known2$level2<-ifelse(grepl("^g_", known2$class), "Genus", 
+                     ifelse(grepl("^f_", known2$class), "Family", 
+                            ifelse(grepl("^o_", known2$class), "Order", 
+                                   ifelse(grepl("^c_", known2$class), "Class", 
+                                      ifelse(grepl("^p_", known2$class), "Phylum", 
+                                            ifelse(grepl("^d_", known2$class), "Domain", 
+                                                   "Species"))))))
+known2$level2<-factor(known2$level2, levels=c("Domain","Phylum", "Class","Order", "Family", "Genus", "Species"))
+known2$known<-factor(ifelse(known2$nSeqsTrain > 0, "Known Species", "Novel Species"), levels=c("Known Species", "Novel Species"))
+known2$spp_correct<-factor(known2$spp_correct)
+known2$lin_correct<-factor(known2$lin_correct, labels = c("Incorrect", "Correct"))
+
+
+cols<-c("#e6ab02", "#66A61E", "lightblue", "#7570b3", "#d95f02", "#1b9e77", "gray")
+
+ggplot(known2[known2$known %in% "Novel Species" & known2$level2 %in% c("Order", "Family","Genus"), ], aes(x=lin_correct, y=pp, fill=level2))+geom_boxplot(outlier.shape = NA, notch=T, color="black", lwd=0.2)+geom_jitter(stroke=0.2,size=0.5, width=0.2, shape=21, aes(fill=level2))+facet_grid(~level2, scales="free_y")+theme_bw()+scale_fill_manual(values=cols[3:5])+theme(legend.position = "none")+xlab("Classification")+ylab("Posterior Probability of Query Sequences\nfrom Novel Species")+stat_test_text(test="nonparametric", size = 2)+theme(text=element_text(size=6), strip.text = element_text(size=7, face = "bold"))
+ggsave("Figure_1b.pdf", height=3, width=7)
+
+ #known2$var<-ifelse(known2$var %in% "V1V3", "V1V3", ifelse(known2$var %in% "V3V4", "V3V4", "V4"))
+known2$var<-ifelse(known2$var %in% "V1V3", paste("V1V3\n(", format(nrow(known2[known2$var %in% "V1V3", ]), big.mark=",")," sequences tested)", sep=""), ifelse(known2$var %in% "V3V4", paste("V3V4\n(", format(nrow(known2[known2$var %in% "V3V4", ]), big.mark=",")," sequences tested)", sep=""), paste("V4\n(", format(nrow(known2[known2$var %in% "V4V4", ]), big.mark=",")," sequences tested)", sep="")))
+
+
+ggplot(known2, aes(x=known, fill=level))+geom_bar(color="black", lwd=0.2)+
+  scale_fill_manual(values=cols, name="Taxonomic Level\nof Assignment")+
+  ylab("Number of Query Sequences")+
+  theme_bw()+
+  facet_wrap(~var, scales="free_y")+
+  theme(text=element_text(size=8), legend.position = "bottom", legend.title=element_text(size=6), legend.key.size = unit(0.3, units = "cm"), legend.text = element_text(size=6), legend.background = element_blank(),legend.box.background = element_blank(), strip.text = element_text(size=7, face = "bold"))+
+  xlab("")+
+  guides(fill = guide_legend(nrow = 1))
+ggsave("Figure_1.pdf", height=4, width=7)
+```
+
+#15. Compare to RDP
+Get a set of sequences for each variable region that weren't included in the classifier. 
+
+###Independent V3V4
+```{bash}
+select_seqs.pl -i vSpeciateIT_V3V4.fasta -e vSpeciateIT_V3V4.good.unique.keep2.vicut.tx -o V3V4_indep.fasta
+select_tx.pl -i vSpeciateIT.tx -s <(grep ">" V3V4_indep.fasta | awk -F' ' '{print$1}' | sed 's/>//g') -o V3V4_indep.tx
+mothur "#count.seqs(name=V3V4_indep.tx)"
+mothur "#summary.seqs(fasta=V3V4_indep.fasta, count=V3V4_indep.count_table)"
+mothur "#screen.seqs(fasta=V3V4_indep.fasta, count=V3V4_indep.count_table, minlength=400, maxlength=500)"
+mothur "#summary.seqs(fasta=V3V4_indep.good.fasta, count=V3V4_indep.good.count_table)"
+mothur "#unique.seqs(fasta=V3V4_indep.good.fasta, count=V3V4_indep.good.count_table)"
+mothur "#summary.seqs(fasta=V3V4_indep.good.unique.fasta, count=V3V4_indep.good.unique.count_table)"
+select_tx.pl -i vSpeciateIT.tx -s <(grep ">" V3V4_indep.good.unique.fasta | awk -F' ' '{print$1}' | sed 's/>//g') -o V3V4_indep.good.unique.tx
+select_fullTx.pl -t V3V4_indep.good.unique.tx -f vSpeciateIT.lineage -o V3V4_indep.good.unique.lineage
+```
+
+###Independent V1V3
+```{bash}
+select_seqs.pl -i vSpeciateIT_V1V3.fasta -e vSpeciateIT_V1V3.good.unique.keep2.vicut.tx -o V1V3_indep.fasta
+select_tx.pl -i vSpeciateIT.tx -s <(grep ">" V1V3_indep.fasta | awk -F' ' '{print$1}' | sed 's/>//g') -o V1V3_indep.tx
+mothur "#count.seqs(name=V1V3_indep.tx)"
+mothur "#summary.seqs(fasta=V1V3_indep.fasta, count=V1V3_indep.count_table)"
+mothur "#screen.seqs(fasta=V1V3_indep.fasta, count=V1V3_indep.count_table, minlength=400, maxlength=500)"
+mothur "#summary.seqs(fasta=V1V3_indep.good.fasta, count=V1V3_indep.good.count_table)"
+mothur "#unique.seqs(fasta=V1V3_indep.good.fasta, count=V1V3_indep.good.count_table)"
+mothur "#summary.seqs(fasta=V1V3_indep.good.unique.fasta, count=V1V3_indep.good.unique.count_table)"
+select_tx.pl -i vSpeciateIT.tx -s <(grep ">" V1V3_indep.good.unique.fasta | awk -F' ' '{print$1}' | sed 's/>//g') -o V1V3_indep.good.unique.tx
+select_fullTx.pl -t V1V3_indep.good.unique.tx -f vSpeciateIT.lineage -o V1V3_indep.good.unique.lineage
+
+```
+
+###Independent V4V4
+```{bash}
+select_seqs.pl -i vSpeciateIT_V4V4.fasta -e vSpeciateIT_V4V4.good.unique.keep2.vicut.tx -o V4V4_indep.fasta
+select_tx.pl -i vSpeciateIT.tx -s <(grep ">" V4V4_indep.fasta | awk -F' ' '{print$1}' | sed 's/>//g') -o V4V4_indep.tx
+mothur "#count.seqs(name=V4V4_indep.tx)"
+mothur "#summary.seqs(fasta=V4V4_indep.fasta, count=V4V4_indep.count_table)"
+mothur "#screen.seqs(fasta=V4V4_indep.fasta, count=V4V4_indep.count_table, minlength=240, maxlength=260)"
+mothur "#summary.seqs(fasta=V4V4_indep.good.fasta, count=V4V4_indep.good.count_table)"
+mothur "#unique.seqs(fasta=V4V4_indep.good.fasta, count=V4V4_indep.good.count_table)"
+mothur "#summary.seqs(fasta=V4V4_indep.good.unique.fasta, count=V4V4_indep.good.unique.count_table)"
+select_tx.pl -i vSpeciateIT.tx -s <(grep ">" V4V4_indep.good.unique.fasta | awk -F' ' '{print$1}' | sed 's/>//g') -o V4V4_indep.good.unique.tx
+select_fullTx.pl -t V4V4_indep.good.unique.tx -f vSpeciateIT.lineage -o V4V4_indep.good.unique.lineage
+
+```
+
+###RDP W/RDP
+```{bash}
+time rdp_classifier classify -f allrank -o V1V3_indep.good.unique.rdp.txt V1V3_indep.good.unique.fasta
+time rdp_classifier classify -f allrank -o V3V4_indep.good.unique.rdp.txt V3V4_indep.good.unique.fasta
+time rdp_classifier classify -f allrank -o V4V4_indep.good.unique.rdp.txt V4V4_indep.good.unique.fasta
+```
+
+
+### DADA2 RDP W/SILVA OR GTDB
+Ran with dada2_speciateIT_ind.R
+```{r}
+start_time <- system.time({
+  V1V3<-readDNAStringSet("V1V3_indep.good.unique.fasta")
+  V1V3taxa <- assignTaxonomy(V1V3, "silva_ref/silva_nr99_v138.1_train_set.fa.gz", multithread=TRUE, tryRC = TRUE)
+  V1V3taxa <- addSpecies(V1V3taxa, "silva_ref/silva_species_assignment_v138.1.fa.gz", tryRC = TRUE)
+})[3]
+cat("Elapsed time:", start_time, "seconds\n")
+## Elapsed time: 1282.073 seconds
+
+start_time <- system.time({
+  V3V4<-readDNAStringSet("V3V4_indep.good.unique.fasta")
+  V3V4taxa <- assignTaxonomy(V3V4, "silva_ref/silva_nr99_v138.1_train_set.fa.gz", multithread=TRUE, tryRC = TRUE)
+  V3V4taxa <- addSpecies(V3V4taxa, "silva_ref/silva_species_assignment_v138.1.fa.gz", tryRC = TRUE)
+})[3]
+cat("Elapsed time:", start_time, "seconds\n")
+## Elapsed time: 974.733 seconds
+
+start_time <- system.time({
+  V4V4<-readDNAStringSet("V4V4_indep.good.unique.fasta")
+  V4V4taxa <- assignTaxonomy(V4V4, "silva_ref/silva_nr99_v138.1_train_set.fa.gz", multithread=TRUE, tryRC = TRUE)
+  V4V4taxa <- addSpecies(V4V4taxa, "silva_ref/silva_species_assignment_v138.1.fa.gz", tryRC = TRUE)
+})[3]
+cat("Elapsed time:", start_time, "seconds\n")
+## Elapsed time: 362.585 seconds
+
+## DADA2 w/GTDB
+start_time <- system.time({
+  V1V3<-readDNAStringSet("V1V3_indep.good.unique.fasta")
+  V1V3taxa <- assignTaxonomy(V1V3, "gtdb_ref/GTDB_bac-arc_ssu_r86.fa.gz", multithread=TRUE, tryRC = TRUE)
+  V1V3taxa <- addSpecies(V1V3taxa, "gtdb_ref/GTDB_dada2_assignment_species.fa.gz", tryRC = TRUE)
+  rownames(V1V3taxa)<-names(V1V3)
+})[3]
+cat("Elapsed time:", start_time, "seconds\n")
+## Elapsed time: 662.096 seconds
+
+start_time <- system.time({
+  V3V4<-readDNAStringSet("V3V4_indep.good.unique.fasta")
+  V3V4taxa <- assignTaxonomy(V3V4, "gtdb_ref/GTDB_bac-arc_ssu_r86.fa.gz", multithread=TRUE, tryRC = TRUE)
+  V3V4taxa <- addSpecies(V3V4taxa, "gtdb_ref/GTDB_dada2_assignment_species.fa.gz", tryRC = TRUE)
+  rownames(V3V4taxa)<-names(V3V4)
+})[3]
+cat("Elapsed time:", start_time, "seconds\n")
+## Elapsed time: 497.332 seconds
+
+start_time <- system.time({
+  V4V4<-readDNAStringSet("V4V4_indep.good.unique.fasta")
+  V4V4taxa <- assignTaxonomy(V4V4, "gtdb_ref/GTDB_bac-arc_ssu_r86.fa.gz", multithread=TRUE, tryRC = TRUE)
+  V4V4taxa <- addSpecies(V4V4taxa, "gtdb_ref/GTDB_dada2_assignment_species.fa.gz", tryRC = TRUE)
+  rownames(V4V4taxa)<-names(V4V4)
+})[3]
+cat("Elapsed time:", start_time, "seconds\n")
+## Elapsed time: 222.27 seconds
+```
+
+### speciateIT CLASSIFY
+```{bash}
+time ./bin/classify -d final_models/vSpeciateIT_V3V4.good.unique.keep2.vicut -i V3V4_indep.good.unique.fasta -o V3V4_ind
+time ./bin/classify -d final_models/vSpeciateIT_V1V3.good.unique.keep2.vicut -i V1V3_indep.good.unique.fasta -o V1V3_ind
+time ./bin/classify -d final_models/vSpeciateIT_V4V4.good.unique.keep2.vicut -i V4V4_indep.good.unique.fasta -o V4V4_ind
+```
+
+
+### FIGURE 2: Cmp classifications
+```{r}
+rdp.class<-data.frame()
+for (i in c("V1V3", "V3V4", "V4V4")){
+  files<-list.files(pattern = "_indep.good.unique.tx")
+  new.tx<-read.delim(files[grepl(i, files)], header = F)
+  names(new.tx)[2]<-"actual"
+  new.tx$var<-i
+  files<-list.files(pattern = "_indep.good.unique.lineage")
+  new.lin<-read.delim(files[grepl(i, files)], header = F)
+  names(new.tx)[2]<-"actual"
+  new.tx<-merge(new.tx, new.lin, by.x="actual", by.y="V1", all=TRUE)
+  new.tx$lin<-apply(new.tx, 1, function(x) paste(x["actual"], x[4], x[5], x[6], x[7], x[8], x[9], sep="_"))
+  start<-read.delim(paste(i,"_indep.good.unique.rdp.txt", sep=""), header = F)
+  start$class<-ifelse(start$V23 >=0.8, paste("g_", as.character(start$V21), sep=""), 
+                      ifelse(start$V20 >=0.8, paste("f_", as.character(start$V18), sep=""), 
+                             ifelse(start$V17 >=0.8, paste("o_", as.character(start$V15), sep=""), 
+                                    ifelse(start$V14 >=0.8, paste("c_", as.character(start$V12), sep=""), 
+                                           ifelse(start$V11 >=0.8, paste("p_", as.character(start$V9), sep=""), 
+                                                ifelse(start$V8 >=0.8, paste("d_", as.character(start$V6), sep=""), NA))))))
+  start$var<-i
+  start<-merge(start, new.tx[,c("V1","actual", "lin")], all.x=TRUE)
+  start$method<-"RDP"
+  start$ref<-"RDP"
+  rdp.class<-rbind(rdp.class, start)
+}
+rdp.class$class<-gsub("Escherichia/Shigella", "Escherichia", rdp.class$class)
+#rdp.class$correct<-factor(ifelse(mapply(grepl, rdp.class$class, rdp.class$lin), 1, 0))
+#prop.table(table(rdp.class$correct, rdp.class$var), 2)
+rdp.class<-rdp.class[,c("V1", "class", "actual", "lin", "var", "method", "ref")]
+names(rdp.class)[2]<-"V2"
+
+dada2.class<-data.frame()
+for (i in c("V1V3", "V3V4", "V4V4")){
+  for (ref in c("silva", "gtdb")){
+    files<-list.files(pattern = "_indep.good.unique.tx")
+    new.tx<-read.delim(files[grepl(i, files)], header = F)
+    names(new.tx)[2]<-"actual"
+    new.tx$var<-i
+    files<-list.files(pattern = "_indep.good.unique.lineage")
+    new.lin<-read.delim(files[grepl(i, files)], header = F)
+    new.tx<-merge(new.tx, new.lin, by.x="actual", by.y="V1", all=TRUE)
+    new.tx$lin<-apply(new.tx, 1, function(x) paste(x["actual"], x[4], x[5], x[6], x[7], x[8], x[9], sep="_"))
+    start<-read.delim(paste(i,"_dada2_rdp_", ref, "_class.txt", sep=""), header = F)
+    start<-merge(start, new.tx[,c("V1","actual", "lin")], all.x=TRUE)
+    start$var<-i
+    start$method<-"DADA2"
+    start$ref<-ref
+    dada2.class<-rbind(dada2.class, start)
+  }
+}
+dada2.class$V2<-gsub("Escherichia-Shigella", "Escherichia", dada2.class$V2)
+#dada2.class$correct<-factor(ifelse(mapply(grepl, dada2.class$V2, dada2.class$lin), 1, 0))
+#prop.table(table(dada2.class$correct, dada2.class$var), 2)
+
+mc.class<-data.frame()
+for (i in c("V1V3", "V3V4", "V4V4")){
+  files<-list.files(pattern = "_indep.good.unique.tx")
+  new.tx<-read.delim(files[grepl(i, files)], header = F)
+  names(new.tx)[2]<-"actual"
+  new.tx$var<-i
+  files<-list.files(pattern = "_indep.good.unique.lineage")
+  new.lin<-read.delim(files[grepl(i, files)], header = F)
+  names(new.tx)[2]<-"actual"
+  new.tx<-merge(new.tx, new.lin, by.x="actual", by.y="V1", all=TRUE)
+  new.tx$lin<-apply(new.tx, 1, function(x) paste(x["actual"], x[4], x[5], x[6], x[7], x[8], x[9], sep="_"))
+  start<-read.delim(paste(i,"_ind/MC_order7_results.txt", sep=""), header = F)
+  start$var<-i
+  start$method<-"speciateIT"
+  start$ref<-"vSpeciateDB"
+  start<-merge(start, new.tx[,c("V1","actual", "lin")], all.x=TRUE)
+  mc.class<-rbind(mc.class, start)
+}
+
+mc.class<-mc.class[,c("V1", "V2", "actual", "lin", "var", "method", "ref")]
+```
+
+```{r}
+all.class<-rbind(rdp.class, dada2.class)
+all.class<-rbind(all.class, mc.class)
+
+all.class$correct<-factor(ifelse(mapply(grepl, all.class$V2, all.class$lin), 1, 0))
+
+
+lsvf<-read.delim("MC_order7_results.txt", header=F)
+n<-unique(lsvf$V2[!grepl("^g_", lsvf$V2) & !grepl("^f_", lsvf$V2) & !grepl("^o_", lsvf$V2) & !grepl("^c_", lsvf$V2) & !grepl("^p_", lsvf$V2) & !grepl("^d_", lsvf$V2)]) ## unique species in LSVF
+
+all.vaginal<-all.class[all.class$actual %in% n, ]
+all.vaginal$level<-ifelse(grepl("^g_", all.vaginal$V2), "Genus", ifelse(grepl("^f_", all.vaginal$V2), "Family", ifelse(grepl("^o_", all.vaginal$V2), "Order", ifelse(grepl("^c_", all.vaginal$V2), "Class", ifelse(grepl("^p_", all.vaginal$V2), "Phylum", ifelse(grepl("^d_", all.vaginal$V2), "Domain", "Species"))))))
+all.vaginal$level<-factor(all.vaginal$level, levels=c("Domain", "Class", "Order", "Family", "Genus", "Species"))
+
+all.vaginal$method<-gsub("RDP", "RDP v2.13", all.vaginal$method)
+all.vaginal$method<-gsub("DADA2", "RDP via\nDADA2 v1.30", all.vaginal$method)
+all.vaginal$method<-gsub("speciateIT", "SpeciateIT", all.vaginal$method)
+all.vaginal$ref<-gsub("gtdb", "GTDB r86", all.vaginal$ref)
+all.vaginal$ref<-gsub("silva", "SILVA v138", all.vaginal$ref)
+all.vaginal$Method<-paste(all.vaginal$method, all.vaginal$ref, sep="\nwith\n")
+all.vaginal$Method<-factor(all.vaginal$Method, levels=c("SpeciateIT\nwith\nvSpeciateDB", "RDP v2.13\nwith\nRDP", "RDP via\nDADA2 v1.30\nwith\nSILVA v138", "RDP via\nDADA2 v1.30\nwith\nGTDB r86"))
+
+all.vaginal$total<-ifelse(all.vaginal$var %in% "V1V3", 7163, ifelse(all.vaginal$var %in% "V3V4", 5671, ifelse(all.vaginal$var %in% "V4V4", 4171, NA)))
+
+#all.vaginal$var<-ifelse(all.vaginal$var %in% "V1V3", paste("V1V3\n(", format(nrow(all.vaginal[all.vaginal$var %in% "V1V3", ]), big.mark=",")," sequences)", sep=""), ifelse(all.vaginal$var %in% "V3V4", paste("V3V4\n(", format(nrow(all.vaginal[all.vaginal$var %in% "V3V4", ]), big.mark=",")," sequences)", sep=""), paste("V4\n(", format(nrow(all.vaginal[all.vaginal$var %in% "V4V4", ]), big.mark=",")," sequences)", sep="")))
+
+all.vaginal$var<-gsub("V4V4", "V4\n(4,171 sequences)", all.vaginal$var)
+all.vaginal$var<-gsub("V3V4", "V3V4\n(5,671 sequences)", all.vaginal$var)
+all.vaginal$var<-gsub("V1V3", "V1V3\n(7,163 sequences)", all.vaginal$var)
+
+
+cols<-c("#e6ab02", "#66A61E", "lightblue", "#7570b3", "#d95f02", "#1b9e77", "gray")
+
+ggplot(all.vaginal[all.vaginal$correct %in% "1", ], aes(x=Method, fill=level))+geom_bar(color="black", lwd=0.2)+
+  scale_fill_manual(values=cols, name="Taxonomic Level\nof Assignment")+
+  ylab("Number of Correctly Assigned Sequences")+
+  theme_bw()+facet_grid(~var)+
+  geom_hline(aes(yintercept=total), linetype="dashed", lwd=0.3)+
+  theme(text=element_text(size=9), legend.position = c(0.9, 0.8), axis.text.x = element_text(size=7.5), legend.title=element_text(size=7), legend.key.size = unit(0.3, units = "cm"), legend.text = element_text(size=7), legend.background = element_blank(),legend.box.background = element_rect(colour = "black", linewidth = 0.1), strip.text = element_text(size=9, face = "bold"))+
+  xlab("")
+ggsave("Figure_2.pdf", height=5, width=10)
+```
+
+
+### Classification Time
+Use the independent datasets to create .fasta files of 10^1 to 10^7 sequences
+```{r}
+library(seqinr)
+
+# Function to resample sequences
+resample_sequences <- function(original_sequences, num_sequences) {
+  return(sample(original_sequences, num_sequences, replace = TRUE))
+}
+
+for (i in c("V1V3", "V3V4", "V4V4")){
+  files<-list.files(pattern = "_indep.good.unique.fasta")
+  # Load the original fasta file
+  original_file<-original_file[grepl(i, original_file)]
+  original_sequences <- read.fasta(file = original_file)
+  
+  # Resample and create files
+  for(n in c(10, 100, 1000, 10000, 100000, 1000000, 10000000)){
+  seqs<-resample_sequences(original_sequences, n)
+  write.fasta(seqs, names = names(seqs), file.out = paste(gsub(".fasta", "", original_file), "_", n, ".fasta", sep=""))
+  }
+}
+```
+Classify all independent sets with each classifier and record time.
+
+##### SpeciateIT
+```{bash}
+for f in *V1V3_indep.good.unique_*.fasta; do time ./bin/classify -d vSpeciateIT_V1V3.good.unique.keep2.vicut -i $f -o ${f/.fasta}; done > V1V3_spIT_times.txt 2>&1
+
+for f in *V3V4_indep.good.unique_*.fasta; do time ./bin/classify -d vSpeciateIT_V3V4.good.unique.keep2.vicut -i $f -o ${f/.fasta}; done > V3V4_spIT_times.txt 2>&1
+
+for f in *V4V4_indep.good.unique_*.fasta; do time ./bin/classify -d vSpeciateIT_V4V4.good.unique.keep2.vicut -i $f -o ${f/.fasta}; done > V4V4_spIT_times.txt 2>&1
+```
+
+##### RDP standalone
+```{bash}
+for f in *V1V3_indep.good.unique_*.fasta; do time rdp_classifier classify -f allrank -o ${f/.fasta}_rdp.txt $f; done  > V1V3_rdp_times.txt 2>&1
+
+for f in *V3V4_indep.good.unique_*.fasta; do time rdp_classifier classify -f allrank -o ${f/.fasta}_rdp.txt $f; done > V3V4_rdp_times.txt 2>&1
+
+for f in *V4V4_indep.good.unique_*.fasta; do time rdp_classifier classify -f allrank -o ${f/.fasta}_rdp.txt $f; done > V4V4_rdp_times.txt 2>&1
+```
+
+### FIGURE 3: Classification Time
+```{r}
+all.times<-data.frame()
+list.files(pattern="times.txt")
+for (var in c("V1V3", "V3V4", "V4V4")){
+  for (ref in c("spIT", "rdp")){
+    times<-read.delim(file = paste(var, ref, "times.txt", sep="_"), header=F)
+    times.s<-times[times$V1 %in% "real", ]
+    times.s$m<-as.numeric(str_split_fixed(times.s$V2, "m", 2)[,1])
+    times.s$s<-as.numeric(gsub("s", "", str_split_fixed(times.s$V2, "m", 2)[,2]))
+    times.s$totals<-times.s$m*60+times.s$s
+    times.s$totalm<-times.s$totals/60
+    times.s$method<-ref
+    times.s$var<-var
+    times.s$nSeqs<-c(10, 100, 1000, 10000, 100000, 1000000, 10000000)[1:nrow(times.s)]
+    all.times<-rbind(all.times, times.s[,c("totals", "totalm", "method", "var", "nSeqs")])
+  }
+}
+
+all.times<-all.times[!is.na(all.times$totals), ]
+
+all.times$method<-gsub("rdp", "RDP v2.13 (RDP)", all.times$method)
+all.times$method<-gsub("spIT", "SpeciateIT (vSpeciateDB)", all.times$method)
+
+
+
+a<-ggplot(all.times, aes(x=nSeqs, y=totalm, color=method))+
+  geom_point()+
+  geom_line(lwd=0.75)+
+  facet_wrap(~var)+
+  theme_bw()+
+  xlab("Number of Sequences")+
+  ylab("Classification Time (m)")+
+  scale_x_log10( breaks = scales::trans_breaks("log10", function(x) 10^x), labels = scales::trans_format("log10", scales::math_format(10^.x)))+
+  theme(text=element_text(size=10), legend.position = c(0.1,0.85), axis.text.x = element_text(size=8), legend.title=element_blank(), legend.key.size = unit(0.3, units = "cm"), legend.text = element_text(size=8), legend.box.background = element_rect(colour = "black", linewidth = 0.1), strip.text = element_text(size=9, face = "bold"))+
+  scale_color_manual(values=c("black", "blue"))
+
+b<-ggplot(all.times, aes(x=nSeqs, y=totalm, color=method))+
+  geom_point()+
+  geom_line(lwd=0.75)+
+  facet_wrap(~var)+
+  theme_bw()+
+  xlab("Number of Sequences")+
+  ylab("Classification Time (m)")+
+  scale_x_log10( breaks = scales::trans_breaks("log10", function(x) 10^x), labels = scales::trans_format("log10", scales::math_format(10^.x)))+
+  theme(text=element_text(size=10), legend.position = "none", axis.text.x = element_text(size=8), legend.title=element_blank(), legend.key.size = unit(0.3, units = "cm"), legend.text = element_text(size=8), legend.background = element_blank(),legend.box.background = element_rect(colour = "black", linewidth = 0.1), strip.text = element_text(size=9, face = "bold"))+
+  scale_color_manual(values=c("black", "blue"))+
+  scale_y_cut(breaks=c(1, 35))
+
+## extract legend from original plot
+leg <- cowplot::get_legend(a)
+
+## redraw the figure
+c <- ggplotify::as.ggplot(print(b))
+
+## place the legend 
+c + ggimage::geom_subview(x=.2, y=.85, subview=leg)
+
+ggsave("Figure_3.pdf", height=5, width=10)
+```
+
+# 16. VALENCIA2 Centroids
+
+### Run CLASSIFY
+```{bash}
+#for f in ASV_files/*.csv; do head -n1 $f | sed 's/,/\n>ASV\n/g' | awk '/^>ASV/ {sub(/^>ASV/, "&"++c)} 1' | sed '1d' > ${f/.csv}.fasta; done
+
+#for f in ASV_files/*_taxa.csv; do ASV_files/count_tbl_headers_to_ASV.sh $f; done
+for f in ASV_files/*taxa.fasta; do rm -rf ${f/_all_runs_dada2_abundance_table_w_taxa.fasta} | bin/classify -d final_models/vSpeciateIT_V3V4 -i $f -o ${f/_all_runs_dada2_abundance_table_w_taxa.fasta}; done
+
+for f in ASV_files/*_modified.csv; do python3 ~/bin/speciateIT/bin/count_table.py -c $f -s ${f/_all_runs_dada2_abundance_table_w_taxa_modified.csv}/MC_order7_results.txt; done
+
+mv *_speciateIT.csv ASV_files/
+```
+
+
+### 16a. Hierarchical clustering
+```{r}
+the.samples<-read.csv("the.samples.csv")
+the.prop<-the.samples[,3:ncol(the.samples)]/rowSums(the.samples[,3:ncol(the.samples)])
+rownames(the.prop)<-the.samples$sampleID
+the.prop<-the.prop[,order(colSums(the.prop), decreasing = TRUE)]
+
+## Distances between samples
+the.dist<-vegdist(as.matrix(the.prop), na.rm = T)
+the.clsting<-hclust(the.dist, method="ward")
+
+to.plot<-the.prop[,1:50]
+names(to.plot)<-gsub("_", " ", names(to.plot))
+
+names(to.plot)<-gsub("_", " ", names(to.plot))
+italic_row_labels <- lapply(names(to.plot), function(label) {
+  return(bquote(italic(.(label))))
+})
+
+the.clusts<-as.data.frame(cbind(cluster=cutree(the.clsting, k=9), sampleID=rownames(the.prop)))
+the.clusts<-cbind(the.clusts, domTaxa=colnames(the.prop)[max.col(the.prop, ties.method="first")])
+the.clusts.sort<-the.clusts %>% group_by(cluster, domTaxa) %>% summarise(n=length(unique(sampleID)))
+the.clusts.cols<-cbind(cluster=unique(the.clusts.sort$cluster), domTaxa=the.clusts.sort$domTaxa[max(the.prop, ties.method="first")])
+the.clusts$cluster<-as.factor(the.clusts$cluster)
+cols<-RColorBrewer::brewer.pal(12, "Set3")[1:9]
+
+names(cols)<-unique(the.clusts$cluster)
+## cut for 9, then pull out IVC and recluster to get the other 5
+colfunc <- colorRampPalette(c("khaki", "limegreen", "darkslategray1", "mediumblue", "magenta", "red"))
+png(paste("VALENCIA2_heatmap_dend_", today2, ".png", sep=""), width=7, height=7, units="in", res=600)
+pheatmap(t(as.matrix(to.plot)), 
+         color = alpha(colfunc(100), 1), 
+         cluster_rows = FALSE, 
+         cluster_cols = as.hclust(the.clsting), 
+         annotation_row = NULL,
+         cutree_cols = 9, ## at cutree=20, Enterococcus comes out as separate group.
+         legend = TRUE, 
+         fontsize = 6, 
+         labels_col = "", 
+         annotation_col = the.clusts, 
+         annotation_colors = list(cluster=cols),
+         labels_row = as.expression(italic_row_labels))
+dev.off()
+
+the.clusts<-as.data.frame(cbind(cluster=cutree(the.clsting, k=9)))
+the.clusts<-cbind(the.clusts, domTaxa=colnames(the.prop)[max.col(the.prop, ties.method="first")])
+the.clusts$sampleID<-rownames(the.clusts)
+the.clusts.sort<-the.clusts %>% group_by(cluster, domTaxa) %>% summarise(n=length(unique(sampleID)))
+ivc<-the.clusts.sort$cluster[the.clusts.sort$n == max(the.clusts.sort[the.clusts.sort$domTaxa %in% "g_Bifidobacterium", "n"])]
+
+## IVC
+the.samples<-the.samples2[the.samples2$sampleID %in% the.clusts$sampleID[the.clusts$cluster %in% ivc], ]
+the.prop<-the.samples[,3:ncol(the.samples)]/rowSums(the.samples[,3:ncol(the.samples)])
+rownames(the.prop)<-the.samples$sampleID
+the.prop<-the.prop[,order(colSums(the.prop), decreasing = TRUE)]
+
+## Distances between samples
+the.dist.ivc<-vegdist(as.matrix(the.prop), na.rm = T)
+the.clsting.ivc<-hclust(the.dist.ivc, method="ward")
+the.clusts.ivc<-as.data.frame(cbind(cluster=cutree(the.clsting.ivc, k=5)))
+the.clusts.ivc$cluster<-as.factor(the.clusts.ivc$cluster)
+
+to.plot<-the.prop[,1:50]
+names(to.plot)<-gsub("_", " ", names(to.plot))
+
+names(to.plot)<-gsub("_", " ", names(to.plot))
+italic_row_labels <- lapply(names(to.plot), function(label) {
+  return(bquote(italic(.(label))))
+})
+
+
+cols<-RColorBrewer::brewer.pal(11, "Set3")[1:5]
+names(cols)<-unique(the.clusts.ivc$cluster)
+colfunc <- colorRampPalette(c("khaki", "limegreen", "darkslategray1", "mediumblue", "magenta", "red"))
+png(paste("VALENCIA2_heatmap_dend_", today2, "_IV-C.png", sep=""), width=7, height=7, units="in", res=600)
+pheatmap(t(as.matrix(to.plot)), 
+         color = alpha(colfunc(100), 1), 
+         cluster_rows = FALSE, 
+         cluster_cols = as.hclust(the.clsting.ivc), 
+         annotation_row = NULL,
+         cutree_cols = 5, 
+         annotation_col = the.clusts.ivc,
+         annotation_colors = list(cluster=cols),
+         legend = TRUE, 
+         fontsize = 6, 
+         labels_col = "", 
+         labels_row = as.expression(italic_row_labels))
+dev.off()
+```
+
+
+### 16d. The centroids
+```{r}
+## Write out centroids
+relabund<-the.prop
+the.clusts$sampleID<-rownames(the.clusts)
+the.clusts$CST<-
+relabund$CST<-the.tax.sub[match(rownames(relabund), the.tax.sub$sampleID), "CST"]
+relabund$sampleID<-rownames(relabund)
+relabund$CST<-factor(relabund$CST, levels=c("I-A", "I-B", "II", "III-A", "III-B", "IV-A", "IV-B", "IV-C1", "IV-C2", "IV-C3", "IV-C5", "IV-C6", "V"))
+the.data.m<-reshape2::melt(relabund, id.vars = c("sampleID", "CST"), value.name = "relabund", variable.name = "Taxon")
+centroids<-reshape2::dcast(the.data.m, CST~Taxon, value.var = "relabund", fun.aggregate = mean)
+centroids[,2:ncol(centroids)]<-apply(centroids[,2:ncol(centroids)], 2, function(x) round(x, 9))
+names(centroids)[1]<-"sub_CST"
+write.csv(centroids, paste("VALENCIA2_CST_centroids_", today2, ".csv", sep=""), row.names = F, quote=F)
+```
+
+### 16e. Run VALENCIA
+```{bash}
+python3 ~/bin/VALENCIA/Valencia.py -r ../VALENCIA2_CST_centroids_20Mar2024.csv -i the.samples.csv -o the.samples.cst
+```
+
+### 16e. Compare CSTs
+```{r}
+CST<-as.data.frame(rbind(c("I", "#FE0308"),c("I-A", "#FE0308"), c("I-B", "#F6D3DA"), c("II", "#86C61A"),c("III", "#FF7200"),c("III-A", "#FF7200"),c("III-B", "#F8A40E"), c("IV", "#221886"),c("IV-A", "#448A73"), c("IV-B", "#221886"), c("IV-C", "#C0ACD3"),c("IV-C0", "#989898"),c("IV-C1", "#EF53A7"),c("IV-C2", "#A7DDDC"),c("IV-C3", "#98C999"),c("IV-C4", "#7F0B7C"), c("V", "#FAE50D"), c("", "white"), c("NA", "white")))
+
+class<-read.csv("the.samples.cst.csv")
+class$subCST<-factor(class$subCST, levels=unique(c("I-A", "I-B", "II", "II", "III-A", "III-B", "IV-A", "IV-A", "IV-B", "IV-B", "IV-C1", "IV-C1", "IV-C2", "IV-C2", "IV-C3", "IV-C3", "IV-C4", "IV-C4", "V")))
+rownames(class)<-class$sampleID
+
+class.old<-read.csv("the.samples.cst.old.csv")
+class.old$subCST<-factor(class.old$subCST, levels=unique(c("I-A", "I-B", "II", "II", "III-A", "III-B", "IV-A", "IV-A", "IV-B", "IV-B", "IV-C0", "IV-C1", "IV-C1", "IV-C2", "IV-C2", "IV-C3", "IV-C3", "IV-C4", "IV-C4", "V")))
+class.old<-class.old[class.old$sampleID %in% class$sampleID, ]
+names(class.old)[which(colnames(class.old) %in% "subCST")]<-"VALENCIA1"
+
+class.cmp<-merge(class[,c("sampleID", "subCST")], class.old[,c("sampleID", "VALENCIA1")])
+names(class.cmp)[2]<-"VALENCIA2"
+table(class.cmp$VALENCIA2, class.cmp$VALENCIA1, dnn = c("new", "old"))
+#        old
+# new      I-A  I-B   II III-A III-B IV-A IV-B IV-C0 IV-C1 IV-C2 IV-C3 IV-C4    V
+#   I-A    636  144  213   765   380   22   38   342    28    12     0   220  656
+#   I-B      9   77   14   160    70    1    8    63     4     2     1     7   23
+#   II       0    2  270    10    16    6    2   113     7     0    55     2    0
+#   III-A    4   12    5  3570   232    8    1    12     0     1     0    11    9
+#   III-B    0    1    0   538   489   11   28     9     2     0     0     4    0
+#   IV-A     0    0    0    14    45  955   33     1     0     0     0     0    0
+#   IV-B     1   11   53   162   679  428 1011   249    38     2     3    21   10
+#   IV-C0    0    4    4    46    59   46  111   138    48    21    14    37    8
+#   IV-C1    0    0    5    23    10    0    2     6   102     0    20     7    1
+#   IV-C2    1   10    4     7     4    0    2     8    20     1    35     1    1
+#   IV-C3    0    0    6     7     8    0    1     8     0    71     3    13    1
+#   IV-C4    0    1    7    35    61  143  171    31     4     0    14     0    0
+#   V        1    8   30    59    36    5   37   105     4     0     9     7  107
+#
+require(irr)
+kappa_result <- kappa2(data.frame(class.cmp$VALENCIA1, class.cmp$VALENCIA2), )
+```
