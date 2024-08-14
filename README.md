@@ -7,7 +7,7 @@ SpeciateIT is an algorithm capable of fast, accurate individual sequence taxonom
 Holm, Johanna (2024). speciateIT: vSpeciateDB Models. figshare. Dataset. https://doi.org/10.6084/m9.figshare.25254229.v1
 
 ### To install:
-This software runs on **Unix**.
+This software runs on **Linux**.
 
 1. Clone repository.
 2. Download vSpeciateDB (https://doi.org/10.6084/m9.figshare.25254229.v1) and place into "vSpeciateDB_models".
