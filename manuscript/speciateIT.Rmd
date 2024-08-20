@@ -6,11 +6,9 @@ editor_options:
 ---
 
 ---
-title: "vSpeciateDB Curation"
+title: "speciateIT: vSpeciateDB"
 output: html_notebook
-author: Johanna B. Holm, PhD, University of Maryland School of Medicine, Institute for Genome Sciences
 ---
-
 # Package and Date
 ```{r, warning=FALSE}
 today <- strsplit(date(), " ")
@@ -28,13 +26,7 @@ require(dplyr)
 require(ggplot2)
 require(stringr)
 require(Biostrings)
-require(EnvStats)
-# Import required libraries  
-require(ggbreak) 
-require(data.table)
-require(vegan)
-require(philentropy)
-require(pheatmap)
+require(reshape2)
 ```
 ssu_all_<release>.tar.gz
         FASTA file containing 16S rRNA sequences identified across the set of GTDB genomes passing QC. The assigned taxonomy 
@@ -76,6 +68,8 @@ length(setdiff(genera, unique(pick2$V8))) # 278 of 765 names missing
 pick3<-lineage[lineage$V6 %in% setdiff(genera, unique(pick2$V8)), ] # 10933
 pick3<-pick3[!pick3$V1 %in% pick2$V1, ] # 6204
 length(setdiff(setdiff(genera, unique(pick2$V8)), unique(pick3$V6))) 
+# Not included:
+#"MultiGenera"      "Trichomonas"      "Nakaseomyces"     "Candida"          "Human"            "Pichia"           "Oligotropha"      "Fretibacterium" #"Libanicoccus"     "Paeniclostridium" "UMGS822"          "Mordavella"       "CAJPTP01"         "JABCPO02"         "RUG100"           "SY095"        #"Haemophilum"      "Caudovirales"     "unidentified"     "Onchocerca" 
 
 length(unique(c(pick1$V1, pick2$V1, pick3$V1)))
 
@@ -286,7 +280,7 @@ class$correct_num<-as.numeric(as.character(class$correct))
 class.taxa<-as.data.frame(class %>% group_by(var, actual) %>% summarise(nSeqs=length(unique(V1)), nCorrect=sum(correct_num)))
 ```
 
-Anything species with > 10 sequences (which includes less-important vaginal species), pick one sequence at random which had not been misclassified. 
+Anything species with > 50 sequences (which includes less-important vaginal species), pick one sequence at random which had not been misclassified. 
  - to pick the sequence at random, first get a list of all of the sequences for the species that are correctly identified. Then find a sequence used in all of the variable regions
 ```{bash}
 for f in *.good.unique.keep.tx; do cp $f ${f/.tx}2.tx; done
@@ -334,6 +328,7 @@ for f in vSpeciateIT_V*V*.good.unique.keep2.tx; do buildModelTree -l ${f/.tx}.li
 
 ## 11a. Check PID within each species to remove extreme outlier sequences (seqs should at least have PID > 90%)
 ```{r}
+require(Biostrings)
 pid.df<-data.frame()
 for(i in list.files(pattern=".good.unique.keep2.tx")){
   var<-str_split_fixed(i, "\\.", 2)[1]
@@ -653,23 +648,36 @@ class.taxa<-as.data.frame(class %>% group_by(var, actual) %>% summarise(nSeqs=le
 ```
 # 12. Error thresholds
 ```{r}
-err.thld<-data.frame()
-for (i in c("V1V3", "V3V4", "V4V4")){
-  print(i)
-  a<-class[class$var %in% i, ]
-  for (taxon in unique(a$actual)){
-    s<-a[a$actual %in% taxon & a$correct %in% "1", ]
-    #t<-a[a$actual %in% taxon & a$correct %in% "0", ]
-    if(nrow(s) > 0){ 
-      pp<-as.vector(s$V3) ## if all seq's are correct, loosen the threshold a little (reduce by adding log10)
-      err.thld<-rbind(err.thld, cbind(Taxon=taxon, Threshold=log10(min(pp))-0.05, var=i))
-    }
-  }
-}
-write.table(err.thld[err.thld$var %in% "V1V3", c("Taxon", "Threshold")], "final_models/vSpeciateIT_V1V3/error_thlds.txt", sep="\t", quote=F, row.names = F)
-write.table(err.thld[err.thld$var %in% "V3V4", c("Taxon", "Threshold")], "final_models/vSpeciateIT_V3V4/error_thlds.txt", sep="\t", quote=F, row.names = F)
-write.table(err.thld[err.thld$var %in% "V4V4", c("Taxon", "Threshold")], "final_models/vSpeciateIT_V4V4/error_thlds.txt", sep="\t", quote=F, row.names = F)
+for f in final_models/vSpeciateIT_V*V*; do est_error_thlds -v -d $f --offset-coef 0.7; done
 ```
+
+```{r}
+mc.class.all.plot<-readRDS("mc.class.all.plot.RDS")
+
+cols<-c("#e6ab02", "#66A61E", "lightblue", "#7570b3", "#d95f02", "#1b9e77")
+
+
+
+ggplot(mc.class.all.plot[mc.class.all.plot$correct %in% "1", ], aes(x=reorder(factor(err), err), fill=level))+
+  geom_bar(color="black", lwd=0.2)+
+  scale_fill_manual(values=cols, name="Taxonomic Level\nof Assignment")+
+  ylab("Number of Correctly Assigned Sequences")+
+  theme_bw()+
+  facet_grid(~var)+
+  geom_hline(aes(yintercept=total), linetype="dashed", lwd=0.3)+
+  theme(text=element_text(size=9), 
+        legend.position = c(0.9, 0.8), 
+        axis.text.x = element_text(size=7.5), 
+        legend.title=element_text(size=7), 
+        legend.key.size = unit(0.3, units = "cm"), 
+        legend.text = element_text(size=7), 
+        legend.background = element_blank(),
+        legend.box.background = element_rect(colour = "black", linewidth = 0.1), 
+        strip.text = element_text(size=9, face = "bold"))+
+  xlab("Offset Coefficient")
+ggsave("Figure_err_thld_test.pdf", height=5, width=8)
+```
+
 
 # 13a. Summary Stats Taxa
 ```{r}
@@ -854,12 +862,12 @@ v4v4$reg<-"V4V4"
 
 all.lin<-rbind(full, v1v3, v3v4, v4v4)
 
-all.lin %>% group_by(reg) %>% summarise(Sp=length(unique(V1)), G=length(unique(V2)), F=length(unique(V3)), O=length(unique(V4)), C=length(unique(V5)), P=length(unique(V6)))
+t(all.lin %>% group_by(reg) %>% summarise(Sp=length(unique(V1)), G=length(unique(V2)), F=length(unique(V3)), O=length(unique(V4)), C=length(unique(V5)), P=length(unique(V6))))
 ```
 
 #14. Cross Validation
 ```{bash}
-for f in vSpeciateIT_V*V*.good.unique.keep2.vicut.tx; do ./pecan_cv5.pl -o ${f/.tx}_cv -f ${f/.tx}.fasta -a $f -l ${f/.tx}.lineage -n 10 -s 1; done
+for f in final_models/vSpeciateIT_V*V*.good.unique.keep2.vicut.tx; do final_models/pecan_cv5.pl -o ${f/.tx}_cv -f ${f/.tx}.fasta -a $f -l ${f/.tx}.lineage -n 10 -s 1; done
 ```
 
 
@@ -867,14 +875,14 @@ for f in vSpeciateIT_V*V*.good.unique.keep2.vicut.tx; do ./pecan_cv5.pl -o ${f/.
 ```{r}
 class<-data.frame()
 for (i in c("V1V3", "V3V4", "V4V4")){
-  files<-list.files(pattern = ".good.unique.keep2.vicut.tx$")
+  files<-list.files(path = "final_models/", pattern = ".good.unique.keep2.vicut.tx$")
   new.tx<-read.delim(files[grepl(i, files)], header = F)
   names(new.tx)<-c("seqID", "s")
-  files<-list.files(pattern = ".good.unique.keep2.vicut.lineage$")
+  files<-list.files(path = "final_models/", pattern = ".good.unique.keep2.vicut.lineage$")
   new.lin<-read.delim(files[grepl(i, files)], header = F)
   names(new.lin)<-c("s", "g", "f", "o", "c", "p", "d")
   seq.lin<-merge(new.tx, new.lin, all=TRUE)
-  dir<-list.files(pattern = "_cv")
+  dir<-list.files(path = "final_models/", pattern = "_cv", full.names = T)
   dir<-list.files(path = dir[grepl(i, dir)], pattern = "reports", full.names = T)
   files<-list.files(path=dir, pattern = "MC")
   for(mc in files){
@@ -883,7 +891,7 @@ for (i in c("V1V3", "V3V4", "V4V4")){
     start$cv<-gsub(".txt", "", str_split_fixed(mc, "_", 4)[,4])
     #start$class[grepl("^Gardnerella", start$class)]<-"Gardnerella_vaginalis"
     start$var<-i
-    dir1<-list.files(pattern = "_cv")
+    dir1<-list.files(path = "final_models/", pattern = "_cv", full.names = T)
     dir1<-list.files(path = dir1[grepl(i, dir1)], pattern = "cvDir", full.names = T)
     train<-read.delim(paste(dir1, paste("train_", gsub(".txt", "", str_split_fixed(mc, "_", 4)[,4]), ".tx", sep=""), sep="/"), header = F)
     names(train)<-c("seqID", "s")
@@ -952,14 +960,15 @@ known2$lin_correct<-factor(known2$lin_correct, labels = c("Incorrect", "Correct"
 
 cols<-c("#e6ab02", "#66A61E", "lightblue", "#7570b3", "#d95f02", "#1b9e77", "gray")
 
+require(EnvStats)
 ggplot(known2[known2$known %in% "Novel Species" & known2$level2 %in% c("Order", "Family","Genus"), ], aes(x=lin_correct, y=pp, fill=level2))+geom_boxplot(outlier.shape = NA, notch=T, color="black", lwd=0.2)+geom_jitter(stroke=0.2,size=0.5, width=0.2, shape=21, aes(fill=level2))+facet_grid(~level2, scales="free_y")+theme_bw()+scale_fill_manual(values=cols[3:5])+theme(legend.position = "none")+xlab("Classification")+ylab("Posterior Probability of Query Sequences\nfrom Novel Species")+stat_test_text(test="nonparametric", size = 2)+theme(text=element_text(size=6), strip.text = element_text(size=7, face = "bold"))
 ggsave("Figure_1b.pdf", height=3, width=7)
 
  #known2$var<-ifelse(known2$var %in% "V1V3", "V1V3", ifelse(known2$var %in% "V3V4", "V3V4", "V4"))
 known2$var<-ifelse(known2$var %in% "V1V3", paste("V1V3\n(", format(nrow(known2[known2$var %in% "V1V3", ]), big.mark=",")," sequences tested)", sep=""), ifelse(known2$var %in% "V3V4", paste("V3V4\n(", format(nrow(known2[known2$var %in% "V3V4", ]), big.mark=",")," sequences tested)", sep=""), paste("V4\n(", format(nrow(known2[known2$var %in% "V4V4", ]), big.mark=",")," sequences tested)", sep="")))
 
-
-ggplot(known2, aes(x=known, fill=level))+geom_bar(color="black", lwd=0.2)+
+cols<-c("#e6ab02", "pink", "#66A61E", "lightblue", "#7570b3", "#d95f02", "#1b9e77", "gray")
+ggplot(known2, aes(x=known, fill=level))+geom_bar(color="black", lwd=0.1)+
   scale_fill_manual(values=cols, name="Taxonomic Level\nof Assignment")+
   ylab("Number of Query Sequences")+
   theme_bw()+
@@ -1083,9 +1092,9 @@ cat("Elapsed time:", start_time, "seconds\n")
 
 ### speciateIT CLASSIFY
 ```{bash}
-time ./bin/classify -d final_models/vSpeciateIT_V3V4.good.unique.keep2.vicut -i V3V4_indep.good.unique.fasta -o V3V4_ind
-time ./bin/classify -d final_models/vSpeciateIT_V1V3.good.unique.keep2.vicut -i V1V3_indep.good.unique.fasta -o V1V3_ind
-time ./bin/classify -d final_models/vSpeciateIT_V4V4.good.unique.keep2.vicut -i V4V4_indep.good.unique.fasta -o V4V4_ind
+time classify -d final_models/vSpeciateIT_V3V4 -i V3V4_indep.good.unique.fasta -o V3V4_ind
+time classify -d final_models/vSpeciateIT_V1V3 -i V1V3_indep.good.unique.fasta -o V1V3_ind
+time classify -d final_models/vSpeciateIT_V4V4 -i V4V4_indep.good.unique.fasta -o V4V4_ind
 ```
 
 
@@ -1197,7 +1206,7 @@ all.vaginal$var<-gsub("V3V4", "V3V4\n(5,671 sequences)", all.vaginal$var)
 all.vaginal$var<-gsub("V1V3", "V1V3\n(7,163 sequences)", all.vaginal$var)
 
 
-cols<-c("#e6ab02", "#66A61E", "lightblue", "#7570b3", "#d95f02", "#1b9e77", "gray")
+cols<-c("#e6ab02", "pink", "#66A61E", "lightblue", "#7570b3", "#d95f02", "#1b9e77", "gray")
 
 ggplot(all.vaginal[all.vaginal$correct %in% "1", ], aes(x=Method, fill=level))+geom_bar(color="black", lwd=0.2)+
   scale_fill_manual(values=cols, name="Taxonomic Level\nof Assignment")+
@@ -1255,6 +1264,7 @@ for f in *V4V4_indep.good.unique_*.fasta; do time rdp_classifier classify -f all
 
 ### FIGURE 3: Classification Time
 ```{r}
+require(stringr)
 all.times<-data.frame()
 list.files(pattern="times.txt")
 for (var in c("V1V3", "V3V4", "V4V4")){
@@ -1277,6 +1287,8 @@ all.times<-all.times[!is.na(all.times$totals), ]
 all.times$method<-gsub("rdp", "RDP v2.13 (RDP)", all.times$method)
 all.times$method<-gsub("spIT", "SpeciateIT (vSpeciateDB)", all.times$method)
 
+# Import required libraries  
+library(ggbreak) 
 
 
 a<-ggplot(all.times, aes(x=nSeqs, y=totalm, color=method))+
@@ -1321,7 +1333,7 @@ ggsave("Figure_3.pdf", height=5, width=10)
 #for f in ASV_files/*.csv; do head -n1 $f | sed 's/,/\n>ASV\n/g' | awk '/^>ASV/ {sub(/^>ASV/, "&"++c)} 1' | sed '1d' > ${f/.csv}.fasta; done
 
 #for f in ASV_files/*_taxa.csv; do ASV_files/count_tbl_headers_to_ASV.sh $f; done
-for f in ASV_files/*taxa.fasta; do rm -rf ${f/_all_runs_dada2_abundance_table_w_taxa.fasta} | bin/classify -d final_models/vSpeciateIT_V3V4 -i $f -o ${f/_all_runs_dada2_abundance_table_w_taxa.fasta}; done
+for f in ASV_files/*taxa.fasta; do rm -rf ${f/_all_runs_dada2_abundance_table_w_taxa.fasta} | classify -d final_models/vSpeciateIT_V3V4 -i $f -o ${f/_all_runs_dada2_abundance_table_w_taxa.fasta}; done
 
 for f in ASV_files/*_modified.csv; do python3 ~/bin/speciateIT/bin/count_table.py -c $f -s ${f/_all_runs_dada2_abundance_table_w_taxa_modified.csv}/MC_order7_results.txt; done
 
@@ -1329,82 +1341,165 @@ mv *_speciateIT.csv ASV_files/
 ```
 
 
-### 16a. Hierarchical clustering
+### 16a. Clean up data
 ```{r}
-the.samples<-read.csv("the.samples.csv")
-the.prop<-the.samples[,3:ncol(the.samples)]/rowSums(the.samples[,3:ncol(the.samples)])
-rownames(the.prop)<-the.samples$sampleID
+require(data.table)
+require(vegan)
+require(philentropy)
+
+all.samples<-data.frame()
+files<-list.files(path="ASV_files", pattern="w_taxa_modified_speciateIT.csv", full.names = T)
+all.samples.list<-lapply(files, function(x) read.csv(file = x))
+the.proj<-gsub("_all_runs_dada2_abundance_table_w_taxa_modified_speciateIT.csv", "", list.files(path="ASV_files", pattern="w_taxa_modified_speciateIT.csv", full.names = F))
+#the.proj<-gsub("step_redo_all_runs_dada2_abundance_table_modified_speciateIT.csv", "", the.proj)
+names(all.samples.list)<-the.proj
+all.samples<-as.data.frame(data.table::rbindlist(all.samples.list, use.names = T, T, idcol = T))
+all.samples[is.na(all.samples)]<-0
+rownames(all.samples)<-make.unique(all.samples$sampleID)
+all.samples<-all.samples[complete.cases(all.samples), ]
+
+negs<-all.samples[grepl("neg", all.samples$sampleID, ignore.case = T), ]
+negs$type<-"NEG"
+ntc<-all.samples[grepl("ntc", all.samples$sampleID, ignore.case = T), ]
+ntc$type<-"NTC"
+nulls<-all.samples[grepl("null", all.samples$sampleID, ignore.case = T), ]
+nulls$type<-"NULL"
+pos<-all.samples[grepl("pos", all.samples$sampleID, ignore.case = T), ]
+pos$type<-"POS"
+pos<-all.samples[grepl("pos", all.samples$sampleID, ignore.case = T), ]
+pos$type<-"POS"
+pbs<-all.samples[grepl("pbs", all.samples$sampleID, ignore.case = T), ]
+pbs$type<-"PBS"
+urine<-all.samples[grepl("urine", all.samples$sampleID, ignore.case = T), ]
+urine$type<-"urine"
+ctrls.df<-rbind(negs, nulls, pos, ntc, pbs, urine)[,c("sampleID", "read_count", "type")]
+ggplot(ctrls.df, aes(x=sampleID, y=read_count))+geom_bar(stat="identity")+facet_wrap(~type, scales="free_x")
+ggsave("VALENCIA2_ctrls.pdf")
+ctrls<-reshape2::melt(rbind(negs, nulls, ntc, pbs), id.vars=c("sampleID", "read_count", "type", ".id"), variable.name = "taxon", value.name="counts")
+ctrls.sum<-ctrls %>% group_by(type, taxon) %>% summarise(mean(counts))
+
+samples<-all.samples[!all.samples$sampleID %in% c(negs$sampleID, nulls$sampleID, pos$sampleID, ntc$sampleID, pbs$sampleID, urine$sampleID), ]
+write.csv(samples, paste("VALENCIA_samples_", today2, ".csv", sep=""), quote=F, row.names = F)
+
+reps<-names(sort(table(samples$sampleID), decreasing = TRUE))[sort(table(samples$sampleID), decreasing = TRUE) > 1] ## no dups
+
+summary(samples$read_count)
+# Compute prevalence of each feature, store  as data.frame
+prevdf <- colSums(samples[,4:ncol(samples)])
+prevdf<-prevdf/sum(samples[,4:ncol(samples)])
+threshold <- 1e-5 ## set threshold to 5% of the smallest dataset (n=169)
+taxa<-names(prevdf)[prevdf >= threshold]
+taxa<-taxa[!taxa %in% c("Campylobacter_fetus", "Acinetobacter_baumannii", "Orrella_dioscoreae", "Citrobacter_freundii", "CALXQI01_sp944390585", "Haemophilus_influenzae", "d_Bacteria", "c_Gammaproteobacteria", "f_Burkholderiaceae_C")] ## from negative controls, remove these taxa
+
+the.samples<-samples[rowSums(samples[,taxa]) >= 1000, names(samples) %in% c("sampleID", "read_count", taxa)]
+write.csv(the.samples, "the.samples.csv", quote=F, row.names = F)
+## Convert to proportions
+```
+
+### 16b. Hierarchical clustering
+```{r}
+### UPDATE TAXONOMY #### 
+the.samples.m<-reshape2::melt(the.samples, id.vars=c("sampleID", "read_count"), variable.name="taxa", value.name = "reads")
+the.samples.m$taxa2<-the.samples.m$taxa
+the.samples.m$taxa2<-gsub("Lactobacillus_mulieris", "Lactobacillus_jensenii", the.samples.m$taxa2)
+the.samples.m$taxa2[grepl("Bifidobacterium", the.samples.m$taxa2)]<-"g_Bifidobacterium"
+the.samples.m$taxa2[grepl("Streptococcus", the.samples.m$taxa2)]<-"g_Streptococcus"
+the.samples.m$taxa2[grepl("Enterococcus", the.samples.m$taxa2)]<-"g_Enterococcus"
+the.samples.m$taxa2[grepl("Staphylococcus", the.samples.m$taxa2)]<-"g_Staphylococcus"
+#the.samples.m$taxa2[grepl("Prevotella", the.samples.m$taxa2)]<-"g_Prevotella"
+the.samples2<-reshape2::dcast(the.samples.m, sampleID+read_count~taxa2, value.var = "reads", fun.aggregate = sum)
+#the.samples2$sampleID<-ifelse(grepl("CHARM.visit", the.samples2$sampleID, ignore.case = TRUE), as.character(str_split_fixed(the.samples2$sampleID, "\\.", 4)[,4]), as.character(the.samples2$sampleID))
+#the.samples2$sampleID<-ifelse(grepl("CHARM", the.samples2$sampleID), as.character(str_split_fixed(the.samples2$sampleID, "\\.", 2)[,2]), as.character(the.samples2$sampleID))
+#### 
+  ## SUBSET SAMPLES THAT WERE USED IN THE ORIGINAL VALENCIA AND THEN PROCEED.
+valencia<-read.csv("vSpeciateIT/vaginal_database/GTDB_v214.1/vSpeciateIT_v2/allsamples_dada2_SILVA+PECAN1.0_cleaned_CSTs_14Nov2018.csv")
+valencia$sampleID<-gsub(".x.x", "", valencia$sampleID)
+sampids1<-the.samples2$sampleID[the.samples2$sampleID %in% valencia$sampleID] ## 11,690 samples
+miss1<-valencia[!valencia$sampleID %in% the.samples2$sampleID, c("sampleID", "Project")] ## 1,470 samples not in our data.  
+  # CHARM2   CONTRA DOUCHING     HMP1     HMP2     LSVF     V400 
+  #     86        1        1     1368       11        1        2 
+sampids2<-the.samples2$sampleID[grepl(paste(miss1$sampleID, collapse="|"), the.samples2$sampleID)]
+miss1<-miss1[!miss1$sampleID %in% sampids2, ]
+  
+the.samples3<-the.samples2[the.samples2$sampleID %in% c(sampids1, sampids2), ]
+
+the.prop<-the.samples3[,3:ncol(the.samples3)]/rowSums(the.samples3[,3:ncol(the.samples3)])
+rownames(the.prop)<-the.samples3$sampleID
 the.prop<-the.prop[,order(colSums(the.prop), decreasing = TRUE)]
 
+require(pheatmap)
 ## Distances between samples
-the.dist<-vegdist(as.matrix(the.prop), na.rm = T)
-the.clsting<-hclust(the.dist, method="ward")
+#the.dist<-vegdist(as.matrix(the.prop), na.rm = T, method = "bray")
+#the.clsting<-hclust(the.dist, method="ward")
 
-to.plot<-the.prop[,1:50]
-names(to.plot)<-gsub("_", " ", names(to.plot))
-
-names(to.plot)<-gsub("_", " ", names(to.plot))
-italic_row_labels <- lapply(names(to.plot), function(label) {
-  return(bquote(italic(.(label))))
-})
-
-the.clusts<-as.data.frame(cbind(cluster=cutree(the.clsting, k=9), sampleID=rownames(the.prop)))
-the.clusts<-cbind(the.clusts, domTaxa=colnames(the.prop)[max.col(the.prop, ties.method="first")])
-the.clusts.sort<-the.clusts %>% group_by(cluster, domTaxa) %>% summarise(n=length(unique(sampleID)))
-the.clusts.cols<-cbind(cluster=unique(the.clusts.sort$cluster), domTaxa=the.clusts.sort$domTaxa[max(the.prop, ties.method="first")])
+the.clusts<-as.data.frame(cbind(cluster=cutree(the.clsting, k=11)))
 the.clusts$cluster<-as.factor(the.clusts$cluster)
-cols<-RColorBrewer::brewer.pal(12, "Set3")[1:9]
 
+cols<-RColorBrewer::brewer.pal(11, "Set3")[1:11]
 names(cols)<-unique(the.clusts$cluster)
-## cut for 9, then pull out IVC and recluster to get the other 5
 colfunc <- colorRampPalette(c("khaki", "limegreen", "darkslategray1", "mediumblue", "magenta", "red"))
 png(paste("VALENCIA2_heatmap_dend_", today2, ".png", sep=""), width=7, height=7, units="in", res=600)
-pheatmap(t(as.matrix(to.plot)), 
+pheatmap(t(as.matrix(the.prop)[,1:30]), 
          color = alpha(colfunc(100), 1), 
          cluster_rows = FALSE, 
          cluster_cols = as.hclust(the.clsting), 
          annotation_row = NULL,
-         cutree_cols = 9, ## at cutree=20, Enterococcus comes out as separate group.
+         cutree_cols = 11, 
+         annotation_col = the.clusts,
+         annotation_colors = list(cluster=cols),
          legend = TRUE, 
          fontsize = 6, 
-         labels_col = "", 
-         annotation_col = the.clusts, 
-         annotation_colors = list(cluster=cols),
-         labels_row = as.expression(italic_row_labels))
+         show_colnames = F
+)
 dev.off()
 
-the.clusts<-as.data.frame(cbind(cluster=cutree(the.clsting, k=9)))
-the.clusts<-cbind(the.clusts, domTaxa=colnames(the.prop)[max.col(the.prop, ties.method="first")])
-the.clusts$sampleID<-rownames(the.clusts)
-the.clusts.sort<-the.clusts %>% group_by(cluster, domTaxa) %>% summarise(n=length(unique(sampleID)))
-ivc<-the.clusts.sort$cluster[the.clusts.sort$n == max(the.clusts.sort[the.clusts.sort$domTaxa %in% "g_Bifidobacterium", "n"])]
+## Automate assignment of CST names and colors based on prevalent taxa
+the.clusts.df<-as.data.frame(cbind(sampleID=rownames(the.clusts), the.clusts, domTaxa=colnames(the.prop)[max.col(the.prop, ties.method="first")], prop=apply(the.prop, 1, max)))
+the.clusts.df.toCST <- the.clusts.df %>% group_by(cluster, domTaxa) %>% summarise(freq=length(unique(sampleID)), meanPrev=mean(prop))
+csts<-data.frame()
+for(cluster in unique(the.clusts.df.toCST$cluster)){
+  to.sum<-as.data.frame(the.clusts.df.toCST[the.clusts.df.toCST$cluster %in% cluster, ])
+  the.freq<-to.sum[to.sum$freq %in% max(to.sum$freq), "domTaxa"][1]
+  the.prev<-to.sum[to.sum$meanPrev %in% max(to.sum$meanPrev), "domTaxa"][1]
+  print(paste0("the clust=", cluster, " the.freq=", the.freq, " the.prev=", the.prev, "\n"))
+  if(the.freq == the.prev){
+  csts<-rbind(csts, cbind(cluster=cluster, species=the.freq, prop=round(to.sum[to.sum$meanPrev %in% max(to.sum$meanPrev), "meanPrev"][1], 2), method="match"))
+  }else{
+    csts<-rbind(csts, cbind(cluster=cluster, species=the.freq, prop=round(to.sum[to.sum$meanPrev %in% max(to.sum$meanPrev), "meanPrev"][1], 2), method="nomatch"))
+  }
+}
+### 
 
-## IVC
-the.samples<-the.samples2[the.samples2$sampleID %in% the.clusts$sampleID[the.clusts$cluster %in% ivc], ]
-the.prop<-the.samples[,3:ncol(the.samples)]/rowSums(the.samples[,3:ncol(the.samples)])
-rownames(the.prop)<-the.samples$sampleID
+the.clusts.sort<-the.clusts.df %>% group_by(cluster, domTaxa) %>% summarise(n=length(unique(sampleID)))
+
+
+## IVC : Comes from the initial clustering of 9 groups and finds the one with lots of bifidobacterium (a proxy for the whole cluster)
+ivc<-as.vector(the.clusts.sort$cluster[the.clusts.sort$n == max(the.clusts.sort[the.clusts.sort$domTaxa %in% c("g_Bifidobacterium", "g_Staphylococcus", "g_Streptococcus", "g_Enterococcus"), "n"])])
+## this ends up being cluster 3 or 4 of 11. The problem then is that I am setting the ivc clusters to numbers 11:15, but the orig. clusters already have an 11. 
+
+
+
+the.samples3<-the.samples2[the.samples2$sampleID %in% rownames(the.clusts)[the.clusts$cluster %in% ivc], ]
+the.prop<-the.samples3[,3:ncol(the.samples3)]/rowSums(the.samples3[,3:ncol(the.samples3)])
+rownames(the.prop)<-the.samples3$sampleID
 the.prop<-the.prop[,order(colSums(the.prop), decreasing = TRUE)]
 
 ## Distances between samples
-the.dist.ivc<-vegdist(as.matrix(the.prop), na.rm = T)
+the.dist.ivc<-vegdist(as.matrix(the.prop), na.rm = T, method = "bray")
 the.clsting.ivc<-hclust(the.dist.ivc, method="ward")
 the.clusts.ivc<-as.data.frame(cbind(cluster=cutree(the.clsting.ivc, k=5)))
-the.clusts.ivc$cluster<-as.factor(the.clusts.ivc$cluster)
+the.clusts.ivc$cluster<-as.factor(the.clusts.ivc$cluster+10)
 
-to.plot<-the.prop[,1:50]
-names(to.plot)<-gsub("_", " ", names(to.plot))
-
-names(to.plot)<-gsub("_", " ", names(to.plot))
-italic_row_labels <- lapply(names(to.plot), function(label) {
-  return(bquote(italic(.(label))))
-})
-
-
+### Get ivc clusters
+the.clusts.df.ivc<-as.data.frame(cbind(sampleID=rownames(the.clusts.ivc), the.clusts.ivc, domTaxa=colnames(the.prop)[max.col(the.prop, ties.method="first")], prop=apply(the.prop, 1, max)))
+the.clusts.df.ivc$cluster<-as.factor(the.clusts.df.ivc$cluster)
+the.clusts.df.ivc.toCST <- the.clusts.df.ivc %>% group_by(cluster, domTaxa) %>% summarise(freq=length(unique(sampleID)), meanAbd=mean(prop))
+# [the.clusts.df.ivc$domTaxa %in% c("g_Bifidobacterium", "g_Staphylococcus", "g_Streptococcus", "g_Enterococcus"), ]
 cols<-RColorBrewer::brewer.pal(11, "Set3")[1:5]
 names(cols)<-unique(the.clusts.ivc$cluster)
 colfunc <- colorRampPalette(c("khaki", "limegreen", "darkslategray1", "mediumblue", "magenta", "red"))
 png(paste("VALENCIA2_heatmap_dend_", today2, "_IV-C.png", sep=""), width=7, height=7, units="in", res=600)
-pheatmap(t(as.matrix(to.plot)), 
+pheatmap(t(as.matrix(the.prop)[,1:30]), 
          color = alpha(colfunc(100), 1), 
          cluster_rows = FALSE, 
          cluster_cols = as.hclust(the.clsting.ivc), 
@@ -1414,65 +1509,212 @@ pheatmap(t(as.matrix(to.plot)),
          annotation_colors = list(cluster=cols),
          legend = TRUE, 
          fontsize = 6, 
+         show_colnames = F
+)
+dev.off()
+
+
+csts.ivc<-data.frame()
+for(cluster in unique(the.clusts.df.ivc.toCST$cluster)){
+  to.sum<-as.data.frame(the.clusts.df.ivc.toCST[the.clusts.df.ivc.toCST$cluster %in% cluster, ])
+  the.freq<-to.sum[to.sum$freq %in% max(to.sum$freq), "domTaxa"][1]
+  the.prev<-to.sum[to.sum$meanAbd %in% max(to.sum$meanAbd), "domTaxa"][1]
+  if(the.freq == the.prev){
+    csts.ivc<-rbind(csts.ivc, cbind(cluster=cluster, species=the.freq, prop=round(to.sum[to.sum$meanAbd %in% max(to.sum$meanAbd), "meanAbd"][1], 2), method="match"))
+  }else{
+    csts.ivc<-rbind(csts.ivc, cbind(cluster=cluster, species=the.freq, prop=round(to.sum[to.sum$meanAbd %in% max(to.sum$meanAbd), "meanAbd"][1], 2), method="nomatch"))
+  }
+}
+
+csts.ivc$species[csts.ivc$method %in% "nomatch"]<-"g_Prevotella"
+## relabel all of the clusters from 1:10 given that one is removed
+csts<-csts[!csts$cluster %in% ivc, ]
+csts$cluster <- as.integer(factor(csts$cluster, levels = unique(csts$cluster)))
+csts$prop<-as.numeric(csts$prop)
+csts$HC_clusters<-ifelse(csts$species %in% "Lactobacillus_crispatus" & csts$prop > 0.8, "I-A",ifelse(csts$species %in% "Lactobacillus_crispatus" & csts$prop < 0.8, "I-B", ifelse(csts$species %in% "Lactobacillus_gasseri", "II", ifelse(csts$species %in% "Lactobacillus_iners" & csts$prop > 0.8, "III-A", ifelse(csts$species %in% "Lactobacillus_iners" & csts$prop < 0.8, "III-B", ifelse(csts$species %in% "Lactobacillus_jensenii", "V", ifelse(csts$species %in% "Gardnerella_vaginalis", "IV-B", ifelse(csts$species %in% "Ca_Lachnocurva_vaginae", "IV-A", NA))))))))
+
+csts<-merge(csts, csts.ivc, all=TRUE)
+
+csts$HC_clusters<-ifelse(is.na(csts$HC_clusters), ifelse(csts$species %in% "g_Streptococcus", "IV-C1", ifelse(csts$species %in% "g_Enterococcus", "IV-C2", ifelse(csts$species %in% "g_Bifidobacterium", "IV-C3", ifelse(csts$species %in% "g_Staphylococcus", "IV-C4", "IV-C0")))), as.character(csts$HC_clusters))
+
+
+CST<-as.data.frame(rbind(c("I", "#FE0308"),c("I-A", "#FE0308"), c("I-B", "#F6D3DA"), c("II", "#86C61A"),c("III", "#FF7200"),c("III-A", "#FF7200"),c("III-B", "#F8A40E"), c("IV", "#221886"),c("IV-A", "#448A73"), c("IV-B", "#221886"), c("IV-C", "#C0ACD3"),c("IV-C0", "#989898"),c("IV-C1", "#EF53A7"),c("IV-C2", "#A7DDDC"),c("IV-C3", "#98C999"),c("IV-C4", "#7F0B7C"), c("V", "#FAE50D"), c("", "white"), c("NA", "white")))
+names(CST)<-c("CST", "color")
+
+csts$color<-CST[match(csts$HC_clusters, CST$CST), "color"]
+csts<-csts[order(csts$HC_clusters), ]
+##### 
+
+the.clusts.df$cluster[the.clusts.df$cluster %in% ivc]<-NA
+the.clusts.df$cluster <- as.integer(factor(the.clusts.df$cluster, levels = unique(the.clusts.df$cluster)))
+
+the.clusts.df$cluster1<-ifelse(the.clusts.df$sampleID %in% the.clusts.df.ivc$sampleID, as.character(the.clusts.df.ivc[match(the.clusts.df$sampleID, the.clusts.df.ivc$sampleID), "cluster"]), as.character(the.clusts.df$cluster))
+
+the.clusts.df$CST<-as.character(csts[match(the.clusts.df$cluster1, csts$cluster), "HC_clusters"])
+
+########  PLOT
+the.clusts<-as.data.frame(cbind(HC_clusters=the.clusts.df[,"CST"], VALENCIA1=valencia$sub_CST[match(rownames(the.clusts), valencia$sampleID)], project=samples$.id[match(rownames(the.clusts), samples$sampleID)]), row.names = the.clusts.df$sampleID)
+
+cols<-unique(csts$color)
+names(cols)<-unique(csts$HC_clusters)
+
+cols2<-RColorBrewer::brewer.pal(12, "Set3")[1:length(unique(the.clusts$project))]
+names(cols2)<-unique(the.clusts$project)
+
+cols3<-CST[match(unique(the.clusts$VALENCIA), CST$CST), "color"]
+names(cols3)<-unique(CST[match(unique(the.clusts$VALENCIA), CST$CST), "CST"])
+
+the.samples3<-the.samples2[the.samples2$sampleID %in% c(sampids1, sampids2), ]
+the.prop<-the.samples3[,3:ncol(the.samples3)]/rowSums(the.samples3[,3:ncol(the.samples3)])
+rownames(the.prop)<-the.samples3$sampleID
+the.prop<-the.prop[,order(colSums(the.prop), decreasing = TRUE)]
+
+to.plot<-the.prop[,1:100]
+names(to.plot)<-gsub("_", " ", names(to.plot))
+
+names(to.plot)<-gsub("_", " ", names(to.plot))
+italic_row_labels <- lapply(names(to.plot), function(label) {
+  return(bquote(italic(.(label))))
+})
+
+colfunc <- colorRampPalette(c("khaki", "limegreen", "darkslategray1", "mediumblue", "magenta", "red"))
+png(paste("VALENCIA2_heatmap_dend_", today2, "_CST.png", sep=""), width=10, height=10, units="in", res=600)
+pheatmap(t(as.matrix(to.plot)), 
+         color = alpha(colfunc(100), 1), 
+         cluster_rows = FALSE, 
+         cluster_cols = as.hclust(the.clsting), 
+         annotation_row = NULL,
+         cutree_cols = 9, 
+         annotation_col = the.clusts,
+         annotation_colors = list(HC_clusters=cols, VALENCIA1=cols3, project=cols2),
+         legend = TRUE, 
+         fontsize = 6, 
          labels_col = "", 
          labels_row = as.expression(italic_row_labels))
 dev.off()
 ```
 
-
 ### 16d. The centroids
 ```{r}
-## Write out centroids
+## Write out centroids (using uncondensed taxa, Prev, Strep, Staph, Bifido)
+### USE THIS METHOD! 
+the.prop<-the.samples[rownames(the.samples) %in% c(sampids1, sampids2), 3:ncol(the.samples)]/rowSums(the.samples[rownames(the.samples) %in% c(sampids1, sampids2), 3:ncol(the.samples)])
 relabund<-the.prop
-the.clusts$sampleID<-rownames(the.clusts)
-the.clusts$CST<-
-relabund$CST<-the.tax.sub[match(rownames(relabund), the.tax.sub$sampleID), "CST"]
+relabund$CST<-the.clusts.df[match(rownames(relabund), the.clusts.df$sampleID),"CST"]
 relabund$sampleID<-rownames(relabund)
-relabund$CST<-factor(relabund$CST, levels=c("I-A", "I-B", "II", "III-A", "III-B", "IV-A", "IV-B", "IV-C1", "IV-C2", "IV-C3", "IV-C5", "IV-C6", "V"))
-the.data.m<-reshape2::melt(relabund, id.vars = c("sampleID", "CST"), value.name = "relabund", variable.name = "Taxon")
+relabund$CST<-factor(relabund$CST, levels=c("I-A", "I-B", "II", "III-A", "III-B", "IV-A", "IV-B", "IV-C0", "IV-C1", "IV-C2", "IV-C3", "IV-C4", "V"))
+the.data.m<-reshape2::melt(relabund[!is.na(relabund$CST), ], id.vars = c("sampleID", "CST"), value.name = "relabund", variable.name = "Taxon")
 centroids<-reshape2::dcast(the.data.m, CST~Taxon, value.var = "relabund", fun.aggregate = mean)
 centroids[,2:ncol(centroids)]<-apply(centroids[,2:ncol(centroids)], 2, function(x) round(x, 9))
 names(centroids)[1]<-"sub_CST"
-write.csv(centroids, paste("VALENCIA2_CST_centroids_", today2, ".csv", sep=""), row.names = F, quote=F)
+write.csv(centroids, paste("VALENCIA2_CST_centroids_", today2, "_split_taxa.csv", sep=""), row.names = F, quote=F)
+
+## Write out centroids (using condensed taxa, Prev, Strep, Staph, Bifido)
+the.samples3<-the.samples2[the.samples2$sampleID %in% c(sampids1, sampids2), ]
+the.prop<-the.samples3[,3:ncol(the.samples3)]/rowSums(the.samples3[,3:ncol(the.samples3)])
+rownames(the.prop)<-the.samples3$sampleID
+the.prop<-the.prop[,order(colSums(the.prop), decreasing = TRUE)]
+relabund<-the.prop
+relabund$CST<-the.clusts.df[match(rownames(relabund), the.clusts.df$sampleID),"CST"]
+relabund$sampleID<-rownames(relabund)
+relabund$CST<-factor(relabund$CST, levels=c("I-A", "I-B", "II", "III-A", "III-B", "IV-A", "IV-B", "IV-C0", "IV-C1", "IV-C2", "IV-C3", "IV-C4", "V"))
+the.data.m<-reshape2::melt(relabund[!is.na(relabund$CST), ], id.vars = c("sampleID", "CST"), value.name = "relabund", variable.name = "Taxon")
+centroids<-reshape2::dcast(the.data.m, CST~Taxon, value.var = "relabund", fun.aggregate = mean)
+centroids[,2:ncol(centroids)]<-apply(centroids[,2:ncol(centroids)], 2, function(x) round(x, 9))
+names(centroids)[1]<-"sub_CST"
+write.csv(centroids, paste("VALENCIA2_CST_centroids_", today2, "_condensed_taxa.csv", sep=""), row.names = F, quote=F)
 ```
+
 
 ### 16e. Run VALENCIA
 ```{bash}
-python3 ~/bin/VALENCIA/Valencia.py -r ../VALENCIA2_CST_centroids_20Mar2024.csv -i the.samples.csv -o the.samples.cst
+python3 ~/bin/VALENCIA/Valencia.py -r VALENCIA2_CST_centroids_19Aug2024_split_taxa.csv -i the.samples.csv -o the.samples_split_taxa.cst
+## OR
+python3 ~/bin/VALENCIA/Valencia.py -r VALENCIA2_CST_centroids_19Aug2024_condensed_taxa.csv -i the.samples.csv -o the.samples_condensed.cst2
 ```
 
-### 16e. Compare CSTs
+### 16e. VALENCIA Plot
 ```{r}
-CST<-as.data.frame(rbind(c("I", "#FE0308"),c("I-A", "#FE0308"), c("I-B", "#F6D3DA"), c("II", "#86C61A"),c("III", "#FF7200"),c("III-A", "#FF7200"),c("III-B", "#F8A40E"), c("IV", "#221886"),c("IV-A", "#448A73"), c("IV-B", "#221886"), c("IV-C", "#C0ACD3"),c("IV-C0", "#989898"),c("IV-C1", "#EF53A7"),c("IV-C2", "#A7DDDC"),c("IV-C3", "#98C999"),c("IV-C4", "#7F0B7C"), c("V", "#FAE50D"), c("", "white"), c("NA", "white")))
+class1<-read.csv("the.samples_split_taxa.cst.csv") ## This method produced the expected classifications!! 
+class1$subCST<-factor(class1$subCST, levels=sort(unique(class1$subCST)))
 
-class<-read.csv("the.samples.cst.csv")
-class$subCST<-factor(class$subCST, levels=unique(c("I-A", "I-B", "II", "II", "III-A", "III-B", "IV-A", "IV-A", "IV-B", "IV-B", "IV-C1", "IV-C1", "IV-C2", "IV-C2", "IV-C3", "IV-C3", "IV-C4", "IV-C4", "V")))
-rownames(class)<-class$sampleID
+class2<-read.csv("the.samples_condensed.cst2.csv")
+class2$subCST<-factor(class2$subCST, levels=sort(unique(class2$subCST)))
 
-class.old<-read.csv("the.samples.cst.old.csv")
-class.old$subCST<-factor(class.old$subCST, levels=unique(c("I-A", "I-B", "II", "II", "III-A", "III-B", "IV-A", "IV-A", "IV-B", "IV-B", "IV-C0", "IV-C1", "IV-C1", "IV-C2", "IV-C2", "IV-C3", "IV-C3", "IV-C4", "IV-C4", "V")))
-class.old<-class.old[class.old$sampleID %in% class$sampleID, ]
-names(class.old)[which(colnames(class.old) %in% "subCST")]<-"VALENCIA1"
+the.clusts<-as.data.frame(cbind(HC_clusters=the.clusts.df[,"CST"], VALENCIA1=valencia$sub_CST[match(rownames(the.clusts), valencia$sampleID)], project=samples$.id[match(rownames(the.clusts), samples$sampleID)]), row.names = the.clusts.df$sampleID)
 
-class.cmp<-merge(class[,c("sampleID", "subCST")], class.old[,c("sampleID", "VALENCIA1")])
-names(class.cmp)[2]<-"VALENCIA2"
-table(class.cmp$VALENCIA2, class.cmp$VALENCIA1, dnn = c("new", "old"))
-#        old
-# new      I-A  I-B   II III-A III-B IV-A IV-B IV-C0 IV-C1 IV-C2 IV-C3 IV-C4    V
-#   I-A    636  144  213   765   380   22   38   342    28    12     0   220  656
-#   I-B      9   77   14   160    70    1    8    63     4     2     1     7   23
-#   II       0    2  270    10    16    6    2   113     7     0    55     2    0
-#   III-A    4   12    5  3570   232    8    1    12     0     1     0    11    9
-#   III-B    0    1    0   538   489   11   28     9     2     0     0     4    0
-#   IV-A     0    0    0    14    45  955   33     1     0     0     0     0    0
-#   IV-B     1   11   53   162   679  428 1011   249    38     2     3    21   10
-#   IV-C0    0    4    4    46    59   46  111   138    48    21    14    37    8
-#   IV-C1    0    0    5    23    10    0    2     6   102     0    20     7    1
-#   IV-C2    1   10    4     7     4    0    2     8    20     1    35     1    1
-#   IV-C3    0    0    6     7     8    0    1     8     0    71     3    13    1
-#   IV-C4    0    1    7    35    61  143  171    31     4     0    14     0    0
-#   V        1    8   30    59    36    5   37   105     4     0     9     7  107
-#
-require(irr)
-kappa_result <- kappa2(data.frame(class.cmp$VALENCIA1, class.cmp$VALENCIA2), )
+the.clusts<-as.data.frame(cbind(VALENCIA2cond=class2$subCST[match(rownames(the.clusts), class2$sampleID)], VALENCIA2split=class1$subCST[match(rownames(the.clusts), class1$sampleID)], the.clusts))
+
+the.clusts$VALENCIA2cond<-factor(the.clusts$VALENCIA2cond, levels=as.vector(sort(unique(the.clusts$VALENCIA2cond))))
+the.clusts$VALENCIA2split<-factor(the.clusts$VALENCIA2split, levels=as.vector(sort(unique(the.clusts$VALENCIA2split))))
+the.clusts$VALENCIA1<-factor(the.clusts$VALENCIA1, levels=as.vector(sort(unique(the.clusts$VALENCIA1))))
+
+cols<-unique(csts$color)
+names(cols)<-unique(csts$HC_clusters)
+
+cols2<-RColorBrewer::brewer.pal(12, "Set3")[1:length(unique(the.clusts$project))]
+names(cols2)<-unique(the.clusts$project)
+
+cols3<-CST[match(sort(unique(the.clusts$VALENCIA1)), CST$CST), "color"]
+names(cols3)<-unique(CST[match(sort(unique(the.clusts$VALENCIA1)), CST$CST), "CST"])
+
+cols4<-CST[match(sort(unique(the.clusts$VALENCIA2split)), CST$CST), "color"]
+names(cols4)<-unique(CST[match(sort(unique(the.clusts$VALENCIA2split)), CST$CST), "CST"])
+
+cols5<-CST[match(sort(unique(the.clusts$VALENCIA2cond)), CST$CST), "color"]
+names(cols5)<-unique(CST[match(sort(unique(the.clusts$VALENCIA2cond)), CST$CST), "CST"])
+
+the.samples3<-the.samples[match(rownames(the.clusts), the.samples$sampleID), ]
+the.prop<-the.samples3[,3:ncol(the.samples3)]/rowSums(the.samples3[,3:ncol(the.samples3)])
+rownames(the.prop)<-the.samples3$sampleID
+the.prop<-the.prop[,order(colSums(the.prop), decreasing = TRUE)]
+
+to.plot<-the.prop[,1:100]
+names(to.plot)<-gsub("_", " ", names(to.plot))
+
+names(to.plot)<-gsub("_", " ", names(to.plot))
+italic_row_labels <- lapply(names(to.plot), function(label) {
+  return(bquote(italic(.(label))))
+})
+
+colfunc <- colorRampPalette(c("khaki", "limegreen", "darkslategray1", "mediumblue", "magenta", "red"))
+png(paste("VALENCIA2_heatmap_dend_", today2, "_CST_wClass.png", sep=""), width=10, height=10, units="in", res=600)
+pheatmap(t(as.matrix(to.plot)), 
+         color = alpha(colfunc(100), 1), 
+         cluster_rows = FALSE, 
+         cluster_cols = as.hclust(the.clsting), 
+         annotation_row = NULL,
+         cutree_cols = 9, 
+         annotation_col = the.clusts,
+         annotation_colors = list(VALENCIA2cond=cols5, VALENCIA2split=cols4, HC_clusters=cols, VALENCIA1=cols3, project=cols2),
+         legend = TRUE, 
+         fontsize = 6, 
+         labels_col = "", 
+         labels_row = as.expression(italic_row_labels))
+dev.off()
+
+the.clusts<-the.clusts[,c(2,4)]
+names(the.clusts)<-c("VALENCIA w/vSpeciateDB", "VALENCIA w/RDP trained on SILVA")
+colfunc <- colorRampPalette(c("khaki", "limegreen", "darkslategray1", "mediumblue", "magenta", "red"))
+png(paste("Figure_S4.png", sep=""), width=10, height=10, units="in", res=600)
+pheatmap(t(as.matrix(to.plot)), 
+         color = alpha(colfunc(100), 1), 
+         cluster_rows = FALSE, 
+         cluster_cols = as.hclust(the.clsting), 
+         annotation_row = NULL,
+         cutree_cols = 9, 
+         annotation_col = the.clusts,
+         annotation_colors = list(`VALENCIA w/vSpeciateDB`=cols4, `VALENCIA w/RDP trained on SILVA`=cols3),
+         legend = TRUE, 
+         fontsize = 6, 
+         show_colnames = F, 
+         labels_row = as.expression(italic_row_labels), 
+         legend_labels = "CST")
+dev.off()
 ```
+
+
+
+
+
+ 
