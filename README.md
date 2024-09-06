@@ -18,6 +18,7 @@ This software runs on **Linux** or **MacOSX**. See specific executables within b
 3. Unzip vSpeciateDB directories.  
 
    cd /path/to/speciateIT/vSpeciateDB_models
+
    unzip vSpeciateIT_V1V3  
    unzip vSpeciateIT_V3V4  
    unzip vSpeciateIT_V4V4
