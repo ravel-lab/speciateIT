@@ -8,7 +8,7 @@ Holm, Johanna (2024). speciateIT: vSpeciateDB Models. figshare. Dataset. https:/
 
 ### Requirements: 
 - **RAM**: Minimum 1 GB for classification. 
-- **Storage**: Minimum 7.5 GB (each set of models is 2.5 GP uncompressed). 
+- **Storage**: Minimum 7.5 GB (each set of models is 2.5 GB, uncompressed). 
 
 ### To install:
 This software runs on **Linux** or **MacOSX**. See specific executables within bin. 
