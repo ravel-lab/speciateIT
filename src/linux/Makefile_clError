@@ -1,0 +1,138 @@
+
+#############################################################################
+# Makefile for building clError
+#############################################################################
+
+# Copyright (C) 2016 Pawel Gajer pgajer@gmail.com and Jacques Ravel jravel@som.umaryland.edu
+
+# Permission to use, copy, modify, and distribute this software and its
+# documentation with or without modifications and for any purpose and
+# without fee is hereby granted, provided that any copyright notices
+# appear in all copies and that both those copyright notices and this
+# permission notice appear in supporting documentation, and that the
+# names of the contributors or copyright holders not be used in
+# advertising or publicity pertaining to distribution of the software
+# without specific prior permission.
+
+# THE CONTRIBUTORS AND COPYRIGHT HOLDERS OF THIS SOFTWARE DISCLAIM ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL THE
+# CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY SPECIAL, INDIRECT
+# OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+# OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+# OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE
+# OR PERFORMANCE OF THIS SOFTWARE.
+
+####### Compiler, tools and options
+
+CC            = gcc #/opt/local/bin/gcc-mp-4.7 #gcc-4.0
+CXX           = g++ #/opt/local/bin/g++-mp-4.7 #g++-4.0
+FLAGS         = -g # -O2 # -g -O2
+CFLAGS        = $(FLAGS) -Wall -D__SIM_SSE3 -O2 -D_GNU_SOURCE -dynamic -msse3 -fomit-frame-pointer -funroll-loops # -D_USE_PTHREADS
+CXXFLAGS      = $(FLAGS) -Wall -D__SIM_SSE3 -O2 -D_GNU_SOURCE -dynamic -msse3 -fomit-frame-pointer -funroll-loops # -D_USE_PTHREADS
+INCPATH       = -Isrc
+LINK          = g++
+LIBS          = -lm # -L../../lib -lkmerstats
+AR            = ar cq
+RANLIB        = ranlib -s
+TAR           = tar -cf
+COMPRESS      = gzip -9f
+COPY          = cp -f
+SED           = sed
+COPY_FILE     = cp -f
+COPY_DIR      = cp -f -R
+INSTALL_FILE  = $(COPY_FILE)
+INSTALL_DIR   = $(COPY_DIR)
+INSTALL_PROGRAM = $(COPY_FILE)
+DEL_FILE      = rm -f
+SYMLINK       = ln -sf
+DEL_DIR       = rmdir
+MOVE          = mv -f
+CHK_DIR_EXISTS= test -d
+MKDIR         = mkdir -p
+
+####### Files
+
+create-build-dir := $(shell $(CHK_DIR_EXISTS) .build || $(MKDIR) .build)
+
+SRCDIR  = .
+BINDIR  = ../bin
+BUILDDIR= .build
+
+create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))
+
+OBJECTS = $(BUILDDIR)/clError.o \
+          $(BUILDDIR)/IOCUtilities.o \
+          $(BUILDDIR)/IOCppUtilities.o \
+          $(BUILDDIR)/MarkovChains2.o \
+          $(BUILDDIR)/CUtilities.o \
+          $(BUILDDIR)/CppUtilities.o \
+          $(BUILDDIR)/strings.o \
+          $(BUILDDIR)/CStatUtilities.o \
+	  $(BUILDDIR)/CppStatUtilities.o \
+          $(BUILDDIR)/StatUtilities.o \
+          $(BUILDDIR)/DNAsequence.o \
+	  $(BUILDDIR)/Newick.o \
+
+####### Build rules
+
+clError: $(OBJECTS)
+	$(CXX) $(FLAGS) $(OBJECTS) -o $(BINDIR)/clError
+
+$(BUILDDIR)/clError.o: $(SRCDIR)/clError.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/clError.o $(SRCDIR)/clError.cc
+
+$(BUILDDIR)/IOCppUtilities.o: $(SRCDIR)/IOCppUtilities.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/IOCppUtilities.o $(SRCDIR)/IOCppUtilities.cc
+
+$(BUILDDIR)/IOCUtilities.o: $(SRCDIR)/IOCUtilities.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o $(BUILDDIR)/IOCUtilities.o $(SRCDIR)/IOCUtilities.c
+
+$(BUILDDIR)/DNAsequence.o: $(SRCDIR)/DNAsequence.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/DNAsequence.o $(SRCDIR)/DNAsequence.cc
+
+$(BUILDDIR)/StatUtilities.o: $(SRCDIR)/StatUtilities.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/StatUtilities.o $(SRCDIR)/StatUtilities.cc
+
+$(BUILDDIR)/CUtilities.o: $(SRCDIR)/CUtilities.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o $(BUILDDIR)/CUtilities.o $(SRCDIR)/CUtilities.c
+
+$(BUILDDIR)/CppUtilities.o: $(SRCDIR)/CppUtilities.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/CppUtilities.o $(SRCDIR)/CppUtilities.cc
+
+$(BUILDDIR)/strings.o: $(SRCDIR)/strings.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/strings.o $(SRCDIR)/strings.cc
+
+$(BUILDDIR)/CStatUtilities.o: $(SRCDIR)/CStatUtilities.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o $(BUILDDIR)/CStatUtilities.o $(SRCDIR)/CStatUtilities.c
+
+$(BUILDDIR)/CppStatUtilities.o: $(SRCDIR)/CppStatUtilities.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/CppStatUtilities.o $(SRCDIR)/CppStatUtilities.cc
+
+$(BUILDDIR)/Newick.o: $(SRCDIR)/Newick.hh $(SRCDIR)/Newick.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/Newick.o $(SRCDIR)/Newick.cc
+
+
+$(BUILDDIR)/MarkovChains2.o: $(SRCDIR)/MarkovChains2.cc $(SRCDIR)/MarkovChains2.hh \
+			$(SRCDIR)/CUtilities.h \
+			$(SRCDIR)/CUtilities.c \
+			$(SRCDIR)/CppUtilities.hh \
+			$(SRCDIR)/CppUtilities.cc \
+			$(SRCDIR)/strings.hh \
+			$(SRCDIR)/strings.cc \
+			$(SRCDIR)/DNAsequence.hh \
+			$(SRCDIR)/DNAsequence.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/MarkovChains2.o $(SRCDIR)/MarkovChains2.cc
+
+
+
+clean:
+	-$(DEL_FILE) $(OBJECTS)
+	-$(DEL_FILE) *~ core *.core
+
+
+
+
+distclean: clean
+	-$(DEL_FILE) $(TARGET)
+	-$(DEL_FILE) Makefile

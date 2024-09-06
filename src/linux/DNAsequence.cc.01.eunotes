@@ -1,0 +1,4411 @@
+
+;; Function void __static_initialization_and_destruction_0(int, int) (_Z41__static_initialization_and_destruction_0ii)
+
+(note 1 0 10 ("./DNAsequence.cc") 67)
+
+;; Start of basic block 0, registers live: (nil)
+(note 10 1 6 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 6 10 7 0 (set (reg/v:SI 58 [ __initialize_p ])
+        (reg:SI 5 di [ __initialize_p ])) -1 (nil)
+    (nil))
+
+(insn 7 6 8 0 (set (reg/v:SI 59 [ __priority ])
+        (reg:SI 4 si [ __priority ])) -1 (nil)
+    (nil))
+
+(note 8 7 11 0 NOTE_INSN_FUNCTION_BEG)
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 11 8 12 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(note 12 11 13 1 ("./DNAsequence.cc") 67)
+
+(insn 13 12 14 1 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v:SI 58 [ __initialize_p ])
+            (const_int 1 [0x1]))) -1 (nil)
+    (nil))
+
+(jump_insn 14 13 15 1 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 29)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 5467 [0x155b])
+        (nil)))
+;; End of basic block 1, registers live:
+ (nil)
+
+;; Start of basic block 2, registers live: (nil)
+(code_label 15 14 16 2 3 "" [0 uses])
+
+(note 16 15 17 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(insn 17 16 18 2 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v:SI 59 [ __priority ])
+            (const_int 65535 [0xffff]))) -1 (nil)
+    (nil))
+
+(jump_insn 18 17 19 2 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 29)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 7378 [0x1cd2])
+        (nil)))
+;; End of basic block 2, registers live:
+ (nil)
+
+;; Start of basic block 3, registers live: (nil)
+(code_label 19 18 20 3 4 "" [0 uses])
+
+(note 20 19 21 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(note 21 20 22 3 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/iostream") 76)
+
+(insn 22 21 23 3 (set (reg:DI 5 di)
+        (symbol_ref:DI ("_ZSt8__ioinit") [flags 0x2] <var_decl 0x2acec229c6e0 __ioinit>)) -1 (nil)
+    (nil))
+
+(call_insn 23 22 24 3 (call (mem:QI (symbol_ref:DI ("_ZNSt8ios_base4InitC1Ev") [flags 0x41] <function_decl 0x2acec1a5d400 __comp_ctor >) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(insn 24 23 25 3 (set (reg:DI 1 dx)
+        (symbol_ref:DI ("__dso_handle") [flags 0x40] <var_decl 0x2acec2433f20 __dso_handle>)) -1 (nil)
+    (nil))
+
+(insn 25 24 26 3 (set (reg:DI 4 si)
+        (const_int 0 [0x0])) -1 (nil)
+    (nil))
+
+(insn 26 25 27 3 (set (reg:DI 5 di)
+        (symbol_ref:DI ("__tcf_0") [flags 0x3] <function_decl 0x2acec2427500 __tcf_0>)) -1 (nil)
+    (nil))
+
+(call_insn/j 27 26 28 3 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("__cxa_atexit") [flags 0x41] <function_decl 0x2acec2427600 __cxa_atexit>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (nil)))))
+;; End of basic block 3, registers live:
+ (nil)
+
+(barrier 28 27 29)
+
+;; Start of basic block 4, registers live: (nil)
+(code_label 29 28 30 4 2 "" [2 uses])
+
+(note 30 29 31 4 [bb 4] NOTE_INSN_BASIC_BLOCK)
+;; End of basic block 4, registers live:
+ (nil)
+
+(note 31 30 32 NOTE_INSN_FUNCTION_END)
+
+(note 32 31 37 ("./DNAsequence.cc") 67)
+
+;; Start of basic block 5, registers live: (nil)
+(note 37 32 34 5 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 34 37 35 5 (set (pc)
+        (label_ref 36)) -1 (nil)
+    (nil))
+;; End of basic block 5, registers live:
+ (nil)
+
+(barrier 35 34 33)
+
+;; Start of basic block 6, registers live: (nil)
+(code_label 33 35 38 6 1 "" [0 uses])
+
+(note 38 33 36 6 [bb 6] NOTE_INSN_BASIC_BLOCK)
+;; End of basic block 6, registers live:
+ (nil)
+
+;; Start of basic block 7, registers live: (nil)
+(code_label 36 38 39 7 5 "" [1 uses])
+
+(note 39 36 0 7 [bb 7] NOTE_INSN_BASIC_BLOCK)
+;; End of basic block 7, registers live:
+ (nil)
+
+
+;; Function (static initializers for ./DNAsequence.cc) (_GLOBAL__I__Z11getAllKmersiRSt6vectorIPcSaIS0_EE)
+
+(note 1 0 5 ("./DNAsequence.cc") 68)
+
+;; Start of basic block 0, registers live: (nil)
+(note 5 1 3 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(note 3 5 6 0 NOTE_INSN_FUNCTION_BEG)
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 6 3 7 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(note 7 6 8 1 ("./DNAsequence.cc") 68)
+
+(insn 8 7 9 1 (set (reg:SI 4 si)
+        (const_int 65535 [0xffff])) -1 (nil)
+    (nil))
+
+(insn 9 8 10 1 (set (reg:SI 5 di)
+        (const_int 1 [0x1])) -1 (nil)
+    (nil))
+
+(call_insn/j 10 9 11 1 (call (mem:QI (symbol_ref:DI ("_Z41__static_initialization_and_destruction_0ii") [flags 0x3] <function_decl 0x2acec2427400 __static_initialization_and_destruction_0>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 4 si))
+            (nil))))
+;; End of basic block 1, registers live:
+ (nil)
+
+(barrier 11 10 12)
+
+(note 12 11 13 NOTE_INSN_FUNCTION_END)
+
+(note 13 12 18 ("./DNAsequence.cc") 68)
+
+;; Start of basic block 2, registers live: (nil)
+(note 18 13 15 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 15 18 16 2 (set (pc)
+        (label_ref 17)) -1 (nil)
+    (nil))
+;; End of basic block 2, registers live:
+ (nil)
+
+(barrier 16 15 14)
+
+;; Start of basic block 3, registers live: (nil)
+(code_label 14 16 19 3 8 "" [0 uses])
+
+(note 19 14 17 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+;; End of basic block 3, registers live:
+ (nil)
+
+;; Start of basic block 4, registers live: (nil)
+(code_label 17 19 20 4 9 "" [1 uses])
+
+(note 20 17 0 4 [bb 4] NOTE_INSN_BASIC_BLOCK)
+;; End of basic block 4, registers live:
+ (nil)
+
+
+;; Function void __tcf_0(void*) (__tcf_0)
+
+(note 1 0 6 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/iostream") 76)
+
+;; Start of basic block 0, registers live: (nil)
+(note 6 1 3 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 3 6 4 0 (set (reg/v/f:DI 58 [ D.36018 ])
+        (reg:DI 5 di [ D.36018 ])) -1 (nil)
+    (nil))
+
+(note 4 3 7 0 NOTE_INSN_FUNCTION_BEG)
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 7 4 8 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(note 8 7 9 1 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/iostream") 76)
+
+(insn 9 8 10 1 (set (reg:DI 5 di)
+        (symbol_ref:DI ("_ZSt8__ioinit") [flags 0x2] <var_decl 0x2acec229c6e0 __ioinit>)) -1 (nil)
+    (nil))
+
+(call_insn/j 10 9 11 1 (call (mem:QI (symbol_ref:DI ("_ZNSt8ios_base4InitD1Ev") [flags 0x41] <function_decl 0x2acec1a5d600 __comp_dtor >) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+;; End of basic block 1, registers live:
+ (nil)
+
+(barrier 11 10 12)
+
+(note 12 11 13 NOTE_INSN_FUNCTION_END)
+
+(note 13 12 18 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/iostream") 76)
+
+;; Start of basic block 2, registers live: (nil)
+(note 18 13 15 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 15 18 16 2 (set (pc)
+        (label_ref 17)) -1 (nil)
+    (nil))
+;; End of basic block 2, registers live:
+ (nil)
+
+(barrier 16 15 14)
+
+;; Start of basic block 3, registers live: (nil)
+(code_label 14 16 19 3 10 "" [0 uses])
+
+(note 19 14 17 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+;; End of basic block 3, registers live:
+ (nil)
+
+;; Start of basic block 4, registers live: (nil)
+(code_label 17 19 20 4 11 "" [1 uses])
+
+(note 20 17 0 4 [bb 4] NOTE_INSN_BASIC_BLOCK)
+;; End of basic block 4, registers live:
+ (nil)
+
+
+;; Function void std::vector<_Tp, _Alloc>::_M_insert_aux(__gnu_cxx::__normal_iterator<typename std::_Vector_base<_Tp, _Alloc>::_Tp_alloc_type::pointer, std::vector<_Tp, _Alloc> >, const _Tp&) [with _Tp = char*, _Alloc = std::allocator<char*>] (_ZNSt6vectorIPcSaIS0_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS0_S2_EERKS0_)
+
+(note 1 0 8 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 249)
+
+;; Start of basic block 0, registers live: (nil)
+(note 8 1 3 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 3 8 4 0 (set (reg/f:DI 80 [ this ])
+        (reg:DI 5 di [ this ])) -1 (nil)
+    (nil))
+
+(insn 4 3 5 0 (set (reg/v:DI 81 [ __position ])
+        (reg:DI 4 si [ __position ])) -1 (nil)
+    (nil))
+
+(insn 5 4 6 0 (set (reg/v/f:DI 82 [ __x ])
+        (reg:DI 1 dx [ __x ])) -1 (nil)
+    (nil))
+
+(note 6 5 9 0 NOTE_INSN_FUNCTION_BEG)
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 9 6 10 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(insn 10 9 11 1 (set (reg:DI 61 [ __position$_M_current ])
+        (reg/v:DI 81 [ __position ])) -1 (nil)
+    (nil))
+
+(note 11 10 12 1 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 251)
+
+(insn 12 11 13 1 (set (reg:DI 79 [ D.35436 ])
+        (mem/s/f:DI (plus:DI (reg/f:DI 80 [ this ])
+                (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 13 12 14 1 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 79 [ D.35436 ])
+            (mem/s/f:DI (plus:DI (reg/f:DI 80 [ this ])
+                    (const_int 16 [0x10])) [4 <variable>.D.34734._M_impl._M_end_of_storage+0 S8 A64]))) -1 (nil)
+    (nil))
+
+(jump_insn 14 13 15 1 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 48)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 1900 [0x76c])
+        (nil)))
+;; End of basic block 1, registers live:
+ (nil)
+
+;; Start of basic block 2, registers live: (nil)
+(code_label 15 14 16 2 14 "" [0 uses])
+
+(note 16 15 17 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(insn 17 16 18 2 (set (reg/v/f:DI 73 [ __p ])
+        (reg:DI 79 [ D.35436 ])) -1 (nil)
+    (nil))
+
+(note 18 17 19 2 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 104)
+
+(insn 19 18 20 2 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 73 [ __p ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 20 19 21 2 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 25)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 1900 [0x76c])
+        (nil)))
+;; End of basic block 2, registers live:
+ (nil)
+
+;; Start of basic block 3, registers live: (nil)
+(code_label 21 20 22 3 16 "" [0 uses])
+
+(note 22 21 23 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(insn 23 22 24 3 (set (reg:DI 83)
+        (mem/f:DI (plus:DI (reg:DI 79 [ D.35436 ])
+                (const_int -8 [0xfffffffffffffff8])) [5 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 24 23 25 3 (set (mem/f:DI (reg/v/f:DI 73 [ __p ]) [5 S8 A64])
+        (reg:DI 83)) -1 (nil)
+    (nil))
+;; End of basic block 3, registers live:
+ (nil)
+
+;; Start of basic block 4, registers live: (nil)
+(code_label 25 24 26 4 15 "" [1 uses])
+
+(note 26 25 27 4 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(note 27 26 28 4 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 255)
+
+(insn 28 27 29 4 (parallel [
+            (set (reg:DI 58 [ temp.447 ])
+                (plus:DI (reg:DI 79 [ D.35436 ])
+                    (const_int 8 [0x8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 29 28 30 4 (set (mem/s:DI (plus:DI (reg/f:DI 80 [ this ])
+                (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])
+        (reg:DI 58 [ temp.447 ])) -1 (nil)
+    (nil))
+
+(note 30 29 31 4 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 256)
+
+(insn 31 30 32 4 (set (reg/v/f:DI 76 [ __x_copy ])
+        (mem/f:DI (reg/v/f:DI 82 [ __x ]) [5 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 32 31 33 4 (set (reg/v/f:DI 70 [ __first ])
+        (reg:DI 61 [ __position$_M_current ])) -1 (nil)
+    (nil))
+
+(note 33 32 34 4 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_algobase.h") 425)
+
+(insn 34 33 35 4 (parallel [
+            (set (reg:DI 84)
+                (plus:DI (reg:DI 58 [ temp.447 ])
+                    (const_int -16 [0xfffffffffffffff0])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 35 34 36 4 (parallel [
+            (set (reg:DI 85)
+                (minus:DI (reg:DI 84)
+                    (reg/v/f:DI 70 [ __first ])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 36 35 37 4 (parallel [
+            (set (reg:DI 87)
+                (ashiftrt:DI (reg:DI 85)
+                    (const_int 3 [0x3])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (expr_list:REG_EQUAL (div:DI (reg:DI 85)
+            (const_int 8 [0x8]))
+        (nil)))
+
+(insn 37 36 38 4 (parallel [
+            (set (reg:DI 71 [ D.37593 ])
+                (ashift:DI (reg:DI 87)
+                    (const_int 3 [0x3])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 38 37 39 4 (parallel [
+            (set (reg:DI 88)
+                (plus:DI (reg:DI 58 [ temp.447 ])
+                    (const_int -8 [0xfffffffffffffff8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 39 38 40 4 (parallel [
+            (set (reg:DI 89)
+                (minus:DI (reg:DI 88)
+                    (reg:DI 71 [ D.37593 ])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 40 39 41 4 (set (reg:DI 1 dx)
+        (reg:DI 71 [ D.37593 ])) -1 (nil)
+    (nil))
+
+(insn 41 40 42 4 (set (reg:DI 4 si)
+        (reg/v/f:DI 70 [ __first ])) -1 (nil)
+    (nil))
+
+(insn 42 41 43 4 (set (reg:DI 5 di)
+        (reg:DI 89)) -1 (nil)
+    (nil))
+
+(call_insn 43 42 44 4 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("memmove") [flags 0x41] <function_decl 0x2acebfb0b800 memmove>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (nil)))))
+
+(note 44 43 45 4 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 260)
+
+(insn 45 44 46 4 (set (mem/f:DI (reg:DI 61 [ __position$_M_current ]) [5 S8 A64])
+        (reg/v/f:DI 76 [ __x_copy ])) -1 (nil)
+    (nil))
+
+(jump_insn 46 45 47 4 (set (pc)
+        (label_ref 163)) -1 (nil)
+    (nil))
+;; End of basic block 4, registers live:
+ (nil)
+
+(barrier 47 46 48)
+
+;; Start of basic block 5, registers live: (nil)
+(code_label 48 47 49 5 13 "" [1 uses])
+
+(note 49 48 50 5 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(note 50 49 51 5 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_iterator.h") 809)
+
+(insn 51 50 52 5 (parallel [
+            (set (reg:DI 90)
+                (minus:DI (reg:DI 79 [ D.35436 ])
+                    (mem/s/f:DI (reg/f:DI 80 [ this ]) [4 <variable>.D.34734._M_impl._M_start+0 S8 A64])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 52 51 53 5 (parallel [
+            (set (reg:DI 91)
+                (ashiftrt:DI (reg:DI 90)
+                    (const_int 3 [0x3])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (expr_list:REG_EQUAL (div:DI (reg:DI 90)
+            (const_int 8 [0x8]))
+        (nil)))
+
+(insn 53 52 54 5 (set (reg:DI 69 [ D.37630 ])
+        (reg:DI 91)) -1 (nil)
+    (nil))
+
+(note 54 53 55 5 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 265)
+
+(insn 55 54 56 5 (set (reg:DI 92)
+        (const_int 2305843009213693951 [0x1fffffffffffffff])) -1 (nil)
+    (nil))
+
+(insn 56 55 57 5 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 69 [ D.37630 ])
+            (reg:DI 92))) -1 (nil)
+    (nil))
+
+(jump_insn 57 56 58 5 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 64)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 9900 [0x26ac])
+        (nil)))
+;; End of basic block 5, registers live:
+ (nil)
+
+;; Start of basic block 6, registers live: (nil)
+(code_label 58 57 59 6 19 "" [0 uses])
+
+(note 59 58 60 6 [bb 6] NOTE_INSN_BASIC_BLOCK)
+
+(note 60 59 61 6 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 266)
+
+(insn 61 60 62 6 (set (reg:DI 5 di)
+        (symbol_ref/f:DI ("*.LC0") [flags 0x2] <string_cst 0x2acec2675680>)) -1 (nil)
+    (nil))
+
+(call_insn 62 61 63 6 (call (mem:QI (symbol_ref:DI ("_ZSt20__throw_length_errorPKc") [flags 0x41] <function_decl 0x2acebfeb6a00 __throw_length_error>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_NORETURN (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+;; End of basic block 6, registers live:
+ (nil)
+
+(barrier 63 62 64)
+
+;; Start of basic block 7, registers live: (nil)
+(code_label 64 63 65 7 18 "" [1 uses])
+
+(note 65 64 66 7 [bb 7] NOTE_INSN_BASIC_BLOCK)
+
+(note 66 65 67 7 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 402)
+
+(insn 67 66 68 7 (set (reg/v:DI 75 [ __old_size ])
+        (reg:DI 69 [ D.37630 ])) -1 (nil)
+    (nil))
+
+(note 68 67 69 7 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 271)
+
+(insn 69 68 70 7 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 69 [ D.37630 ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 70 69 71 7 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 76)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 5000 [0x1388])
+        (nil)))
+;; End of basic block 7, registers live:
+ (nil)
+
+;; Start of basic block 8, registers live: (nil)
+(code_label 71 70 72 8 21 "" [0 uses])
+
+(note 72 71 73 8 [bb 8] NOTE_INSN_BASIC_BLOCK)
+
+(insn 73 72 74 8 (set (reg/v:DI 74 [ __len ])
+        (const_int 1 [0x1])) -1 (nil)
+    (nil))
+
+(jump_insn 74 73 75 8 (set (pc)
+        (label_ref 79)) -1 (nil)
+    (nil))
+;; End of basic block 8, registers live:
+ (nil)
+
+(barrier 75 74 76)
+
+;; Start of basic block 9, registers live: (nil)
+(code_label 76 75 77 9 20 "" [1 uses])
+
+(note 77 76 78 9 [bb 9] NOTE_INSN_BASIC_BLOCK)
+
+(insn 78 77 79 9 (parallel [
+            (set (reg/v:DI 74 [ __len ])
+                (ashift:DI (reg/v:DI 75 [ __old_size ])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+;; End of basic block 9, registers live:
+ (nil)
+
+;; Start of basic block 10, registers live: (nil)
+(code_label 79 78 80 10 22 "" [1 uses])
+
+(note 80 79 81 10 [bb 10] NOTE_INSN_BASIC_BLOCK)
+
+(note 81 80 82 10 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 272)
+
+(insn 82 81 83 10 (set (reg:CC 17 flags)
+        (compare:CC (reg/v:DI 74 [ __len ])
+            (reg/v:DI 75 [ __old_size ]))) -1 (nil)
+    (nil))
+
+(jump_insn 83 82 84 10 (set (pc)
+        (if_then_else (geu (reg:CC 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 90)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 5000 [0x1388])
+        (nil)))
+;; End of basic block 10, registers live:
+ (nil)
+
+;; Start of basic block 11, registers live: (nil)
+(code_label 84 83 85 11 24 "" [0 uses])
+
+(note 85 84 86 11 [bb 11] NOTE_INSN_BASIC_BLOCK)
+
+(insn 86 85 87 11 (set (reg/v:DI 74 [ __len ])
+        (const_int 2305843009213693951 [0x1fffffffffffffff])) -1 (nil)
+    (nil))
+
+(insn 87 86 88 11 (set (reg:DI 59 [ prephitmp.446 ])
+        (const_int 0 [0x0])) -1 (nil)
+    (nil))
+
+(jump_insn 88 87 89 11 (set (pc)
+        (label_ref 96)) -1 (nil)
+    (nil))
+;; End of basic block 11, registers live:
+ (nil)
+
+(barrier 89 88 90)
+
+;; Start of basic block 12, registers live: (nil)
+(code_label 90 89 91 12 23 "" [1 uses])
+
+(note 91 90 92 12 [bb 12] NOTE_INSN_BASIC_BLOCK)
+
+(insn 92 91 93 12 (set (reg:DI 93)
+        (const_int 2305843009213693951 [0x1fffffffffffffff])) -1 (nil)
+    (nil))
+
+(insn 93 92 94 12 (set (reg:CC 17 flags)
+        (compare:CC (reg/v:DI 74 [ __len ])
+            (reg:DI 93))) -1 (nil)
+    (nil))
+
+(insn 94 93 95 12 (set (reg:QI 94)
+        (gtu:QI (reg:CC 17 flags)
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EQUAL (gtu:QI (reg/v:DI 74 [ __len ])
+            (reg:DI 93))
+        (nil)))
+
+(insn 95 94 96 12 (set (reg:DI 59 [ prephitmp.446 ])
+        (zero_extend:DI (reg:QI 94))) -1 (nil)
+    (nil))
+;; End of basic block 12, registers live:
+ (nil)
+
+;; Start of basic block 13, registers live: (nil)
+(code_label 96 95 97 13 25 "" [1 uses])
+
+(note 97 96 98 13 [bb 13] NOTE_INSN_BASIC_BLOCK)
+
+(note 98 97 99 13 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 85)
+
+(insn 99 98 100 13 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 59 [ prephitmp.446 ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 100 99 101 13 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 106)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 9901 [0x26ad])
+        (expr_list:REG_BR_PRED (concat (const_int 6 [0x6])
+                (const_int 9901 [0x26ad]))
+            (nil))))
+;; End of basic block 13, registers live:
+ (nil)
+
+;; Start of basic block 14, registers live: (nil)
+(code_label 101 100 102 14 27 "" [0 uses])
+
+(note 102 101 103 14 [bb 14] NOTE_INSN_BASIC_BLOCK)
+
+(note 103 102 104 14 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 86)
+
+(call_insn 104 103 105 14 (call (mem:QI (symbol_ref:DI ("_ZSt17__throw_bad_allocv") [flags 0x41] <function_decl 0x2acebfeb6400 __throw_bad_alloc>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_NORETURN (const_int 0 [0x0])
+        (nil))
+    (nil))
+;; End of basic block 14, registers live:
+ (nil)
+
+(barrier 105 104 106)
+
+;; Start of basic block 15, registers live: (nil)
+(code_label 106 105 107 15 26 "" [1 uses])
+
+(note 107 106 108 15 [bb 15] NOTE_INSN_BASIC_BLOCK)
+
+(note 108 107 109 15 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 88)
+
+(insn 109 108 110 15 (parallel [
+            (set (reg:DI 67 [ D.37649 ])
+                (ashift:DI (reg/v:DI 74 [ __len ])
+                    (const_int 3 [0x3])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 110 109 111 15 (set (reg:DI 5 di)
+        (reg:DI 67 [ D.37649 ])) -1 (nil)
+    (nil))
+
+(call_insn 111 110 112 15 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("_Znwm") [flags 0x41] <function_decl 0x2acebfb9a700 operator new>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(insn 112 111 113 15 (set (reg:DI 68 [ D.37650 ])
+        (reg:DI 0 ax)) -1 (nil)
+    (nil))
+
+(insn 113 112 114 15 (set (reg:DI 78 [ D.35410 ])
+        (reg:DI 68 [ D.37650 ])) -1 (nil)
+    (nil))
+
+(insn 114 113 115 15 (set (reg/v/f:DI 63 [ __first ])
+        (mem/s/f:DI (reg/f:DI 80 [ this ]) [4 <variable>.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(note 115 114 116 15 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_algobase.h") 300)
+
+(insn 116 115 117 15 (set (reg:DI 64 [ __last.112 ])
+        (reg:DI 61 [ __position$_M_current ])) -1 (nil)
+    (nil))
+
+(insn 117 116 118 15 (parallel [
+            (set (reg:DI 65 [ D.37714 ])
+                (minus:DI (reg:DI 64 [ __last.112 ])
+                    (reg/v/f:DI 63 [ __first ])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 118 117 119 15 (set (reg:DI 1 dx)
+        (reg:DI 65 [ D.37714 ])) -1 (nil)
+    (nil))
+
+(insn 119 118 120 15 (set (reg:DI 4 si)
+        (reg/v/f:DI 63 [ __first ])) -1 (nil)
+    (nil))
+
+(insn 120 119 121 15 (set (reg:DI 5 di)
+        (reg:DI 78 [ D.35410 ])) -1 (nil)
+    (nil))
+
+(call_insn 121 120 122 15 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("memmove") [flags 0x41] <function_decl 0x2acebfb0b800 memmove>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (nil)))))
+
+(note 122 121 123 15 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_algobase.h") 301)
+
+(insn 123 122 124 15 (parallel [
+            (set (reg:DI 66 [ D.37701 ])
+                (plus:DI (reg:DI 78 [ D.35410 ])
+                    (reg:DI 65 [ D.37714 ])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 124 123 125 15 (set (reg/v/f:DI 72 [ __p ])
+        (reg:DI 66 [ D.37701 ])) -1 (nil)
+    (nil))
+
+(note 125 124 126 15 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 104)
+
+(insn 126 125 127 15 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 72 [ __p ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 127 126 128 15 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 132)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 1900 [0x76c])
+        (nil)))
+;; End of basic block 15, registers live:
+ (nil)
+
+;; Start of basic block 16, registers live: (nil)
+(code_label 128 127 129 16 29 "" [0 uses])
+
+(note 129 128 130 16 [bb 16] NOTE_INSN_BASIC_BLOCK)
+
+(insn 130 129 131 16 (set (reg:DI 95)
+        (mem/f:DI (reg/v/f:DI 82 [ __x ]) [5 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 131 130 132 16 (set (mem/f:DI (reg/v/f:DI 72 [ __p ]) [5 S8 A64])
+        (reg:DI 95)) -1 (nil)
+    (nil))
+;; End of basic block 16, registers live:
+ (nil)
+
+;; Start of basic block 17, registers live: (nil)
+(code_label 132 131 133 17 28 "" [1 uses])
+
+(note 133 132 134 17 [bb 17] NOTE_INSN_BASIC_BLOCK)
+
+(note 134 133 135 17 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_iterator.h") 673)
+
+(insn 135 134 136 17 (parallel [
+            (set (reg:DI 60 [ __new_finish$_M_current ])
+                (plus:DI (reg:DI 66 [ D.37701 ])
+                    (const_int 8 [0x8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(note 136 135 137 17 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_algobase.h") 300)
+
+(insn 137 136 138 17 (set (reg:DI 96)
+        (mem/s/f:DI (plus:DI (reg/f:DI 80 [ this ])
+                (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 138 137 139 17 (parallel [
+            (set (reg:DI 62 [ D.37779 ])
+                (minus:DI (reg:DI 96)
+                    (reg:DI 64 [ __last.112 ])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (expr_list:REG_EQUAL (minus:DI (mem/s/f:DI (plus:DI (reg/f:DI 80 [ this ])
+                    (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])
+            (reg:DI 64 [ __last.112 ]))
+        (nil)))
+
+(insn 139 138 140 17 (set (reg:DI 1 dx)
+        (reg:DI 62 [ D.37779 ])) -1 (nil)
+    (nil))
+
+(insn 140 139 141 17 (set (reg:DI 4 si)
+        (reg:DI 61 [ __position$_M_current ])) -1 (nil)
+    (nil))
+
+(insn 141 140 142 17 (set (reg:DI 5 di)
+        (reg:DI 60 [ __new_finish$_M_current ])) -1 (nil)
+    (nil))
+
+(call_insn 142 141 143 17 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("memmove") [flags 0x41] <function_decl 0x2acebfb0b800 memmove>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (nil)))))
+
+(note 143 142 144 17 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 299)
+
+(insn 144 143 145 17 (set (reg:DI 77 [ D.35467 ])
+        (mem/s/f:DI (reg/f:DI 80 [ this ]) [4 <variable>.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(note 145 144 146 17 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 132)
+
+(insn 146 145 147 17 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 77 [ D.35467 ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 147 146 148 17 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 153)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 3537 [0xdd1])
+        (nil)))
+;; End of basic block 17, registers live:
+ (nil)
+
+;; Start of basic block 18, registers live: (nil)
+(code_label 148 147 149 18 31 "" [0 uses])
+
+(note 149 148 150 18 [bb 18] NOTE_INSN_BASIC_BLOCK)
+
+(note 150 149 151 18 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 94)
+
+(insn 151 150 152 18 (set (reg:DI 5 di)
+        (reg:DI 77 [ D.35467 ])) -1 (nil)
+    (nil))
+
+(call_insn 152 151 153 18 (call (mem:QI (symbol_ref:DI ("_ZdlPv") [flags 0x41] <function_decl 0x2acebfb9a900 operator delete>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+;; End of basic block 18, registers live:
+ (nil)
+
+;; Start of basic block 19, registers live: (nil)
+(code_label 153 152 154 19 30 "" [1 uses])
+
+(note 154 153 155 19 [bb 19] NOTE_INSN_BASIC_BLOCK)
+
+(note 155 154 156 19 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 302)
+
+(insn 156 155 157 19 (set (mem/s:DI (reg/f:DI 80 [ this ]) [4 <variable>.D.34734._M_impl._M_start+0 S8 A64])
+        (reg:DI 78 [ D.35410 ])) -1 (nil)
+    (nil))
+
+(note 157 156 158 19 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 303)
+
+(insn 158 157 159 19 (parallel [
+            (set (reg:DI 97)
+                (plus:DI (reg:DI 60 [ __new_finish$_M_current ])
+                    (reg:DI 62 [ D.37779 ])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 159 158 160 19 (set (mem/s:DI (plus:DI (reg/f:DI 80 [ this ])
+                (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])
+        (reg:DI 97)) -1 (nil)
+    (expr_list:REG_EQUAL (plus:DI (reg:DI 60 [ __new_finish$_M_current ])
+            (reg:DI 62 [ D.37779 ]))
+        (nil)))
+
+(note 160 159 161 19 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 304)
+
+(insn 161 160 162 19 (parallel [
+            (set (reg:DI 98)
+                (plus:DI (reg:DI 78 [ D.35410 ])
+                    (reg:DI 67 [ D.37649 ])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 162 161 163 19 (set (mem/s:DI (plus:DI (reg/f:DI 80 [ this ])
+                (const_int 16 [0x10])) [4 <variable>.D.34734._M_impl._M_end_of_storage+0 S8 A64])
+        (reg:DI 98)) -1 (nil)
+    (expr_list:REG_EQUAL (plus:DI (reg:DI 78 [ D.35410 ])
+            (reg:DI 67 [ D.37649 ]))
+        (nil)))
+;; End of basic block 19, registers live:
+ (nil)
+
+;; Start of basic block 20, registers live: (nil)
+(code_label 163 162 164 20 17 "" [1 uses])
+
+(note 164 163 165 20 [bb 20] NOTE_INSN_BASIC_BLOCK)
+;; End of basic block 20, registers live:
+ (nil)
+
+(note 165 164 166 NOTE_INSN_FUNCTION_END)
+
+(note 166 165 171 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 304)
+
+;; Start of basic block 21, registers live: (nil)
+(note 171 166 168 21 [bb 21] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 168 171 169 21 (set (pc)
+        (label_ref 170)) -1 (nil)
+    (nil))
+;; End of basic block 21, registers live:
+ (nil)
+
+(barrier 169 168 167)
+
+;; Start of basic block 22, registers live: (nil)
+(code_label 167 169 172 22 12 "" [0 uses])
+
+(note 172 167 170 22 [bb 22] NOTE_INSN_BASIC_BLOCK)
+;; End of basic block 22, registers live:
+ (nil)
+
+;; Start of basic block 23, registers live: (nil)
+(code_label 170 172 173 23 32 "" [1 uses])
+
+(note 173 170 0 23 [bb 23] NOTE_INSN_BASIC_BLOCK)
+;; End of basic block 23, registers live:
+ (nil)
+
+
+;; Function std::vector<_Tp, _Alloc>& std::vector<_Tp, _Alloc>::operator=(const std::vector<_Tp, _Alloc>&) [with _Tp = char*, _Alloc = std::allocator<char*>] (_ZNSt6vectorIPcSaIS0_EEaSERKS2_)
+
+(note 1 0 7 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 133)
+
+;; Start of basic block 0, registers live: (nil)
+(note 7 1 3 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 3 7 4 0 (set (reg/f:DI 74 [ this ])
+        (reg:DI 5 di [ this ])) -1 (nil)
+    (nil))
+
+(insn 4 3 5 0 (set (reg/v/f:DI 75 [ __x ])
+        (reg:DI 4 si [ __x ])) -1 (nil)
+    (nil))
+
+(note 5 4 8 0 NOTE_INSN_FUNCTION_BEG)
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 8 5 9 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(note 9 8 10 1 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 135)
+
+(insn 10 9 11 1 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 75 [ __x ])
+            (reg/f:DI 74 [ this ]))) -1 (nil)
+    (nil))
+
+(jump_insn 11 10 12 1 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 127)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 1036 [0x40c])
+        (nil)))
+;; End of basic block 1, registers live:
+ (nil)
+
+;; Start of basic block 2, registers live: (nil)
+(code_label 12 11 13 2 38 "" [0 uses])
+
+(note 13 12 14 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(note 14 13 15 2 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 342)
+
+(insn 15 14 16 2 (set (reg:DI 65 [ D.38311 ])
+        (mem/s/f:DI (reg/v/f:DI 75 [ __x ]) [4 <variable>.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(note 16 15 17 2 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_iterator.h") 809)
+
+(insn 17 16 18 2 (set (reg:DI 67 [ D.38332 ])
+        (reg:DI 65 [ D.38311 ])) -1 (nil)
+    (nil))
+
+(insn 18 17 19 2 (set (reg:DI 76)
+        (mem/s/f:DI (plus:DI (reg/v/f:DI 75 [ __x ])
+                (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 19 18 20 2 (parallel [
+            (set (reg:DI 66 [ D.38333 ])
+                (minus:DI (reg:DI 76)
+                    (reg:DI 67 [ D.38332 ])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (expr_list:REG_EQUAL (minus:DI (mem/s/f:DI (plus:DI (reg/v/f:DI 75 [ __x ])
+                    (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])
+            (reg:DI 67 [ D.38332 ]))
+        (nil)))
+
+(note 20 19 21 2 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 402)
+
+(insn 21 20 22 2 (parallel [
+            (set (reg:DI 77)
+                (ashiftrt:DI (reg:DI 66 [ D.38333 ])
+                    (const_int 3 [0x3])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (expr_list:REG_EQUAL (div:DI (reg:DI 66 [ D.38333 ])
+            (const_int 8 [0x8]))
+        (nil)))
+
+(insn 22 21 23 2 (set (reg/v:DI 71 [ __xlen ])
+        (reg:DI 77)) -1 (nil)
+    (nil))
+
+(insn 23 22 24 2 (set (reg/f:DI 63 [ this ])
+        (reg/f:DI 74 [ this ])) -1 (nil)
+    (nil))
+
+(note 24 23 25 2 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 342)
+
+(insn 25 24 26 2 (set (reg:DI 62 [ D.38345 ])
+        (mem/s/f:DI (reg/f:DI 63 [ this ]) [4 <variable>.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(note 26 25 27 2 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_iterator.h") 809)
+
+(insn 27 26 28 2 (set (reg:DI 64 [ D.38363 ])
+        (reg:DI 62 [ D.38345 ])) -1 (nil)
+    (nil))
+
+(note 28 27 29 2 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 138)
+
+(insn 29 28 30 2 (set (reg:DI 79)
+        (mem/s/f:DI (plus:DI (reg/f:DI 63 [ this ])
+                (const_int 16 [0x10])) [4 <variable>.D.34734._M_impl._M_end_of_storage+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 30 29 31 2 (parallel [
+            (set (reg:DI 78)
+                (minus:DI (reg:DI 79)
+                    (reg:DI 64 [ D.38363 ])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (expr_list:REG_EQUAL (minus:DI (mem/s/f:DI (plus:DI (reg/f:DI 63 [ this ])
+                    (const_int 16 [0x10])) [4 <variable>.D.34734._M_impl._M_end_of_storage+0 S8 A64])
+            (reg:DI 64 [ D.38363 ]))
+        (nil)))
+
+(insn 31 30 32 2 (parallel [
+            (set (reg:DI 81)
+                (ashiftrt:DI (reg:DI 78)
+                    (const_int 3 [0x3])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (expr_list:REG_EQUAL (div:DI (reg:DI 78)
+            (const_int 8 [0x8]))
+        (nil)))
+
+(insn 32 31 33 2 (set (reg:CC 17 flags)
+        (compare:CC (reg/v:DI 71 [ __xlen ])
+            (reg:DI 81))) -1 (nil)
+    (nil))
+
+(jump_insn 33 32 34 2 (set (pc)
+        (if_then_else (leu (reg:CC 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 78)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 7000 [0x1b58])
+        (nil)))
+;; End of basic block 2, registers live:
+ (nil)
+
+;; Start of basic block 3, registers live: (nil)
+(code_label 34 33 35 3 40 "" [0 uses])
+
+(note 35 34 36 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(note 36 35 37 3 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 85)
+
+(insn 37 36 38 3 (set (reg:DI 82)
+        (const_int 2305843009213693951 [0x1fffffffffffffff])) -1 (nil)
+    (nil))
+
+(insn 38 37 39 3 (set (reg:CC 17 flags)
+        (compare:CC (reg/v:DI 71 [ __xlen ])
+            (reg:DI 82))) -1 (nil)
+    (nil))
+
+(jump_insn 39 38 40 3 (set (pc)
+        (if_then_else (leu (reg:CC 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 45)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 9901 [0x26ad])
+        (expr_list:REG_BR_PRED (concat (const_int 6 [0x6])
+                (const_int 9901 [0x26ad]))
+            (nil))))
+;; End of basic block 3, registers live:
+ (nil)
+
+;; Start of basic block 4, registers live: (nil)
+(code_label 40 39 41 4 42 "" [0 uses])
+
+(note 41 40 42 4 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(note 42 41 43 4 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 86)
+
+(call_insn 43 42 44 4 (call (mem:QI (symbol_ref:DI ("_ZSt17__throw_bad_allocv") [flags 0x41] <function_decl 0x2acebfeb6400 __throw_bad_alloc>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_NORETURN (const_int 0 [0x0])
+        (nil))
+    (nil))
+;; End of basic block 4, registers live:
+ (nil)
+
+(barrier 44 43 45)
+
+;; Start of basic block 5, registers live: (nil)
+(code_label 45 44 46 5 41 "" [1 uses])
+
+(note 46 45 47 5 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(note 47 46 48 5 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 88)
+
+(insn 48 47 49 5 (parallel [
+            (set (reg:DI 60 [ D.38432 ])
+                (ashift:DI (reg/v:DI 71 [ __xlen ])
+                    (const_int 3 [0x3])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 49 48 50 5 (set (reg:DI 5 di)
+        (reg:DI 60 [ D.38432 ])) -1 (nil)
+    (nil))
+
+(call_insn 50 49 51 5 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("_Znwm") [flags 0x41] <function_decl 0x2acebfb9a700 operator new>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(insn 51 50 52 5 (set (reg:DI 61 [ D.38433 ])
+        (reg:DI 0 ax)) -1 (nil)
+    (nil))
+
+(insn 52 51 53 5 (set (reg/v/f:DI 70 [ __tmp ])
+        (reg:DI 61 [ D.38433 ])) -1 (nil)
+    (nil))
+
+(note 53 52 54 5 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_algobase.h") 300)
+
+(insn 54 53 55 5 (set (reg:DI 1 dx)
+        (reg:DI 66 [ D.38333 ])) -1 (nil)
+    (nil))
+
+(insn 55 54 56 5 (set (reg:DI 4 si)
+        (reg:DI 65 [ D.38311 ])) -1 (nil)
+    (nil))
+
+(insn 56 55 57 5 (set (reg:DI 5 di)
+        (reg/v/f:DI 70 [ __tmp ])) -1 (nil)
+    (nil))
+
+(call_insn 57 56 58 5 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("memmove") [flags 0x41] <function_decl 0x2acebfb0b800 memmove>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (nil)))))
+
+(note 58 57 59 5 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 142)
+
+(insn 59 58 60 5 (set (reg/v/f:DI 69 [ D.36577 ])
+        (mem/s/f:DI (reg/f:DI 74 [ this ]) [4 <variable>.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(note 60 59 61 5 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 132)
+
+(insn 61 60 62 5 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 69 [ D.36577 ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 62 61 63 5 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 68)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 3537 [0xdd1])
+        (nil)))
+;; End of basic block 5, registers live:
+ (nil)
+
+;; Start of basic block 6, registers live: (nil)
+(code_label 63 62 64 6 44 "" [0 uses])
+
+(note 64 63 65 6 [bb 6] NOTE_INSN_BASIC_BLOCK)
+
+(note 65 64 66 6 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 94)
+
+(insn 66 65 67 6 (set (reg:DI 5 di)
+        (reg/v/f:DI 69 [ D.36577 ])) -1 (nil)
+    (nil))
+
+(call_insn 67 66 68 6 (call (mem:QI (symbol_ref:DI ("_ZdlPv") [flags 0x41] <function_decl 0x2acebfb9a900 operator delete>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+;; End of basic block 6, registers live:
+ (nil)
+
+;; Start of basic block 7, registers live: (nil)
+(code_label 68 67 69 7 43 "" [1 uses])
+
+(note 69 68 70 7 [bb 7] NOTE_INSN_BASIC_BLOCK)
+
+(note 70 69 71 7 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 147)
+
+(insn 71 70 72 7 (set (mem/s:DI (reg/f:DI 74 [ this ]) [4 <variable>.D.34734._M_impl._M_start+0 S8 A64])
+        (reg/v/f:DI 70 [ __tmp ])) -1 (nil)
+    (nil))
+
+(note 72 71 73 7 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 148)
+
+(insn 73 72 74 7 (set (reg:DI 58 [ prephitmp.771 ])
+        (reg:DI 60 [ D.38432 ])) -1 (nil)
+    (nil))
+
+(insn 74 73 75 7 (parallel [
+            (set (reg:DI 83)
+                (plus:DI (reg/v/f:DI 70 [ __tmp ])
+                    (reg:DI 58 [ prephitmp.771 ])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 75 74 76 7 (set (mem/s:DI (plus:DI (reg/f:DI 74 [ this ])
+                (const_int 16 [0x10])) [4 <variable>.D.34734._M_impl._M_end_of_storage+0 S8 A64])
+        (reg:DI 83)) -1 (nil)
+    (expr_list:REG_EQUAL (plus:DI (reg/v/f:DI 70 [ __tmp ])
+            (reg:DI 58 [ prephitmp.771 ]))
+        (nil)))
+
+(jump_insn 76 75 77 7 (set (pc)
+        (label_ref 122)) -1 (nil)
+    (nil))
+;; End of basic block 7, registers live:
+ (nil)
+
+(barrier 77 76 78)
+
+;; Start of basic block 8, registers live: (nil)
+(code_label 78 77 79 8 39 "" [1 uses])
+
+(note 79 78 80 8 [bb 8] NOTE_INSN_BASIC_BLOCK)
+
+(note 80 79 81 8 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 402)
+
+(insn 81 80 82 8 (set (reg:DI 85)
+        (mem/s/f:DI (plus:DI (reg/f:DI 74 [ this ])
+                (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 82 81 83 8 (parallel [
+            (set (reg:DI 84)
+                (minus:DI (reg:DI 85)
+                    (reg:DI 64 [ D.38363 ])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (expr_list:REG_EQUAL (minus:DI (mem/s/f:DI (plus:DI (reg/f:DI 74 [ this ])
+                    (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])
+            (reg:DI 64 [ D.38363 ]))
+        (nil)))
+
+(insn 83 82 84 8 (parallel [
+            (set (reg:DI 86)
+                (ashiftrt:DI (reg:DI 84)
+                    (const_int 3 [0x3])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (expr_list:REG_EQUAL (div:DI (reg:DI 84)
+            (const_int 8 [0x8]))
+        (nil)))
+
+(insn 84 83 85 8 (set (reg:DI 72 [ D.35213 ])
+        (reg:DI 86)) -1 (nil)
+    (nil))
+
+(note 85 84 86 8 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 150)
+
+(insn 86 85 87 8 (set (reg:CC 17 flags)
+        (compare:CC (reg/v:DI 71 [ __xlen ])
+            (reg:DI 72 [ D.35213 ]))) -1 (nil)
+    (nil))
+
+(jump_insn 87 86 88 8 (set (pc)
+        (if_then_else (gtu (reg:CC 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 98)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 5000 [0x1388])
+        (nil)))
+;; End of basic block 8, registers live:
+ (nil)
+
+;; Start of basic block 9, registers live: (nil)
+(code_label 88 87 89 9 47 "" [0 uses])
+
+(note 89 88 90 9 [bb 9] NOTE_INSN_BASIC_BLOCK)
+
+(note 90 89 91 9 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_algobase.h") 300)
+
+(insn 91 90 92 9 (set (reg:DI 1 dx)
+        (reg:DI 66 [ D.38333 ])) -1 (nil)
+    (nil))
+
+(insn 92 91 93 9 (set (reg:DI 4 si)
+        (reg:DI 65 [ D.38311 ])) -1 (nil)
+    (nil))
+
+(insn 93 92 94 9 (set (reg:DI 5 di)
+        (reg:DI 62 [ D.38345 ])) -1 (nil)
+    (nil))
+
+(call_insn 94 93 95 9 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("memmove") [flags 0x41] <function_decl 0x2acebfb0b800 memmove>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (nil)))))
+
+(insn 95 94 96 9 (parallel [
+            (set (reg:DI 58 [ prephitmp.771 ])
+                (ashift:DI (reg/v:DI 71 [ __xlen ])
+                    (const_int 3 [0x3])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(jump_insn 96 95 97 9 (set (pc)
+        (label_ref 122)) -1 (nil)
+    (nil))
+;; End of basic block 9, registers live:
+ (nil)
+
+(barrier 97 96 98)
+
+;; Start of basic block 10, registers live: (nil)
+(code_label 98 97 99 10 46 "" [1 uses])
+
+(note 99 98 100 10 [bb 10] NOTE_INSN_BASIC_BLOCK)
+
+(insn 100 99 101 10 (parallel [
+            (set (reg:DI 87)
+                (ashift:DI (reg:DI 72 [ D.35213 ])
+                    (const_int 3 [0x3])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 101 100 102 10 (parallel [
+            (set (reg:DI 88)
+                (plus:DI (reg:DI 65 [ D.38311 ])
+                    (reg:DI 87)))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 102 101 103 10 (parallel [
+            (set (reg:DI 89)
+                (minus:DI (reg:DI 88)
+                    (reg:DI 67 [ D.38332 ])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 103 102 104 10 (set (reg:DI 1 dx)
+        (reg:DI 89)) -1 (nil)
+    (nil))
+
+(insn 104 103 105 10 (set (reg:DI 4 si)
+        (reg:DI 65 [ D.38311 ])) -1 (nil)
+    (nil))
+
+(insn 105 104 106 10 (set (reg:DI 5 di)
+        (reg:DI 62 [ D.38345 ])) -1 (nil)
+    (nil))
+
+(call_insn 106 105 107 10 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("memmove") [flags 0x41] <function_decl 0x2acebfb0b800 memmove>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (nil)))))
+
+(note 107 106 108 10 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 159)
+
+(insn 108 107 109 10 (set (reg/v/f:DI 59 [ __result ])
+        (mem/s/f:DI (plus:DI (reg/f:DI 74 [ this ])
+                (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])) -1 (nil)
+    (nil))
+
+(note 109 108 110 10 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_iterator.h") 704)
+
+(insn 110 109 111 10 (parallel [
+            (set (reg:DI 90)
+                (minus:DI (reg/v/f:DI 59 [ __result ])
+                    (mem/s/f:DI (reg/f:DI 74 [ this ]) [4 <variable>.D.34734._M_impl._M_start+0 S8 A64])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 111 110 112 10 (parallel [
+            (set (reg:DI 92)
+                (ashiftrt:DI (reg:DI 90)
+                    (const_int 3 [0x3])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (expr_list:REG_EQUAL (div:DI (reg:DI 90)
+            (const_int 8 [0x8]))
+        (nil)))
+
+(insn 112 111 113 10 (parallel [
+            (set (reg:DI 93)
+                (ashift:DI (reg:DI 92)
+                    (const_int 3 [0x3])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 113 112 114 10 (parallel [
+            (set (reg:DI 68 [ D.36742 ])
+                (plus:DI (reg:DI 93)
+                    (mem/s/f:DI (reg/v/f:DI 75 [ __x ]) [4 <variable>.D.34734._M_impl._M_start+0 S8 A64])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(note 114 113 115 10 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_algobase.h") 300)
+
+(insn 115 114 116 10 (set (reg:DI 95)
+        (mem/s/f:DI (plus:DI (reg/v/f:DI 75 [ __x ])
+                (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 116 115 117 10 (parallel [
+            (set (reg:DI 94)
+                (minus:DI (reg:DI 95)
+                    (reg:DI 68 [ D.36742 ])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (expr_list:REG_EQUAL (minus:DI (mem/s/f:DI (plus:DI (reg/v/f:DI 75 [ __x ])
+                    (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])
+            (reg:DI 68 [ D.36742 ]))
+        (nil)))
+
+(insn 117 116 118 10 (set (reg:DI 1 dx)
+        (reg:DI 94)) -1 (nil)
+    (nil))
+
+(insn 118 117 119 10 (set (reg:DI 4 si)
+        (reg:DI 68 [ D.36742 ])) -1 (nil)
+    (nil))
+
+(insn 119 118 120 10 (set (reg:DI 5 di)
+        (reg/v/f:DI 59 [ __result ])) -1 (nil)
+    (nil))
+
+(call_insn 120 119 121 10 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("memmove") [flags 0x41] <function_decl 0x2acebfb0b800 memmove>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (nil)))))
+
+(insn 121 120 122 10 (parallel [
+            (set (reg:DI 58 [ prephitmp.771 ])
+                (ashift:DI (reg/v:DI 71 [ __xlen ])
+                    (const_int 3 [0x3])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+;; End of basic block 10, registers live:
+ (nil)
+
+;; Start of basic block 11, registers live: (nil)
+(code_label 122 121 123 11 45 "" [2 uses])
+
+(note 123 122 124 11 [bb 11] NOTE_INSN_BASIC_BLOCK)
+
+(note 124 123 125 11 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 163)
+
+(insn 125 124 126 11 (parallel [
+            (set (reg:DI 96)
+                (plus:DI (mem/s/f:DI (reg/f:DI 74 [ this ]) [4 <variable>.D.34734._M_impl._M_start+0 S8 A64])
+                    (reg:DI 58 [ prephitmp.771 ])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 126 125 127 11 (set (mem/s:DI (plus:DI (reg/f:DI 74 [ this ])
+                (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])
+        (reg:DI 96)) -1 (nil)
+    (expr_list:REG_EQUAL (plus:DI (mem/s/f:DI (reg/f:DI 74 [ this ]) [4 <variable>.D.34734._M_impl._M_start+0 S8 A64])
+            (reg:DI 58 [ prephitmp.771 ]))
+        (nil)))
+;; End of basic block 11, registers live:
+ (nil)
+
+;; Start of basic block 12, registers live: (nil)
+(code_label 127 126 128 12 37 "" [1 uses])
+
+(note 128 127 129 12 [bb 12] NOTE_INSN_BASIC_BLOCK)
+
+(insn 129 128 130 12 (set (reg:DI 73 [ <result> ])
+        (reg/f:DI 74 [ this ])) -1 (nil)
+    (nil))
+
+(jump_insn 130 129 131 12 (set (pc)
+        (label_ref 134)) -1 (nil)
+    (nil))
+;; End of basic block 12, registers live:
+ (nil)
+
+(barrier 131 130 132)
+
+(note 132 131 133 NOTE_INSN_FUNCTION_END)
+
+(note 133 132 142 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/vector.tcc") 165)
+
+;; Start of basic block 13, registers live: (nil)
+(note 142 133 136 13 [bb 13] NOTE_INSN_BASIC_BLOCK)
+
+(insn 136 142 137 13 (clobber (reg/i:DI 0 ax)) -1 (nil)
+    (nil))
+
+(insn 137 136 138 13 (clobber (reg:DI 73 [ <result> ])) -1 (nil)
+    (nil))
+
+(jump_insn 138 137 139 13 (set (pc)
+        (label_ref 140)) -1 (nil)
+    (nil))
+;; End of basic block 13, registers live:
+ (nil)
+
+(barrier 139 138 134)
+
+;; Start of basic block 14, registers live: (nil)
+(code_label 134 139 143 14 36 "" [1 uses])
+
+(note 143 134 135 14 [bb 14] NOTE_INSN_BASIC_BLOCK)
+
+(insn 135 143 140 14 (set (reg/i:DI 0 ax)
+        (reg:DI 73 [ <result> ])) -1 (nil)
+    (nil))
+;; End of basic block 14, registers live:
+ (nil)
+
+;; Start of basic block 15, registers live: (nil)
+(code_label 140 135 144 15 48 "" [1 uses])
+
+(note 144 140 141 15 [bb 15] NOTE_INSN_BASIC_BLOCK)
+
+(insn 141 144 0 15 (use (reg/i:DI 0 ax)) -1 (nil)
+    (nil))
+;; End of basic block 15, registers live:
+ (nil)
+
+
+;; Function void getAllKmers(int, std::vector<char*, std::allocator<char*> >&) (_Z11getAllKmersiRSt6vectorIPcSaIS0_EE)
+
+(note 1 0 10 ("./DNAsequence.cc") 31)
+
+;; Start of basic block 0, registers live: (nil)
+(note 10 1 6 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 6 10 7 0 (set (reg/v:SI 108 [ k ])
+        (reg:SI 5 di [ k ])) -1 (nil)
+    (nil))
+
+(insn 7 6 8 0 (set (reg/v/f:DI 109 [ kmers ])
+        (reg:DI 4 si [ kmers ])) -1 (nil)
+    (nil))
+
+(note 8 7 11 0 NOTE_INSN_FUNCTION_BEG)
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 11 8 12 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(note 12 11 13 1 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 87)
+
+(insn 13 12 14 1 (set (mem/s/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -64 [0xffffffffffffffc0])) [4 nucs.D.34734._M_impl._M_start+0 S8 A64])
+        (const_int 0 [0x0])) -1 (nil)
+    (nil))
+
+(insn 14 13 15 1 (set (mem/s/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -56 [0xffffffffffffffc8])) [4 nucs.D.34734._M_impl._M_finish+0 S8 A64])
+        (const_int 0 [0x0])) -1 (nil)
+    (nil))
+
+(insn 15 14 16 1 (set (mem/s/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -48 [0xffffffffffffffd0])) [4 nucs.D.34734._M_impl._M_end_of_storage+0 S8 A64])
+        (const_int 0 [0x0])) -1 (nil)
+    (nil))
+
+(note 16 15 17 1 ("./DNAsequence.cc") 34)
+
+(insn 17 16 18 1 (set (reg:DI 5 di)
+        (symbol_ref/f:DI ("*.LC1") [flags 0x2] <string_cst 0x2acec290f120>)) -1 (nil)
+    (nil))
+
+(call_insn 18 17 19 1 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strdup") [flags 0x41] <function_decl 0x2acebfb11c00 strdup>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(insn 19 18 20 1 (set (reg/f:DI 110)
+        (reg:DI 0 ax)) -1 (nil)
+    (expr_list:REG_NOALIAS (reg/f:DI 110)
+        (nil)))
+
+(insn 20 19 21 1 (set (reg:DI 100 [ D.39277 ])
+        (reg/f:DI 110)) -1 (nil)
+    (nil))
+
+(insn 21 20 22 1 (set (mem/f/c/i:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -32 [0xffffffffffffffe0])) [5 D.34747+0 S8 A64])
+        (reg:DI 100 [ D.39277 ])) -1 (nil)
+    (nil))
+
+(note 22 21 23 1 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 604)
+
+(insn 23 22 24 1 (set (reg:DI 101 [ D.39282 ])
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -56 [0xffffffffffffffc8])) [4 nucs.D.34734._M_impl._M_finish+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 24 23 25 1 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 101 [ D.39282 ])
+            (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -48 [0xffffffffffffffd0])) [4 nucs.D.34734._M_impl._M_end_of_storage+0 S8 A64]))) -1 (nil)
+    (nil))
+
+(jump_insn 25 24 26 1 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 42)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 913 [0x391])
+        (nil)))
+;; End of basic block 1, registers live:
+ (nil)
+
+;; Start of basic block 2, registers live: (nil)
+(code_label 26 25 27 2 53 "" [0 uses])
+
+(note 27 26 28 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(insn 28 27 29 2 (set (reg/v/f:DI 99 [ __p ])
+        (reg:DI 101 [ D.39282 ])) -1 (nil)
+    (nil))
+
+(note 29 28 30 2 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 104)
+
+(insn 30 29 31 2 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 99 [ __p ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 31 30 32 2 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 35)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 1900 [0x76c])
+        (nil)))
+;; End of basic block 2, registers live:
+ (nil)
+
+;; Start of basic block 3, registers live: (nil)
+(code_label 32 31 33 3 55 "" [0 uses])
+
+(note 33 32 34 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(insn 34 33 35 3 (set (mem/f:DI (reg/v/f:DI 99 [ __p ]) [5 S8 A64])
+        (reg:DI 100 [ D.39277 ])) -1 (nil)
+    (nil))
+;; End of basic block 3, registers live:
+ (nil)
+
+;; Start of basic block 4, registers live: (nil)
+(code_label 35 34 36 4 54 "" [1 uses])
+
+(note 36 35 37 4 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(note 37 36 38 4 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 607)
+
+(insn 38 37 39 4 (parallel [
+            (set (reg:DI 111)
+                (plus:DI (reg:DI 101 [ D.39282 ])
+                    (const_int 8 [0x8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 39 38 40 4 (set (mem/s/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -56 [0xffffffffffffffc8])) [4 nucs.D.34734._M_impl._M_finish+0 S8 A64])
+        (reg:DI 111)) -1 (nil)
+    (expr_list:REG_EQUAL (plus:DI (reg:DI 101 [ D.39282 ])
+            (const_int 8 [0x8]))
+        (nil)))
+
+(jump_insn 40 39 41 4 (set (pc)
+        (label_ref 52)) -1 (nil)
+    (nil))
+;; End of basic block 4, registers live:
+ (nil)
+
+(barrier 41 40 42)
+
+;; Start of basic block 5, registers live: (nil)
+(code_label 42 41 43 5 52 "" [1 uses])
+
+(note 43 42 44 5 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(note 44 43 45 5 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 610)
+
+(insn 45 44 46 5 (set (reg:DI 98 [ D.39286 ])
+        (reg:DI 101 [ D.39282 ])) -1 (nil)
+    (nil))
+
+(insn 46 45 47 5 (parallel [
+            (set (reg:DI 112)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -32 [0xffffffffffffffe0])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 47 46 48 5 (parallel [
+            (set (reg:DI 113)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -64 [0xffffffffffffffc0])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 48 47 49 5 (set (reg:DI 1 dx)
+        (reg:DI 112)) -1 (nil)
+    (nil))
+
+(insn 49 48 50 5 (set (reg:DI 4 si)
+        (reg:DI 98 [ D.39286 ])) -1 (nil)
+    (nil))
+
+(insn 50 49 51 5 (set (reg:DI 5 di)
+        (reg:DI 113)) -1 (nil)
+    (nil))
+
+(call_insn 51 50 52 5 (call (mem:QI (symbol_ref/i:DI ("_ZNSt6vectorIPcSaIS0_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS0_S2_EERKS0_") [flags 0x1] <function_decl 0x2acec22e5500 _M_insert_aux>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 3 [0x3])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (nil)))))
+;; End of basic block 5, registers live:
+ (nil)
+
+;; Start of basic block 6, registers live: (nil)
+(code_label 52 51 53 6 56 "" [1 uses])
+
+(note 53 52 54 6 [bb 6] NOTE_INSN_BASIC_BLOCK)
+
+(note 54 53 55 6 ("./DNAsequence.cc") 35)
+
+(insn 55 54 56 6 (set (reg:DI 5 di)
+        (symbol_ref/f:DI ("*.LC2") [flags 0x2] <string_cst 0x2acec290f210>)) -1 (nil)
+    (nil))
+
+(call_insn 56 55 57 6 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strdup") [flags 0x41] <function_decl 0x2acebfb11c00 strdup>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(insn 57 56 58 6 (set (reg/f:DI 114)
+        (reg:DI 0 ax)) -1 (nil)
+    (expr_list:REG_NOALIAS (reg/f:DI 114)
+        (nil)))
+
+(insn 58 57 59 6 (set (reg:DI 96 [ D.39307 ])
+        (reg/f:DI 114)) -1 (nil)
+    (nil))
+
+(insn 59 58 60 6 (set (mem/f/c/i:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -24 [0xffffffffffffffe8])) [5 D.34748+0 S8 A64])
+        (reg:DI 96 [ D.39307 ])) -1 (nil)
+    (nil))
+
+(note 60 59 61 6 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 604)
+
+(insn 61 60 62 6 (set (reg:DI 97 [ D.39312 ])
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -56 [0xffffffffffffffc8])) [4 nucs.D.34734._M_impl._M_finish+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 62 61 63 6 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 97 [ D.39312 ])
+            (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -48 [0xffffffffffffffd0])) [4 nucs.D.34734._M_impl._M_end_of_storage+0 S8 A64]))) -1 (nil)
+    (nil))
+
+(jump_insn 63 62 64 6 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 80)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 913 [0x391])
+        (nil)))
+;; End of basic block 6, registers live:
+ (nil)
+
+;; Start of basic block 7, registers live: (nil)
+(code_label 64 63 65 7 58 "" [0 uses])
+
+(note 65 64 66 7 [bb 7] NOTE_INSN_BASIC_BLOCK)
+
+(insn 66 65 67 7 (set (reg/v/f:DI 95 [ __p ])
+        (reg:DI 97 [ D.39312 ])) -1 (nil)
+    (nil))
+
+(note 67 66 68 7 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 104)
+
+(insn 68 67 69 7 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 95 [ __p ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 69 68 70 7 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 73)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 1900 [0x76c])
+        (nil)))
+;; End of basic block 7, registers live:
+ (nil)
+
+;; Start of basic block 8, registers live: (nil)
+(code_label 70 69 71 8 60 "" [0 uses])
+
+(note 71 70 72 8 [bb 8] NOTE_INSN_BASIC_BLOCK)
+
+(insn 72 71 73 8 (set (mem/f:DI (reg/v/f:DI 95 [ __p ]) [5 S8 A64])
+        (reg:DI 96 [ D.39307 ])) -1 (nil)
+    (nil))
+;; End of basic block 8, registers live:
+ (nil)
+
+;; Start of basic block 9, registers live: (nil)
+(code_label 73 72 74 9 59 "" [1 uses])
+
+(note 74 73 75 9 [bb 9] NOTE_INSN_BASIC_BLOCK)
+
+(note 75 74 76 9 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 607)
+
+(insn 76 75 77 9 (parallel [
+            (set (reg:DI 115)
+                (plus:DI (reg:DI 97 [ D.39312 ])
+                    (const_int 8 [0x8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 77 76 78 9 (set (mem/s/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -56 [0xffffffffffffffc8])) [4 nucs.D.34734._M_impl._M_finish+0 S8 A64])
+        (reg:DI 115)) -1 (nil)
+    (expr_list:REG_EQUAL (plus:DI (reg:DI 97 [ D.39312 ])
+            (const_int 8 [0x8]))
+        (nil)))
+
+(jump_insn 78 77 79 9 (set (pc)
+        (label_ref 90)) -1 (nil)
+    (nil))
+;; End of basic block 9, registers live:
+ (nil)
+
+(barrier 79 78 80)
+
+;; Start of basic block 10, registers live: (nil)
+(code_label 80 79 81 10 57 "" [1 uses])
+
+(note 81 80 82 10 [bb 10] NOTE_INSN_BASIC_BLOCK)
+
+(note 82 81 83 10 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 610)
+
+(insn 83 82 84 10 (set (reg:DI 94 [ D.39316 ])
+        (reg:DI 97 [ D.39312 ])) -1 (nil)
+    (nil))
+
+(insn 84 83 85 10 (parallel [
+            (set (reg:DI 116)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -24 [0xffffffffffffffe8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 85 84 86 10 (parallel [
+            (set (reg:DI 117)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -64 [0xffffffffffffffc0])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 86 85 87 10 (set (reg:DI 1 dx)
+        (reg:DI 116)) -1 (nil)
+    (nil))
+
+(insn 87 86 88 10 (set (reg:DI 4 si)
+        (reg:DI 94 [ D.39316 ])) -1 (nil)
+    (nil))
+
+(insn 88 87 89 10 (set (reg:DI 5 di)
+        (reg:DI 117)) -1 (nil)
+    (nil))
+
+(call_insn 89 88 90 10 (call (mem:QI (symbol_ref/i:DI ("_ZNSt6vectorIPcSaIS0_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS0_S2_EERKS0_") [flags 0x1] <function_decl 0x2acec22e5500 _M_insert_aux>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 3 [0x3])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (nil)))))
+;; End of basic block 10, registers live:
+ (nil)
+
+;; Start of basic block 11, registers live: (nil)
+(code_label 90 89 91 11 61 "" [1 uses])
+
+(note 91 90 92 11 [bb 11] NOTE_INSN_BASIC_BLOCK)
+
+(note 92 91 93 11 ("./DNAsequence.cc") 36)
+
+(insn 93 92 94 11 (set (reg:DI 5 di)
+        (symbol_ref/f:DI ("*.LC3") [flags 0x2] <string_cst 0x2acec290f240>)) -1 (nil)
+    (nil))
+
+(call_insn 94 93 95 11 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strdup") [flags 0x41] <function_decl 0x2acebfb11c00 strdup>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(insn 95 94 96 11 (set (reg/f:DI 118)
+        (reg:DI 0 ax)) -1 (nil)
+    (expr_list:REG_NOALIAS (reg/f:DI 118)
+        (nil)))
+
+(insn 96 95 97 11 (set (reg:DI 92 [ D.39337 ])
+        (reg/f:DI 118)) -1 (nil)
+    (nil))
+
+(insn 97 96 98 11 (set (mem/f/c/i:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -16 [0xfffffffffffffff0])) [5 D.34749+0 S8 A64])
+        (reg:DI 92 [ D.39337 ])) -1 (nil)
+    (nil))
+
+(note 98 97 99 11 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 604)
+
+(insn 99 98 100 11 (set (reg:DI 93 [ D.39342 ])
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -56 [0xffffffffffffffc8])) [4 nucs.D.34734._M_impl._M_finish+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 100 99 101 11 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 93 [ D.39342 ])
+            (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -48 [0xffffffffffffffd0])) [4 nucs.D.34734._M_impl._M_end_of_storage+0 S8 A64]))) -1 (nil)
+    (nil))
+
+(jump_insn 101 100 102 11 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 118)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 913 [0x391])
+        (nil)))
+;; End of basic block 11, registers live:
+ (nil)
+
+;; Start of basic block 12, registers live: (nil)
+(code_label 102 101 103 12 63 "" [0 uses])
+
+(note 103 102 104 12 [bb 12] NOTE_INSN_BASIC_BLOCK)
+
+(insn 104 103 105 12 (set (reg/v/f:DI 91 [ __p ])
+        (reg:DI 93 [ D.39342 ])) -1 (nil)
+    (nil))
+
+(note 105 104 106 12 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 104)
+
+(insn 106 105 107 12 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 91 [ __p ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 107 106 108 12 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 111)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 1900 [0x76c])
+        (nil)))
+;; End of basic block 12, registers live:
+ (nil)
+
+;; Start of basic block 13, registers live: (nil)
+(code_label 108 107 109 13 65 "" [0 uses])
+
+(note 109 108 110 13 [bb 13] NOTE_INSN_BASIC_BLOCK)
+
+(insn 110 109 111 13 (set (mem/f:DI (reg/v/f:DI 91 [ __p ]) [5 S8 A64])
+        (reg:DI 92 [ D.39337 ])) -1 (nil)
+    (nil))
+;; End of basic block 13, registers live:
+ (nil)
+
+;; Start of basic block 14, registers live: (nil)
+(code_label 111 110 112 14 64 "" [1 uses])
+
+(note 112 111 113 14 [bb 14] NOTE_INSN_BASIC_BLOCK)
+
+(note 113 112 114 14 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 607)
+
+(insn 114 113 115 14 (parallel [
+            (set (reg:DI 119)
+                (plus:DI (reg:DI 93 [ D.39342 ])
+                    (const_int 8 [0x8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 115 114 116 14 (set (mem/s/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -56 [0xffffffffffffffc8])) [4 nucs.D.34734._M_impl._M_finish+0 S8 A64])
+        (reg:DI 119)) -1 (nil)
+    (expr_list:REG_EQUAL (plus:DI (reg:DI 93 [ D.39342 ])
+            (const_int 8 [0x8]))
+        (nil)))
+
+(jump_insn 116 115 117 14 (set (pc)
+        (label_ref 128)) -1 (nil)
+    (nil))
+;; End of basic block 14, registers live:
+ (nil)
+
+(barrier 117 116 118)
+
+;; Start of basic block 15, registers live: (nil)
+(code_label 118 117 119 15 62 "" [1 uses])
+
+(note 119 118 120 15 [bb 15] NOTE_INSN_BASIC_BLOCK)
+
+(note 120 119 121 15 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 610)
+
+(insn 121 120 122 15 (set (reg:DI 90 [ D.39346 ])
+        (reg:DI 93 [ D.39342 ])) -1 (nil)
+    (nil))
+
+(insn 122 121 123 15 (parallel [
+            (set (reg:DI 120)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -16 [0xfffffffffffffff0])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 123 122 124 15 (parallel [
+            (set (reg:DI 121)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -64 [0xffffffffffffffc0])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 124 123 125 15 (set (reg:DI 1 dx)
+        (reg:DI 120)) -1 (nil)
+    (nil))
+
+(insn 125 124 126 15 (set (reg:DI 4 si)
+        (reg:DI 90 [ D.39346 ])) -1 (nil)
+    (nil))
+
+(insn 126 125 127 15 (set (reg:DI 5 di)
+        (reg:DI 121)) -1 (nil)
+    (nil))
+
+(call_insn 127 126 128 15 (call (mem:QI (symbol_ref/i:DI ("_ZNSt6vectorIPcSaIS0_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS0_S2_EERKS0_") [flags 0x1] <function_decl 0x2acec22e5500 _M_insert_aux>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 3 [0x3])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (nil)))))
+;; End of basic block 15, registers live:
+ (nil)
+
+;; Start of basic block 16, registers live: (nil)
+(code_label 128 127 129 16 66 "" [1 uses])
+
+(note 129 128 130 16 [bb 16] NOTE_INSN_BASIC_BLOCK)
+
+(note 130 129 131 16 ("./DNAsequence.cc") 37)
+
+(insn 131 130 132 16 (set (reg:DI 5 di)
+        (symbol_ref/f:DI ("*.LC4") [flags 0x2] <string_cst 0x2acec290f270>)) -1 (nil)
+    (nil))
+
+(call_insn 132 131 133 16 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strdup") [flags 0x41] <function_decl 0x2acebfb11c00 strdup>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(insn 133 132 134 16 (set (reg/f:DI 122)
+        (reg:DI 0 ax)) -1 (nil)
+    (expr_list:REG_NOALIAS (reg/f:DI 122)
+        (nil)))
+
+(insn 134 133 135 16 (set (reg:DI 88 [ D.39367 ])
+        (reg/f:DI 122)) -1 (nil)
+    (nil))
+
+(insn 135 134 136 16 (set (mem/f/c/i:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -8 [0xfffffffffffffff8])) [5 D.34750+0 S8 A64])
+        (reg:DI 88 [ D.39367 ])) -1 (nil)
+    (nil))
+
+(note 136 135 137 16 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 604)
+
+(insn 137 136 138 16 (set (reg:DI 89 [ D.39372 ])
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -56 [0xffffffffffffffc8])) [4 nucs.D.34734._M_impl._M_finish+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 138 137 139 16 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 89 [ D.39372 ])
+            (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -48 [0xffffffffffffffd0])) [4 nucs.D.34734._M_impl._M_end_of_storage+0 S8 A64]))) -1 (nil)
+    (nil))
+
+(jump_insn 139 138 140 16 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 156)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 913 [0x391])
+        (nil)))
+;; End of basic block 16, registers live:
+ (nil)
+
+;; Start of basic block 17, registers live: (nil)
+(code_label 140 139 141 17 68 "" [0 uses])
+
+(note 141 140 142 17 [bb 17] NOTE_INSN_BASIC_BLOCK)
+
+(insn 142 141 143 17 (set (reg/v/f:DI 87 [ __p ])
+        (reg:DI 89 [ D.39372 ])) -1 (nil)
+    (nil))
+
+(note 143 142 144 17 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 104)
+
+(insn 144 143 145 17 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 87 [ __p ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 145 144 146 17 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 149)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 1900 [0x76c])
+        (nil)))
+;; End of basic block 17, registers live:
+ (nil)
+
+;; Start of basic block 18, registers live: (nil)
+(code_label 146 145 147 18 70 "" [0 uses])
+
+(note 147 146 148 18 [bb 18] NOTE_INSN_BASIC_BLOCK)
+
+(insn 148 147 149 18 (set (mem/f:DI (reg/v/f:DI 87 [ __p ]) [5 S8 A64])
+        (reg:DI 88 [ D.39367 ])) -1 (nil)
+    (nil))
+;; End of basic block 18, registers live:
+ (nil)
+
+;; Start of basic block 19, registers live: (nil)
+(code_label 149 148 150 19 69 "" [1 uses])
+
+(note 150 149 151 19 [bb 19] NOTE_INSN_BASIC_BLOCK)
+
+(note 151 150 152 19 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 607)
+
+(insn 152 151 153 19 (parallel [
+            (set (reg:DI 123)
+                (plus:DI (reg:DI 89 [ D.39372 ])
+                    (const_int 8 [0x8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 153 152 154 19 (set (mem/s/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -56 [0xffffffffffffffc8])) [4 nucs.D.34734._M_impl._M_finish+0 S8 A64])
+        (reg:DI 123)) -1 (nil)
+    (expr_list:REG_EQUAL (plus:DI (reg:DI 89 [ D.39372 ])
+            (const_int 8 [0x8]))
+        (nil)))
+
+(jump_insn 154 153 155 19 (set (pc)
+        (label_ref 166)) -1 (nil)
+    (nil))
+;; End of basic block 19, registers live:
+ (nil)
+
+(barrier 155 154 156)
+
+;; Start of basic block 20, registers live: (nil)
+(code_label 156 155 157 20 67 "" [1 uses])
+
+(note 157 156 158 20 [bb 20] NOTE_INSN_BASIC_BLOCK)
+
+(note 158 157 159 20 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 610)
+
+(insn 159 158 160 20 (set (reg:DI 86 [ D.39376 ])
+        (reg:DI 89 [ D.39372 ])) -1 (nil)
+    (nil))
+
+(insn 160 159 161 20 (parallel [
+            (set (reg:DI 124)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -8 [0xfffffffffffffff8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 161 160 162 20 (parallel [
+            (set (reg:DI 125)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -64 [0xffffffffffffffc0])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 162 161 163 20 (set (reg:DI 1 dx)
+        (reg:DI 124)) -1 (nil)
+    (nil))
+
+(insn 163 162 164 20 (set (reg:DI 4 si)
+        (reg:DI 86 [ D.39376 ])) -1 (nil)
+    (nil))
+
+(insn 164 163 165 20 (set (reg:DI 5 di)
+        (reg:DI 125)) -1 (nil)
+    (nil))
+
+(call_insn 165 164 166 20 (call (mem:QI (symbol_ref/i:DI ("_ZNSt6vectorIPcSaIS0_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS0_S2_EERKS0_") [flags 0x1] <function_decl 0x2acec22e5500 _M_insert_aux>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 3 [0x3])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (nil)))))
+;; End of basic block 20, registers live:
+ (nil)
+
+;; Start of basic block 21, registers live: (nil)
+(code_label 166 165 167 21 71 "" [1 uses])
+
+(note 167 166 168 21 [bb 21] NOTE_INSN_BASIC_BLOCK)
+
+(note 168 167 169 21 ("./DNAsequence.cc") 39)
+
+(insn 169 168 170 21 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v:SI 108 [ k ])
+            (const_int 1 [0x1]))) -1 (nil)
+    (nil))
+
+(jump_insn 170 169 171 21 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 180)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 7100 [0x1bbc])
+        (nil)))
+;; End of basic block 21, registers live:
+ (nil)
+
+;; Start of basic block 22, registers live: (nil)
+(code_label 171 170 172 22 73 "" [0 uses])
+
+(note 172 171 173 22 [bb 22] NOTE_INSN_BASIC_BLOCK)
+
+(note 173 172 174 22 ("./DNAsequence.cc") 41)
+
+(insn 174 173 175 22 (parallel [
+            (set (reg:DI 126)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -64 [0xffffffffffffffc0])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 175 174 176 22 (set (reg:DI 4 si)
+        (reg:DI 126)) -1 (nil)
+    (nil))
+
+(insn 176 175 177 22 (set (reg:DI 5 di)
+        (reg/v/f:DI 109 [ kmers ])) -1 (nil)
+    (nil))
+
+(call_insn 177 176 605 22 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref/i:DI ("_ZNSt6vectorIPcSaIS0_EEaSERKS2_") [flags 0x1] <function_decl 0x2acec22bcd00 operator=>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 3 [0x3])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (nil))))
+;; End of basic block 22, registers live:
+ (nil)
+
+;; Start of basic block 23, registers live: (nil)
+(note 605 177 178 23 [bb 23] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 178 605 179 23 (set (pc)
+        (label_ref 354)) -1 (nil)
+    (nil))
+;; End of basic block 23, registers live:
+ (nil)
+
+(barrier 179 178 180)
+
+;; Start of basic block 24, registers live: (nil)
+(code_label 180 179 181 24 72 "" [1 uses])
+
+(note 181 180 182 24 [bb 24] NOTE_INSN_BASIC_BLOCK)
+
+(note 182 181 183 24 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 87)
+
+(insn 183 182 184 24 (set (mem/s/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -96 [0xffffffffffffffa0])) [4 km1mers.D.34734._M_impl._M_start+0 S8 A64])
+        (const_int 0 [0x0])) -1 (nil)
+    (nil))
+
+(insn 184 183 185 24 (set (mem/s/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -88 [0xffffffffffffffa8])) [4 km1mers.D.34734._M_impl._M_finish+0 S8 A64])
+        (const_int 0 [0x0])) -1 (nil)
+    (nil))
+
+(insn 185 184 186 24 (set (mem/s/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -80 [0xffffffffffffffb0])) [4 km1mers.D.34734._M_impl._M_end_of_storage+0 S8 A64])
+        (const_int 0 [0x0])) -1 (nil)
+    (nil))
+
+(note 186 185 187 24 ("./DNAsequence.cc") 46)
+
+(insn 187 186 188 24 (parallel [
+            (set (reg:DI 127)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -96 [0xffffffffffffffa0])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 188 187 189 24 (parallel [
+            (set (reg:SI 128)
+                (plus:SI (reg/v:SI 108 [ k ])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 189 188 190 24 (set (reg:DI 4 si)
+        (reg:DI 127)) -1 (nil)
+    (nil))
+
+(insn 190 189 191 24 (set (reg:SI 5 di)
+        (reg:SI 128)) -1 (nil)
+    (nil))
+
+(call_insn 191 190 192 24 (call (mem:QI (symbol_ref:DI ("_Z11getAllKmersiRSt6vectorIPcSaIS0_EE") [flags 0x3] <function_decl 0x2acec1315200 getAllKmers>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 6 [0x6])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (nil))))
+;; End of basic block 24, registers live:
+ (nil)
+
+;; Start of basic block 25, registers live: (nil)
+(note 192 191 193 25 [bb 25] NOTE_INSN_BASIC_BLOCK)
+
+(note 193 192 194 25 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_iterator.h") 809)
+
+(insn 194 193 195 25 (set (reg:DI 130)
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -96 [0xffffffffffffffa0])) [4 km1mers.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 195 194 196 25 (set (reg:DI 131)
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -88 [0xffffffffffffffa8])) [4 km1mers.D.34734._M_impl._M_finish+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 196 195 197 25 (parallel [
+            (set (reg:DI 129)
+                (minus:DI (reg:DI 131)
+                    (reg:DI 130)))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (expr_list:REG_EQUAL (minus:DI (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -88 [0xffffffffffffffa8])) [4 km1mers.D.34734._M_impl._M_finish+0 S8 A64])
+            (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -96 [0xffffffffffffffa0])) [4 km1mers.D.34734._M_impl._M_start+0 S8 A64]))
+        (nil)))
+
+(insn 197 196 198 25 (parallel [
+            (set (reg:DI 132)
+                (ashiftrt:DI (reg:DI 129)
+                    (const_int 3 [0x3])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (expr_list:REG_EQUAL (div:DI (reg:DI 129)
+            (const_int 8 [0x8]))
+        (nil)))
+
+(insn 198 197 199 25 (set (reg:DI 85 [ D.39411 ])
+        (reg:DI 132)) -1 (nil)
+    (nil))
+
+(note 199 198 200 25 ("./DNAsequence.cc") 52)
+
+(insn 200 199 201 25 (set (reg:CCNO 17 flags)
+        (compare:CCNO (subreg:SI (reg:DI 85 [ D.39411 ]) 0)
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 201 200 204 25 (set (pc)
+        (if_then_else (gt (reg:CCNO 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 378)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 9667 [0x25c3])
+        (nil)))
+;; End of basic block 25, registers live:
+ (nil)
+
+;; Start of basic block 26, registers live: (nil)
+(note 204 201 202 26 [bb 26] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 202 204 203 26 (set (pc)
+        (label_ref 266)) -1 (nil)
+    (nil))
+;; End of basic block 26, registers live:
+ (nil)
+
+(barrier 203 202 205)
+
+;; Start of basic block 27, registers live: (nil)
+(code_label 205 203 206 27 77 "" [4 uses])
+
+(note 206 205 207 27 [bb 27] NOTE_INSN_BASIC_BLOCK)
+
+(note 207 206 208 27 ("./DNAsequence.cc") 59)
+
+(insn 208 207 209 27 (set (reg:DI 2 cx)
+        (mem/f/c/i:DI (symbol_ref:DI ("stderr") [flags 0x40] <var_decl 0x2acec0dfe370 stderr>) [20 stderr+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 209 208 210 27 (set (reg:DI 1 dx)
+        (const_int 14 [0xe])) -1 (nil)
+    (nil))
+
+(insn 210 209 211 27 (set (reg:DI 4 si)
+        (const_int 1 [0x1])) -1 (nil)
+    (nil))
+
+(insn 211 210 212 27 (set (reg:DI 5 di)
+        (symbol_ref/f:DI ("*.LC5") [flags 0x2] <string_cst 0x2acec2999740>)) -1 (nil)
+    (nil))
+
+(call_insn 212 211 213 27 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("fwrite") [flags 0x41] <function_decl 0x2acebfb1d000 __builtin_fwrite>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 6 [0x6])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (expr_list:REG_DEP_TRUE (use (reg:DI 2 cx))
+                    (nil))))))
+;; End of basic block 27, registers live:
+ (nil)
+
+;; Start of basic block 28, registers live: (nil)
+(note 213 212 214 28 [bb 28] NOTE_INSN_BASIC_BLOCK)
+
+(insn 214 213 215 28 (set (reg:SI 2 cx)
+        (const_int 59 [0x3b])) -1 (nil)
+    (nil))
+
+(insn 215 214 216 28 (set (reg:DI 1 dx)
+        (symbol_ref/f:DI ("*.LC6") [flags 0x2] <string_cst 0x2acec2454880>)) -1 (nil)
+    (nil))
+
+(insn 216 215 217 28 (set (reg:DI 4 si)
+        (symbol_ref/f:DI ("*.LC7") [flags 0x2] <string_cst 0x2acec2999880>)) -1 (nil)
+    (nil))
+
+(insn 217 216 218 28 (set (reg:DI 5 di)
+        (mem/f/c/i:DI (symbol_ref:DI ("stderr") [flags 0x40] <var_decl 0x2acec0dfe370 stderr>) [20 stderr+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 218 217 219 28 (set (reg:QI 0 ax)
+        (const_int 0 [0x0])) -1 (nil)
+    (nil))
+
+(call_insn 219 218 220 28 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("fprintf") [flags 0x41] <function_decl 0x2acebfb17d00 fprintf>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 6 [0x6])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:QI 0 ax))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+                (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                    (expr_list:REG_DEP_TRUE (use (reg:SI 2 cx))
+                        (nil)))))))
+;; End of basic block 28, registers live:
+ (nil)
+
+;; Start of basic block 29, registers live: (nil)
+(note 220 219 221 29 [bb 29] NOTE_INSN_BASIC_BLOCK)
+
+(insn 221 220 222 29 (set (reg:SI 5 di)
+        (const_int 1 [0x1])) -1 (nil)
+    (nil))
+
+(call_insn 222 221 223 29 (call (mem:QI (symbol_ref:DI ("exit") [flags 0x41] <function_decl 0x2acebfb3bb00 exit>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_NORETURN (const_int 0 [0x0])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+        (nil)))
+;; End of basic block 29, registers live:
+ (nil)
+
+(barrier 223 222 224)
+
+;; Start of basic block 30, registers live: (nil)
+(code_label 224 223 225 30 78 "" [1 uses])
+
+(note 225 224 226 30 [bb 30] NOTE_INSN_BASIC_BLOCK)
+
+(note 226 225 227 30 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 604)
+
+(insn 227 226 228 30 (set (reg:DI 84 [ D.39438 ])
+        (mem/s/f:DI (plus:DI (reg/v/f:DI 109 [ kmers ])
+                (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 228 227 229 30 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 84 [ D.39438 ])
+            (mem/s/f:DI (plus:DI (reg/v/f:DI 109 [ kmers ])
+                    (const_int 16 [0x10])) [4 <variable>.D.34734._M_impl._M_end_of_storage+0 S8 A64]))) -1 (nil)
+    (nil))
+
+(jump_insn 229 228 230 30 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 245)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 913 [0x391])
+        (nil)))
+;; End of basic block 30, registers live:
+ (nil)
+
+;; Start of basic block 31, registers live: (nil)
+(code_label 230 229 231 31 80 "" [0 uses])
+
+(note 231 230 232 31 [bb 31] NOTE_INSN_BASIC_BLOCK)
+
+(insn 232 231 233 31 (set (reg/v/f:DI 83 [ __p ])
+        (reg:DI 84 [ D.39438 ])) -1 (nil)
+    (nil))
+
+(note 233 232 234 31 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 104)
+
+(insn 234 233 235 31 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 83 [ __p ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 235 234 236 31 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 239)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 1900 [0x76c])
+        (nil)))
+;; End of basic block 31, registers live:
+ (nil)
+
+;; Start of basic block 32, registers live: (nil)
+(code_label 236 235 237 32 82 "" [0 uses])
+
+(note 237 236 238 32 [bb 32] NOTE_INSN_BASIC_BLOCK)
+
+(insn 238 237 239 32 (set (mem/f:DI (reg/v/f:DI 83 [ __p ]) [5 S8 A64])
+        (reg:DI 63 [ kmer.1017 ])) -1 (nil)
+    (nil))
+;; End of basic block 32, registers live:
+ (nil)
+
+;; Start of basic block 33, registers live: (nil)
+(code_label 239 238 240 33 81 "" [1 uses])
+
+(note 240 239 241 33 [bb 33] NOTE_INSN_BASIC_BLOCK)
+
+(note 241 240 242 33 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 607)
+
+(insn 242 241 243 33 (parallel [
+            (set (mem/s:DI (plus:DI (reg/v/f:DI 109 [ kmers ])
+                        (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])
+                (plus:DI (mem/s/f:DI (plus:DI (reg/v/f:DI 109 [ kmers ])
+                            (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])
+                    (const_int 8 [0x8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(jump_insn 243 242 244 33 (set (pc)
+        (label_ref 254)) -1 (nil)
+    (nil))
+;; End of basic block 33, registers live:
+ (nil)
+
+(barrier 244 243 245)
+
+;; Start of basic block 34, registers live: (nil)
+(code_label 245 244 246 34 79 "" [1 uses])
+
+(note 246 245 247 34 [bb 34] NOTE_INSN_BASIC_BLOCK)
+
+(note 247 246 248 34 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 610)
+
+(insn 248 247 249 34 (set (reg:DI 82 [ D.39442 ])
+        (reg:DI 84 [ D.39438 ])) -1 (nil)
+    (nil))
+
+(insn 249 248 250 34 (parallel [
+            (set (reg:DI 133)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -40 [0xffffffffffffffd8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 250 249 251 34 (set (reg:DI 1 dx)
+        (reg:DI 133)) -1 (nil)
+    (nil))
+
+(insn 251 250 252 34 (set (reg:DI 4 si)
+        (reg:DI 82 [ D.39442 ])) -1 (nil)
+    (nil))
+
+(insn 252 251 253 34 (set (reg:DI 5 di)
+        (reg/v/f:DI 109 [ kmers ])) -1 (nil)
+    (nil))
+
+(call_insn 253 252 254 34 (call (mem:QI (symbol_ref/i:DI ("_ZNSt6vectorIPcSaIS0_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS0_S2_EERKS0_") [flags 0x1] <function_decl 0x2acec22e5500 _M_insert_aux>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 6 [0x6])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (nil)))))
+;; End of basic block 34, registers live:
+ (nil)
+
+;; Start of basic block 35, registers live: (nil)
+(code_label 254 253 255 35 83 "" [1 uses])
+
+(note 255 254 256 35 [bb 35] NOTE_INSN_BASIC_BLOCK)
+
+(note 256 255 257 35 ("./DNAsequence.cc") 62)
+
+(insn 257 256 258 35 (set (reg:DI 134)
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -96 [0xffffffffffffffa0])) [4 km1mers.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 258 257 259 35 (set (reg:DI 135)
+        (mem/f:DI (plus:DI (reg:DI 71 [ pretmp.977 ])
+                (reg:DI 134)) [5 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 259 258 260 35 (set (reg:DI 5 di)
+        (reg:DI 135)) -1 (nil)
+    (nil))
+
+(call_insn 260 259 261 35 (call (mem:QI (symbol_ref:DI ("free") [flags 0x41] <function_decl 0x2acebff7a900 free>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(note 261 260 262 35 ("./DNAsequence.cc") 52)
+
+(insn 262 261 263 35 (parallel [
+            (set (reg/v:SI 106 [ i ])
+                (plus:SI (reg/v:SI 106 [ i ])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 263 262 264 35 (parallel [
+            (set (reg:DI 70 [ ivtmp.990 ])
+                (plus:DI (reg:DI 70 [ ivtmp.990 ])
+                    (const_int 8 [0x8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 264 263 265 35 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v:SI 106 [ i ])
+            (subreg:SI (reg:DI 85 [ D.39411 ]) 0))) -1 (nil)
+    (nil))
+
+(jump_insn 265 264 266 35 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 382)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 9667 [0x25c3])
+        (nil)))
+;; End of basic block 35, registers live:
+ (nil)
+
+;; Start of basic block 36, registers live: (nil)
+(code_label 266 265 267 36 76 "" [1 uses])
+
+(note 267 266 268 36 [bb 36] NOTE_INSN_BASIC_BLOCK)
+
+(note 268 267 269 36 ("./DNAsequence.cc") 66)
+
+(insn 269 268 270 36 (set (reg/f:DI 136)
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -64 [0xffffffffffffffc0])) [4 nucs.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 270 269 271 36 (set (reg:DI 5 di)
+        (mem/f:DI (reg/f:DI 136) [5 S8 A64])) -1 (nil)
+    (nil))
+
+(call_insn 271 270 272 36 (call (mem:QI (symbol_ref:DI ("free") [flags 0x41] <function_decl 0x2acebff7a900 free>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(insn 272 271 273 36 (set (reg/f:DI 137)
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -64 [0xffffffffffffffc0])) [4 nucs.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 273 272 274 36 (set (reg:DI 138)
+        (mem/f:DI (plus:DI (reg/f:DI 137)
+                (const_int 8 [0x8])) [5 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 274 273 275 36 (set (reg:DI 5 di)
+        (reg:DI 138)) -1 (nil)
+    (nil))
+
+(call_insn 275 274 276 36 (call (mem:QI (symbol_ref:DI ("free") [flags 0x41] <function_decl 0x2acebff7a900 free>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(insn 276 275 277 36 (set (reg/f:DI 139)
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -64 [0xffffffffffffffc0])) [4 nucs.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 277 276 278 36 (set (reg:DI 140)
+        (mem/f:DI (plus:DI (reg/f:DI 139)
+                (const_int 16 [0x10])) [5 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 278 277 279 36 (set (reg:DI 5 di)
+        (reg:DI 140)) -1 (nil)
+    (nil))
+
+(call_insn 279 278 280 36 (call (mem:QI (symbol_ref:DI ("free") [flags 0x41] <function_decl 0x2acebff7a900 free>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(insn 280 279 281 36 (set (reg/f:DI 141)
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -64 [0xffffffffffffffc0])) [4 nucs.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 281 280 282 36 (set (reg:DI 142)
+        (mem/f:DI (plus:DI (reg/f:DI 141)
+                (const_int 24 [0x18])) [5 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 282 281 283 36 (set (reg:DI 5 di)
+        (reg:DI 142)) -1 (nil)
+    (nil))
+
+(call_insn 283 282 284 36 (call (mem:QI (symbol_ref:DI ("free") [flags 0x41] <function_decl 0x2acebff7a900 free>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(note 284 283 285 36 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 272)
+
+(insn 285 284 286 36 (parallel [
+            (set (reg/f:DI 79 [ this ])
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -96 [0xffffffffffffffa0])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(note 286 285 287 36 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 119)
+
+(insn 287 286 288 36 (set (reg:DI 78 [ D.39569 ])
+        (mem/s/f:DI (reg/f:DI 79 [ this ]) [4 <variable>._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(note 288 287 289 36 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 132)
+
+(insn 289 288 290 36 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 78 [ D.39569 ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 290 289 293 36 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 316)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 6463 [0x193f])
+        (nil)))
+;; End of basic block 36, registers live:
+ (nil)
+
+;; Start of basic block 37, registers live: (nil)
+(note 293 290 291 37 [bb 37] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 291 293 292 37 (set (pc)
+        (label_ref 320)) -1 (nil)
+    (nil))
+;; End of basic block 37, registers live:
+ (nil)
+
+(barrier 292 291 294)
+
+;; Start of basic block 38, registers live: (nil)
+(code_label/s 294 292 295 38 87 "" [0 uses])
+
+(note 295 294 296 38 [bb 38] NOTE_INSN_BASIC_BLOCK)
+
+(insn 296 295 297 38 (set (reg:SI 104 [ save_filt.122 ])
+        (subreg:SI (reg:DI 143) 0)) -1 (nil)
+    (nil))
+
+(insn 297 296 298 38 (set (reg:DI 105 [ save_eptr.121 ])
+        (reg:DI 144)) -1 (nil)
+    (nil))
+
+(note 298 297 299 38 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 272)
+
+(insn 299 298 300 38 (parallel [
+            (set (reg/f:DI 81 [ this ])
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -96 [0xffffffffffffffa0])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(note 300 299 301 38 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 119)
+
+(insn 301 300 302 38 (set (reg:DI 80 [ D.39498 ])
+        (mem/s/f:DI (reg/f:DI 81 [ this ]) [4 <variable>._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(note 302 301 303 38 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 132)
+
+(insn 303 302 304 38 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 80 [ D.39498 ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 304 303 305 38 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 310)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 3537 [0xdd1])
+        (nil)))
+;; End of basic block 38, registers live:
+ (nil)
+
+;; Start of basic block 39, registers live: (nil)
+(code_label 305 304 306 39 89 "" [0 uses])
+
+(note 306 305 307 39 [bb 39] NOTE_INSN_BASIC_BLOCK)
+
+(note 307 306 308 39 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 94)
+
+(insn 308 307 309 39 (set (reg:DI 5 di)
+        (reg:DI 80 [ D.39498 ])) -1 (nil)
+    (nil))
+
+(call_insn 309 308 310 39 (call (mem:QI (symbol_ref:DI ("_ZdlPv") [flags 0x41] <function_decl 0x2acebfb9a900 operator delete>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+;; End of basic block 39, registers live:
+ (nil)
+
+;; Start of basic block 40, registers live: (nil)
+(code_label 310 309 311 40 88 "" [1 uses])
+
+(note 311 310 312 40 [bb 40] NOTE_INSN_BASIC_BLOCK)
+
+(insn 312 311 313 40 (set (reg:DI 144)
+        (reg:DI 105 [ save_eptr.121 ])) -1 (nil)
+    (nil))
+
+(insn 313 312 314 40 (set (reg:DI 143)
+        (sign_extend:DI (reg:SI 104 [ save_filt.122 ]))) -1 (nil)
+    (nil))
+
+(jump_insn 314 313 315 40 (resx 6) -1 (nil)
+    (nil))
+;; End of basic block 40, registers live:
+ (nil)
+
+(barrier 315 314 316)
+
+;; Start of basic block 41, registers live: (nil)
+(code_label 316 315 317 41 85 "" [1 uses])
+
+(note 317 316 318 41 [bb 41] NOTE_INSN_BASIC_BLOCK)
+
+(insn 318 317 319 41 (set (reg:DI 5 di)
+        (reg:DI 78 [ D.39569 ])) -1 (nil)
+    (nil))
+
+(call_insn 319 318 320 41 (call (mem:QI (symbol_ref:DI ("_ZdlPv") [flags 0x41] <function_decl 0x2acebfb9a900 operator delete>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+;; End of basic block 41, registers live:
+ (nil)
+
+;; Start of basic block 42, registers live: (nil)
+(code_label 320 319 321 42 86 "" [1 uses])
+
+(note 321 320 322 42 [bb 42] NOTE_INSN_BASIC_BLOCK)
+
+(note 322 321 323 42 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 272)
+
+(insn 323 322 324 42 (parallel [
+            (set (reg/f:DI 73 [ this ])
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -64 [0xffffffffffffffc0])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(note 324 323 325 42 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 119)
+
+(insn 325 324 326 42 (set (reg:DI 72 [ D.39782 ])
+        (mem/s/f:DI (reg/f:DI 73 [ this ]) [4 <variable>._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(note 326 325 327 42 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 132)
+
+(insn 327 326 328 42 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 72 [ D.39782 ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 328 327 331 42 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 370)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 7876 [0x1ec4])
+        (nil)))
+;; End of basic block 42, registers live:
+ (nil)
+
+;; Start of basic block 43, registers live: (nil)
+(note 331 328 329 43 [bb 43] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 329 331 330 43 (set (pc)
+        (label_ref 374)) -1 (nil)
+    (nil))
+;; End of basic block 43, registers live:
+ (nil)
+
+(barrier 330 329 332)
+
+;; Start of basic block 44, registers live: (nil)
+(code_label/s 332 330 333 44 92 "" [0 uses])
+
+(note 333 332 334 44 [bb 44] NOTE_INSN_BASIC_BLOCK)
+
+(insn 334 333 335 44 (set (reg:SI 102 [ save_filt.124 ])
+        (subreg:SI (reg:DI 143) 0)) -1 (nil)
+    (nil))
+
+(insn 335 334 336 44 (set (reg:DI 103 [ save_eptr.123 ])
+        (reg:DI 144)) -1 (nil)
+    (nil))
+
+(note 336 335 337 44 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 272)
+
+(insn 337 336 338 44 (parallel [
+            (set (reg/f:DI 77 [ this ])
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -64 [0xffffffffffffffc0])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(note 338 337 339 44 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 119)
+
+(insn 339 338 340 44 (set (reg:DI 76 [ D.39640 ])
+        (mem/s/f:DI (reg/f:DI 77 [ this ]) [4 <variable>._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(note 340 339 341 44 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 132)
+
+(insn 341 340 342 44 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 76 [ D.39640 ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 342 341 343 44 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 348)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 3537 [0xdd1])
+        (nil)))
+;; End of basic block 44, registers live:
+ (nil)
+
+;; Start of basic block 45, registers live: (nil)
+(code_label 343 342 344 45 94 "" [0 uses])
+
+(note 344 343 345 45 [bb 45] NOTE_INSN_BASIC_BLOCK)
+
+(note 345 344 346 45 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 94)
+
+(insn 346 345 347 45 (set (reg:DI 5 di)
+        (reg:DI 76 [ D.39640 ])) -1 (nil)
+    (nil))
+
+(call_insn 347 346 348 45 (call (mem:QI (symbol_ref:DI ("_ZdlPv") [flags 0x41] <function_decl 0x2acebfb9a900 operator delete>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+;; End of basic block 45, registers live:
+ (nil)
+
+;; Start of basic block 46, registers live: (nil)
+(code_label 348 347 349 46 93 "" [1 uses])
+
+(note 349 348 350 46 [bb 46] NOTE_INSN_BASIC_BLOCK)
+
+(insn 350 349 351 46 (set (reg:DI 144)
+        (reg:DI 103 [ save_eptr.123 ])) -1 (nil)
+    (nil))
+
+(insn 351 350 352 46 (set (reg:DI 143)
+        (sign_extend:DI (reg:SI 102 [ save_filt.124 ]))) -1 (nil)
+    (nil))
+
+(jump_insn 352 351 353 46 (resx 3) -1 (nil)
+    (nil))
+;; End of basic block 46, registers live:
+ (nil)
+
+(barrier 353 352 354)
+
+;; Start of basic block 47, registers live: (nil)
+(code_label 354 353 355 47 74 "" [1 uses])
+
+(note 355 354 356 47 [bb 47] NOTE_INSN_BASIC_BLOCK)
+
+(note 356 355 357 47 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 272)
+
+(insn 357 356 358 47 (parallel [
+            (set (reg/f:DI 75 [ this ])
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -64 [0xffffffffffffffc0])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(note 358 357 359 47 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 119)
+
+(insn 359 358 360 47 (set (reg:DI 74 [ D.39711 ])
+        (mem/s/f:DI (reg/f:DI 75 [ this ]) [4 <variable>._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(note 360 359 361 47 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 132)
+
+(insn 361 360 362 47 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 74 [ D.39711 ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 362 361 363 47 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 374)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 2124 [0x84c])
+        (nil)))
+;; End of basic block 47, registers live:
+ (nil)
+
+;; Start of basic block 48, registers live: (nil)
+(code_label 363 362 364 48 95 "" [0 uses])
+
+(note 364 363 365 48 [bb 48] NOTE_INSN_BASIC_BLOCK)
+
+(note 365 364 366 48 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 94)
+
+(insn 366 365 367 48 (set (reg:DI 5 di)
+        (reg:DI 74 [ D.39711 ])) -1 (nil)
+    (nil))
+
+(call_insn 367 366 368 48 (call (mem:QI (symbol_ref:DI ("_ZdlPv") [flags 0x41] <function_decl 0x2acebfb9a900 operator delete>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(jump_insn 368 367 369 48 (set (pc)
+        (label_ref 374)) -1 (nil)
+    (nil))
+;; End of basic block 48, registers live:
+ (nil)
+
+(barrier 369 368 370)
+
+;; Start of basic block 49, registers live: (nil)
+(code_label 370 369 371 49 90 "" [1 uses])
+
+(note 371 370 372 49 [bb 49] NOTE_INSN_BASIC_BLOCK)
+
+(insn 372 371 373 49 (set (reg:DI 5 di)
+        (reg:DI 72 [ D.39782 ])) -1 (nil)
+    (nil))
+
+(call_insn 373 372 374 49 (call (mem:QI (symbol_ref:DI ("_ZdlPv") [flags 0x41] <function_decl 0x2acebfb9a900 operator delete>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+;; End of basic block 49, registers live:
+ (nil)
+
+;; Start of basic block 50, registers live: (nil)
+(code_label 374 373 375 50 91 "" [3 uses])
+
+(note 375 374 376 50 [bb 50] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 376 375 377 50 (set (pc)
+        (label_ref 600)) -1 (nil)
+    (nil))
+;; End of basic block 50, registers live:
+ (nil)
+
+(barrier 377 376 378)
+
+;; Start of basic block 51, registers live: (nil)
+(code_label 378 377 379 51 75 "" [1 uses])
+
+(note 379 378 380 51 [bb 51] NOTE_INSN_BASIC_BLOCK)
+
+(insn 380 379 381 51 (set (reg/v:SI 106 [ i ])
+        (const_int 0 [0x0])) -1 (nil)
+    (nil))
+
+(insn 381 380 382 51 (set (reg:DI 70 [ ivtmp.990 ])
+        (const_int 0 [0x0])) -1 (nil)
+    (nil))
+;; End of basic block 51, registers live:
+ (nil)
+
+;; Start of basic block 52, registers live: (nil)
+(code_label 382 381 383 52 84 "" [1 uses])
+
+(note 383 382 384 52 [bb 52] NOTE_INSN_BASIC_BLOCK)
+
+(insn 384 383 385 52 (set (reg:DI 71 [ pretmp.977 ])
+        (reg:DI 70 [ ivtmp.990 ])) -1 (nil)
+    (nil))
+
+(note 385 384 386 52 ("./DNAsequence.cc") 56)
+
+(insn 386 385 387 52 (set (mem/s:QI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -208 [0xffffffffffffff30])) [0 str+0 S1 A64])
+        (const_int 0 [0x0])) -1 (nil)
+    (nil))
+
+(note 387 386 388 52 ("./DNAsequence.cc") 57)
+
+(insn 388 387 389 52 (set (reg/f:DI 145)
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -64 [0xffffffffffffffc0])) [4 nucs.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 389 388 390 52 (parallel [
+            (set (reg:DI 146)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -208 [0xffffffffffffff30])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 390 389 391 52 (set (reg:DI 4 si)
+        (mem/f:DI (reg/f:DI 145) [5 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 391 390 392 52 (set (reg:DI 5 di)
+        (reg:DI 146)) -1 (nil)
+    (nil))
+
+(call_insn 392 391 393 52 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strcat") [flags 0x41] <function_decl 0x2acebfb0ed00 strcat>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (nil))))
+
+(note 393 392 394 52 ("./DNAsequence.cc") 58)
+
+(insn 394 393 395 52 (set (reg:DI 147)
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -96 [0xffffffffffffffa0])) [4 km1mers.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 395 394 396 52 (set (reg:DI 148)
+        (mem/f:DI (plus:DI (reg:DI 71 [ pretmp.977 ])
+                (reg:DI 147)) [5 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 396 395 397 52 (parallel [
+            (set (reg:DI 149)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -208 [0xffffffffffffff30])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 397 396 398 52 (set (reg:DI 4 si)
+        (reg:DI 148)) -1 (nil)
+    (nil))
+
+(insn 398 397 399 52 (set (reg:DI 5 di)
+        (reg:DI 149)) -1 (nil)
+    (nil))
+
+(call_insn 399 398 400 52 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strcat") [flags 0x41] <function_decl 0x2acebfb0ed00 strcat>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (nil))))
+
+(note 400 399 401 52 ("./DNAsequence.cc") 59)
+
+(insn 401 400 402 52 (parallel [
+            (set (reg:DI 150)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -208 [0xffffffffffffff30])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 402 401 403 52 (set (reg:DI 5 di)
+        (reg:DI 150)) -1 (nil)
+    (nil))
+
+(call_insn 403 402 404 52 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strdup") [flags 0x41] <function_decl 0x2acebfb11c00 strdup>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(insn 404 403 405 52 (set (reg/f:DI 151)
+        (reg:DI 0 ax)) -1 (nil)
+    (expr_list:REG_NOALIAS (reg/f:DI 151)
+        (nil)))
+
+(insn 405 404 406 52 (set (reg:DI 107 [ kmer.94 ])
+        (reg/f:DI 151)) -1 (nil)
+    (nil))
+
+(insn 406 405 407 52 (set (mem/f/c/i:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -40 [0xffffffffffffffd8])) [5 kmer+0 S8 A64])
+        (reg:DI 107 [ kmer.94 ])) -1 (nil)
+    (nil))
+
+(insn 407 406 408 52 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 107 [ kmer.94 ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 408 407 409 52 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 205)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 333 [0x14d])
+        (nil)))
+;; End of basic block 52, registers live:
+ (nil)
+
+;; Start of basic block 53, registers live: (nil)
+(code_label 409 408 410 53 96 "" [0 uses])
+
+(note 410 409 411 53 [bb 53] NOTE_INSN_BASIC_BLOCK)
+
+(note 411 410 412 53 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 604)
+
+(insn 412 411 413 53 (set (reg:DI 66 [ temp.1014 ])
+        (mem/s/f:DI (plus:DI (reg/v/f:DI 109 [ kmers ])
+                (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 413 412 414 53 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 66 [ temp.1014 ])
+            (mem/s/f:DI (plus:DI (reg/v/f:DI 109 [ kmers ])
+                    (const_int 16 [0x10])) [4 <variable>.D.34734._M_impl._M_end_of_storage+0 S8 A64]))) -1 (nil)
+    (nil))
+
+(jump_insn 414 413 415 53 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 426)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 9087 [0x237f])
+        (nil)))
+;; End of basic block 53, registers live:
+ (nil)
+
+;; Start of basic block 54, registers live: (nil)
+(code_label 415 414 416 54 98 "" [0 uses])
+
+(note 416 415 417 54 [bb 54] NOTE_INSN_BASIC_BLOCK)
+
+(note 417 416 418 54 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 610)
+
+(insn 418 417 419 54 (set (reg:DI 82 [ D.39442 ])
+        (reg:DI 66 [ temp.1014 ])) -1 (nil)
+    (nil))
+
+(insn 419 418 420 54 (parallel [
+            (set (reg:DI 152)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -40 [0xffffffffffffffd8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 420 419 421 54 (set (reg:DI 1 dx)
+        (reg:DI 152)) -1 (nil)
+    (nil))
+
+(insn 421 420 422 54 (set (reg:DI 4 si)
+        (reg:DI 82 [ D.39442 ])) -1 (nil)
+    (nil))
+
+(insn 422 421 423 54 (set (reg:DI 5 di)
+        (reg/v/f:DI 109 [ kmers ])) -1 (nil)
+    (nil))
+
+(call_insn 423 422 606 54 (call (mem:QI (symbol_ref/i:DI ("_ZNSt6vectorIPcSaIS0_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS0_S2_EERKS0_") [flags 0x1] <function_decl 0x2acec22e5500 _M_insert_aux>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 6 [0x6])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (nil)))))
+;; End of basic block 54, registers live:
+ (nil)
+
+;; Start of basic block 55, registers live: (nil)
+(note 606 423 424 55 [bb 55] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 424 606 425 55 (set (pc)
+        (label_ref 444)) -1 (nil)
+    (nil))
+;; End of basic block 55, registers live:
+ (nil)
+
+(barrier 425 424 426)
+
+;; Start of basic block 56, registers live: (nil)
+(code_label 426 425 427 56 97 "" [1 uses])
+
+(note 427 426 428 56 [bb 56] NOTE_INSN_BASIC_BLOCK)
+
+(insn 428 427 429 56 (set (reg/v/f:DI 69 [ __p.1008 ])
+        (reg:DI 66 [ temp.1014 ])) -1 (nil)
+    (nil))
+
+(note 429 428 430 56 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 104)
+
+(insn 430 429 431 56 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 69 [ __p.1008 ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 431 430 432 56 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 438)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 8100 [0x1fa4])
+        (nil)))
+;; End of basic block 56, registers live:
+ (nil)
+
+;; Start of basic block 57, registers live: (nil)
+(code_label 432 431 433 57 101 "" [1 uses])
+
+(note 433 432 434 57 [bb 57] NOTE_INSN_BASIC_BLOCK)
+
+(note 434 433 435 57 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 607)
+
+(insn 435 434 436 57 (parallel [
+            (set (mem/s:DI (plus:DI (reg/v/f:DI 109 [ kmers ])
+                        (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])
+                (plus:DI (mem/s/f:DI (plus:DI (reg/v/f:DI 109 [ kmers ])
+                            (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])
+                    (const_int 8 [0x8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(jump_insn 436 435 437 57 (set (pc)
+        (label_ref 444)) -1 (nil)
+    (nil))
+;; End of basic block 57, registers live:
+ (nil)
+
+(barrier 437 436 438)
+
+;; Start of basic block 58, registers live: (nil)
+(code_label 438 437 439 58 100 "" [1 uses])
+
+(note 439 438 440 58 [bb 58] NOTE_INSN_BASIC_BLOCK)
+
+(note 440 439 441 58 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 104)
+
+(insn 441 440 442 58 (set (mem/f:DI (reg/v/f:DI 69 [ __p.1008 ]) [5 S8 A64])
+        (reg:DI 107 [ kmer.94 ])) -1 (nil)
+    (nil))
+
+(jump_insn 442 441 443 58 (set (pc)
+        (label_ref 432)) -1 (nil)
+    (nil))
+;; End of basic block 58, registers live:
+ (nil)
+
+(barrier 443 442 444)
+
+;; Start of basic block 59, registers live: (nil)
+(code_label 444 443 445 59 99 "" [2 uses])
+
+(note 445 444 446 59 [bb 59] NOTE_INSN_BASIC_BLOCK)
+
+(note 446 445 447 59 ("./DNAsequence.cc") 56)
+
+(insn 447 446 448 59 (set (mem/s:QI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -208 [0xffffffffffffff30])) [0 str+0 S1 A64])
+        (const_int 0 [0x0])) -1 (nil)
+    (nil))
+
+(note 448 447 449 59 ("./DNAsequence.cc") 57)
+
+(insn 449 448 450 59 (set (reg/f:DI 153)
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -64 [0xffffffffffffffc0])) [4 nucs.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 450 449 451 59 (set (reg:DI 154)
+        (mem/f:DI (plus:DI (reg/f:DI 153)
+                (const_int 8 [0x8])) [5 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 451 450 452 59 (parallel [
+            (set (reg:DI 155)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -208 [0xffffffffffffff30])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 452 451 453 59 (set (reg:DI 4 si)
+        (reg:DI 154)) -1 (nil)
+    (nil))
+
+(insn 453 452 454 59 (set (reg:DI 5 di)
+        (reg:DI 155)) -1 (nil)
+    (nil))
+
+(call_insn 454 453 455 59 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strcat") [flags 0x41] <function_decl 0x2acebfb0ed00 strcat>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (nil))))
+
+(note 455 454 456 59 ("./DNAsequence.cc") 58)
+
+(insn 456 455 457 59 (set (reg:DI 156)
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -96 [0xffffffffffffffa0])) [4 km1mers.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 457 456 458 59 (set (reg:DI 157)
+        (mem/f:DI (plus:DI (reg:DI 71 [ pretmp.977 ])
+                (reg:DI 156)) [5 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 458 457 459 59 (parallel [
+            (set (reg:DI 158)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -208 [0xffffffffffffff30])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 459 458 460 59 (set (reg:DI 4 si)
+        (reg:DI 157)) -1 (nil)
+    (nil))
+
+(insn 460 459 461 59 (set (reg:DI 5 di)
+        (reg:DI 158)) -1 (nil)
+    (nil))
+
+(call_insn 461 460 462 59 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strcat") [flags 0x41] <function_decl 0x2acebfb0ed00 strcat>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (nil))))
+
+(note 462 461 463 59 ("./DNAsequence.cc") 59)
+
+(insn 463 462 464 59 (parallel [
+            (set (reg:DI 159)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -208 [0xffffffffffffff30])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 464 463 465 59 (set (reg:DI 5 di)
+        (reg:DI 159)) -1 (nil)
+    (nil))
+
+(call_insn 465 464 466 59 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strdup") [flags 0x41] <function_decl 0x2acebfb11c00 strdup>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(insn 466 465 467 59 (set (reg/f:DI 160)
+        (reg:DI 0 ax)) -1 (nil)
+    (expr_list:REG_NOALIAS (reg/f:DI 160)
+        (nil)))
+
+(insn 467 466 468 59 (set (reg:DI 62 [ kmer.1018 ])
+        (reg/f:DI 160)) -1 (nil)
+    (nil))
+
+(insn 468 467 469 59 (set (mem/f/c/i:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -40 [0xffffffffffffffd8])) [5 kmer+0 S8 A64])
+        (reg:DI 62 [ kmer.1018 ])) -1 (nil)
+    (nil))
+
+(insn 469 468 470 59 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 62 [ kmer.1018 ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 470 469 471 59 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 205)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 333 [0x14d])
+        (nil)))
+;; End of basic block 59, registers live:
+ (nil)
+
+;; Start of basic block 60, registers live: (nil)
+(code_label 471 470 472 60 102 "" [0 uses])
+
+(note 472 471 473 60 [bb 60] NOTE_INSN_BASIC_BLOCK)
+
+(note 473 472 474 60 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 604)
+
+(insn 474 473 475 60 (set (reg:DI 65 [ temp.1015 ])
+        (mem/s/f:DI (plus:DI (reg/v/f:DI 109 [ kmers ])
+                (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 475 474 476 60 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 65 [ temp.1015 ])
+            (mem/s/f:DI (plus:DI (reg/v/f:DI 109 [ kmers ])
+                    (const_int 16 [0x10])) [4 <variable>.D.34734._M_impl._M_end_of_storage+0 S8 A64]))) -1 (nil)
+    (nil))
+
+(jump_insn 476 475 477 60 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 488)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 9087 [0x237f])
+        (nil)))
+;; End of basic block 60, registers live:
+ (nil)
+
+;; Start of basic block 61, registers live: (nil)
+(code_label 477 476 478 61 104 "" [0 uses])
+
+(note 478 477 479 61 [bb 61] NOTE_INSN_BASIC_BLOCK)
+
+(note 479 478 480 61 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 610)
+
+(insn 480 479 481 61 (set (reg:DI 82 [ D.39442 ])
+        (reg:DI 65 [ temp.1015 ])) -1 (nil)
+    (nil))
+
+(insn 481 480 482 61 (parallel [
+            (set (reg:DI 161)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -40 [0xffffffffffffffd8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 482 481 483 61 (set (reg:DI 1 dx)
+        (reg:DI 161)) -1 (nil)
+    (nil))
+
+(insn 483 482 484 61 (set (reg:DI 4 si)
+        (reg:DI 82 [ D.39442 ])) -1 (nil)
+    (nil))
+
+(insn 484 483 485 61 (set (reg:DI 5 di)
+        (reg/v/f:DI 109 [ kmers ])) -1 (nil)
+    (nil))
+
+(call_insn 485 484 607 61 (call (mem:QI (symbol_ref/i:DI ("_ZNSt6vectorIPcSaIS0_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS0_S2_EERKS0_") [flags 0x1] <function_decl 0x2acec22e5500 _M_insert_aux>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 6 [0x6])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (nil)))))
+;; End of basic block 61, registers live:
+ (nil)
+
+;; Start of basic block 62, registers live: (nil)
+(note 607 485 486 62 [bb 62] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 486 607 487 62 (set (pc)
+        (label_ref 506)) -1 (nil)
+    (nil))
+;; End of basic block 62, registers live:
+ (nil)
+
+(barrier 487 486 488)
+
+;; Start of basic block 63, registers live: (nil)
+(code_label 488 487 489 63 103 "" [1 uses])
+
+(note 489 488 490 63 [bb 63] NOTE_INSN_BASIC_BLOCK)
+
+(insn 490 489 491 63 (set (reg/v/f:DI 68 [ __p.1009 ])
+        (reg:DI 65 [ temp.1015 ])) -1 (nil)
+    (nil))
+
+(note 491 490 492 63 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 104)
+
+(insn 492 491 493 63 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 68 [ __p.1009 ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 493 492 494 63 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 500)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 8100 [0x1fa4])
+        (nil)))
+;; End of basic block 63, registers live:
+ (nil)
+
+;; Start of basic block 64, registers live: (nil)
+(code_label 494 493 495 64 107 "" [1 uses])
+
+(note 495 494 496 64 [bb 64] NOTE_INSN_BASIC_BLOCK)
+
+(note 496 495 497 64 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 607)
+
+(insn 497 496 498 64 (parallel [
+            (set (mem/s:DI (plus:DI (reg/v/f:DI 109 [ kmers ])
+                        (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])
+                (plus:DI (mem/s/f:DI (plus:DI (reg/v/f:DI 109 [ kmers ])
+                            (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])
+                    (const_int 8 [0x8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(jump_insn 498 497 499 64 (set (pc)
+        (label_ref 506)) -1 (nil)
+    (nil))
+;; End of basic block 64, registers live:
+ (nil)
+
+(barrier 499 498 500)
+
+;; Start of basic block 65, registers live: (nil)
+(code_label 500 499 501 65 106 "" [1 uses])
+
+(note 501 500 502 65 [bb 65] NOTE_INSN_BASIC_BLOCK)
+
+(note 502 501 503 65 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 104)
+
+(insn 503 502 504 65 (set (mem/f:DI (reg/v/f:DI 68 [ __p.1009 ]) [5 S8 A64])
+        (reg:DI 62 [ kmer.1018 ])) -1 (nil)
+    (nil))
+
+(jump_insn 504 503 505 65 (set (pc)
+        (label_ref 494)) -1 (nil)
+    (nil))
+;; End of basic block 65, registers live:
+ (nil)
+
+(barrier 505 504 506)
+
+;; Start of basic block 66, registers live: (nil)
+(code_label 506 505 507 66 105 "" [2 uses])
+
+(note 507 506 508 66 [bb 66] NOTE_INSN_BASIC_BLOCK)
+
+(note 508 507 509 66 ("./DNAsequence.cc") 56)
+
+(insn 509 508 510 66 (set (mem/s:QI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -208 [0xffffffffffffff30])) [0 str+0 S1 A64])
+        (const_int 0 [0x0])) -1 (nil)
+    (nil))
+
+(note 510 509 511 66 ("./DNAsequence.cc") 57)
+
+(insn 511 510 512 66 (set (reg/f:DI 162)
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -64 [0xffffffffffffffc0])) [4 nucs.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 512 511 513 66 (set (reg:DI 163)
+        (mem/f:DI (plus:DI (reg/f:DI 162)
+                (const_int 16 [0x10])) [5 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 513 512 514 66 (parallel [
+            (set (reg:DI 164)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -208 [0xffffffffffffff30])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 514 513 515 66 (set (reg:DI 4 si)
+        (reg:DI 163)) -1 (nil)
+    (nil))
+
+(insn 515 514 516 66 (set (reg:DI 5 di)
+        (reg:DI 164)) -1 (nil)
+    (nil))
+
+(call_insn 516 515 517 66 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strcat") [flags 0x41] <function_decl 0x2acebfb0ed00 strcat>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (nil))))
+
+(note 517 516 518 66 ("./DNAsequence.cc") 58)
+
+(insn 518 517 519 66 (set (reg:DI 165)
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -96 [0xffffffffffffffa0])) [4 km1mers.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 519 518 520 66 (set (reg:DI 166)
+        (mem/f:DI (plus:DI (reg:DI 71 [ pretmp.977 ])
+                (reg:DI 165)) [5 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 520 519 521 66 (parallel [
+            (set (reg:DI 167)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -208 [0xffffffffffffff30])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 521 520 522 66 (set (reg:DI 4 si)
+        (reg:DI 166)) -1 (nil)
+    (nil))
+
+(insn 522 521 523 66 (set (reg:DI 5 di)
+        (reg:DI 167)) -1 (nil)
+    (nil))
+
+(call_insn 523 522 524 66 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strcat") [flags 0x41] <function_decl 0x2acebfb0ed00 strcat>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (nil))))
+
+(note 524 523 525 66 ("./DNAsequence.cc") 59)
+
+(insn 525 524 526 66 (parallel [
+            (set (reg:DI 168)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -208 [0xffffffffffffff30])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 526 525 527 66 (set (reg:DI 5 di)
+        (reg:DI 168)) -1 (nil)
+    (nil))
+
+(call_insn 527 526 528 66 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strdup") [flags 0x41] <function_decl 0x2acebfb11c00 strdup>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(insn 528 527 529 66 (set (reg/f:DI 169)
+        (reg:DI 0 ax)) -1 (nil)
+    (expr_list:REG_NOALIAS (reg/f:DI 169)
+        (nil)))
+
+(insn 529 528 530 66 (set (reg:DI 61 [ kmer.1019 ])
+        (reg/f:DI 169)) -1 (nil)
+    (nil))
+
+(insn 530 529 531 66 (set (mem/f/c/i:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -40 [0xffffffffffffffd8])) [5 kmer+0 S8 A64])
+        (reg:DI 61 [ kmer.1019 ])) -1 (nil)
+    (nil))
+
+(insn 531 530 532 66 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 61 [ kmer.1019 ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 532 531 533 66 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 205)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 333 [0x14d])
+        (nil)))
+;; End of basic block 66, registers live:
+ (nil)
+
+;; Start of basic block 67, registers live: (nil)
+(code_label 533 532 534 67 108 "" [0 uses])
+
+(note 534 533 535 67 [bb 67] NOTE_INSN_BASIC_BLOCK)
+
+(note 535 534 536 67 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 604)
+
+(insn 536 535 537 67 (set (reg:DI 64 [ temp.1016 ])
+        (mem/s/f:DI (plus:DI (reg/v/f:DI 109 [ kmers ])
+                (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 537 536 538 67 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 64 [ temp.1016 ])
+            (mem/s/f:DI (plus:DI (reg/v/f:DI 109 [ kmers ])
+                    (const_int 16 [0x10])) [4 <variable>.D.34734._M_impl._M_end_of_storage+0 S8 A64]))) -1 (nil)
+    (nil))
+
+(jump_insn 538 537 539 67 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 550)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 9087 [0x237f])
+        (nil)))
+;; End of basic block 67, registers live:
+ (nil)
+
+;; Start of basic block 68, registers live: (nil)
+(code_label 539 538 540 68 110 "" [0 uses])
+
+(note 540 539 541 68 [bb 68] NOTE_INSN_BASIC_BLOCK)
+
+(note 541 540 542 68 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 610)
+
+(insn 542 541 543 68 (set (reg:DI 82 [ D.39442 ])
+        (reg:DI 64 [ temp.1016 ])) -1 (nil)
+    (nil))
+
+(insn 543 542 544 68 (parallel [
+            (set (reg:DI 170)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -40 [0xffffffffffffffd8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 544 543 545 68 (set (reg:DI 1 dx)
+        (reg:DI 170)) -1 (nil)
+    (nil))
+
+(insn 545 544 546 68 (set (reg:DI 4 si)
+        (reg:DI 82 [ D.39442 ])) -1 (nil)
+    (nil))
+
+(insn 546 545 547 68 (set (reg:DI 5 di)
+        (reg/v/f:DI 109 [ kmers ])) -1 (nil)
+    (nil))
+
+(call_insn 547 546 608 68 (call (mem:QI (symbol_ref/i:DI ("_ZNSt6vectorIPcSaIS0_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS0_S2_EERKS0_") [flags 0x1] <function_decl 0x2acec22e5500 _M_insert_aux>) [0 S1 A8])
+        (const_int 0 [0x0])) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 6 [0x6])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (nil)))))
+;; End of basic block 68, registers live:
+ (nil)
+
+;; Start of basic block 69, registers live: (nil)
+(note 608 547 548 69 [bb 69] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 548 608 549 69 (set (pc)
+        (label_ref 568)) -1 (nil)
+    (nil))
+;; End of basic block 69, registers live:
+ (nil)
+
+(barrier 549 548 550)
+
+;; Start of basic block 70, registers live: (nil)
+(code_label 550 549 551 70 109 "" [1 uses])
+
+(note 551 550 552 70 [bb 70] NOTE_INSN_BASIC_BLOCK)
+
+(insn 552 551 553 70 (set (reg/v/f:DI 67 [ __p.1010 ])
+        (reg:DI 64 [ temp.1016 ])) -1 (nil)
+    (nil))
+
+(note 553 552 554 70 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 104)
+
+(insn 554 553 555 70 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 67 [ __p.1010 ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 555 554 556 70 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 562)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 8100 [0x1fa4])
+        (nil)))
+;; End of basic block 70, registers live:
+ (nil)
+
+;; Start of basic block 71, registers live: (nil)
+(code_label 556 555 557 71 113 "" [1 uses])
+
+(note 557 556 558 71 [bb 71] NOTE_INSN_BASIC_BLOCK)
+
+(note 558 557 559 71 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/bits/stl_vector.h") 607)
+
+(insn 559 558 560 71 (parallel [
+            (set (mem/s:DI (plus:DI (reg/v/f:DI 109 [ kmers ])
+                        (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])
+                (plus:DI (mem/s/f:DI (plus:DI (reg/v/f:DI 109 [ kmers ])
+                            (const_int 8 [0x8])) [4 <variable>.D.34734._M_impl._M_finish+0 S8 A64])
+                    (const_int 8 [0x8])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(jump_insn 560 559 561 71 (set (pc)
+        (label_ref 568)) -1 (nil)
+    (nil))
+;; End of basic block 71, registers live:
+ (nil)
+
+(barrier 561 560 562)
+
+;; Start of basic block 72, registers live: (nil)
+(code_label 562 561 563 72 112 "" [1 uses])
+
+(note 563 562 564 72 [bb 72] NOTE_INSN_BASIC_BLOCK)
+
+(note 564 563 565 72 ("/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../include/c++/4.1.2/ext/new_allocator.h") 104)
+
+(insn 565 564 566 72 (set (mem/f:DI (reg/v/f:DI 67 [ __p.1010 ]) [5 S8 A64])
+        (reg:DI 61 [ kmer.1019 ])) -1 (nil)
+    (nil))
+
+(jump_insn 566 565 567 72 (set (pc)
+        (label_ref 556)) -1 (nil)
+    (nil))
+;; End of basic block 72, registers live:
+ (nil)
+
+(barrier 567 566 568)
+
+;; Start of basic block 73, registers live: (nil)
+(code_label 568 567 569 73 111 "" [2 uses])
+
+(note 569 568 570 73 [bb 73] NOTE_INSN_BASIC_BLOCK)
+
+(note 570 569 571 73 ("./DNAsequence.cc") 56)
+
+(insn 571 570 572 73 (set (mem/s:QI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -208 [0xffffffffffffff30])) [0 str+0 S1 A64])
+        (const_int 0 [0x0])) -1 (nil)
+    (nil))
+
+(note 572 571 573 73 ("./DNAsequence.cc") 57)
+
+(insn 573 572 574 73 (set (reg/f:DI 171)
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -64 [0xffffffffffffffc0])) [4 nucs.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 574 573 575 73 (set (reg:DI 172)
+        (mem/f:DI (plus:DI (reg/f:DI 171)
+                (const_int 24 [0x18])) [5 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 575 574 576 73 (parallel [
+            (set (reg:DI 173)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -208 [0xffffffffffffff30])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 576 575 577 73 (set (reg:DI 4 si)
+        (reg:DI 172)) -1 (nil)
+    (nil))
+
+(insn 577 576 578 73 (set (reg:DI 5 di)
+        (reg:DI 173)) -1 (nil)
+    (nil))
+
+(call_insn 578 577 579 73 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strcat") [flags 0x41] <function_decl 0x2acebfb0ed00 strcat>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (nil))))
+
+(note 579 578 580 73 ("./DNAsequence.cc") 58)
+
+(insn 580 579 581 73 (set (reg:DI 174)
+        (mem/s/f/c:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -96 [0xffffffffffffffa0])) [4 km1mers.D.34734._M_impl._M_start+0 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 581 580 582 73 (set (reg:DI 175)
+        (mem/f:DI (plus:DI (reg:DI 71 [ pretmp.977 ])
+                (reg:DI 174)) [5 S8 A64])) -1 (nil)
+    (nil))
+
+(insn 582 581 583 73 (parallel [
+            (set (reg:DI 176)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -208 [0xffffffffffffff30])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 583 582 584 73 (set (reg:DI 4 si)
+        (reg:DI 175)) -1 (nil)
+    (nil))
+
+(insn 584 583 585 73 (set (reg:DI 5 di)
+        (reg:DI 176)) -1 (nil)
+    (nil))
+
+(call_insn 585 584 586 73 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strcat") [flags 0x41] <function_decl 0x2acebfb0ed00 strcat>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (nil))))
+
+(note 586 585 587 73 ("./DNAsequence.cc") 59)
+
+(insn 587 586 588 73 (parallel [
+            (set (reg:DI 177)
+                (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                    (const_int -208 [0xffffffffffffff30])))
+            (clobber (reg:CC 17 flags))
+        ]) -1 (nil)
+    (nil))
+
+(insn 588 587 589 73 (set (reg:DI 5 di)
+        (reg:DI 177)) -1 (nil)
+    (nil))
+
+(call_insn 589 588 590 73 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strdup") [flags 0x41] <function_decl 0x2acebfb11c00 strdup>) [0 S1 A8])
+            (const_int 0 [0x0]))) -1 (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(insn 590 589 591 73 (set (reg/f:DI 178)
+        (reg:DI 0 ax)) -1 (nil)
+    (expr_list:REG_NOALIAS (reg/f:DI 178)
+        (nil)))
+
+(insn 591 590 592 73 (set (reg:DI 63 [ kmer.1017 ])
+        (reg/f:DI 178)) -1 (nil)
+    (nil))
+
+(insn 592 591 593 73 (set (mem/f/c/i:DI (plus:DI (reg/f:DI 54 virtual-stack-vars)
+                (const_int -40 [0xffffffffffffffd8])) [5 kmer+0 S8 A64])
+        (reg:DI 63 [ kmer.1017 ])) -1 (nil)
+    (nil))
+
+(insn 593 592 594 73 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 63 [ kmer.1017 ])
+            (const_int 0 [0x0]))) -1 (nil)
+    (nil))
+
+(jump_insn 594 593 597 73 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 205)
+            (pc))) -1 (nil)
+    (expr_list:REG_BR_PROB (const_int 333 [0x14d])
+        (nil)))
+;; End of basic block 73, registers live:
+ (nil)
+
+;; Start of basic block 74, registers live: (nil)
+(note 597 594 595 74 [bb 74] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 595 597 596 74 (set (pc)
+        (label_ref 224)) -1 (nil)
+    (nil))
+;; End of basic block 74, registers live:
+ (nil)
+
+(barrier 596 595 598)
+
+(note 598 596 599 NOTE_INSN_FUNCTION_END)
+
+(note 599 598 604 ("./DNAsequence.cc") 67)
+
+;; Start of basic block 75, registers live: (nil)
+(note 604 599 601 75 [bb 75] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 601 604 602 75 (set (pc)
+        (label_ref 603)) -1 (nil)
+    (nil))
+;; End of basic block 75, registers live:
+ (nil)
+
+(barrier 602 601 600)
+
+;; Start of basic block 76, registers live: (nil)
+(code_label 600 602 609 76 51 "" [1 uses])
+
+(note 609 600 603 76 [bb 76] NOTE_INSN_BASIC_BLOCK)
+;; End of basic block 76, registers live:
+ (nil)
+
+;; Start of basic block 77, registers live: (nil)
+(code_label 603 609 610 77 114 "" [1 uses])
+
+(note 610 603 0 77 [bb 77] NOTE_INSN_BASIC_BLOCK)
+;; End of basic block 77, registers live:
+ (nil)
+

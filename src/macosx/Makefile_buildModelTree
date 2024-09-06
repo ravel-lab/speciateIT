@@ -1,0 +1,76 @@
+
+####### Compiler, tools and options
+
+CC            = clang #gcc #gcc-4.0
+CXX           = clang #g++ #g++-4.0
+LINK          = clang #g++
+LDFLAGS       = -std=c++11 -lc++abi -lstdc++
+FLAGS         = -g -Wall -D__SIM_SSE3 -msse3 -O2 -D_GNU_SOURCE -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -O2 # -g -O2  -Wunused-parameter
+CFLAGS        = $(FLAGS)
+CXXFLAGS      = $(FLAGS)
+INCPATH       = -I../src
+LIBS          = # -lm # -L../../lib -lkmerstats
+AR            = ar cq
+RANLIB        = ranlib -s
+TAR           = tar -cf
+COMPRESS      = gzip -9f
+COPY          = cp -f
+SED           = sed
+COPY_FILE     = cp -f
+COPY_DIR      = cp -f -R
+INSTALL_FILE  = $(COPY_FILE)
+INSTALL_DIR   = $(COPY_DIR)
+INSTALL_PROGRAM = $(COPY_FILE)
+DEL_FILE      = rm -f
+SYMLINK       = ln -sf
+DEL_DIR       = rmdir
+MOVE          = mv -f
+CHK_DIR_EXISTS= test -d
+MKDIR         = mkdir -p
+
+####### Files
+
+SRCDIR  = .
+BINDIR  = ../bin
+BUILDDIR= .build
+
+create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))
+create-bin-dir := $(shell $(CHK_DIR_EXISTS) $(BINDIR) || $(MKDIR) $(BINDIR))
+
+OBJECTS = $(BUILDDIR)/buildModelTree.o \
+          $(BUILDDIR)/Newick.o \
+          $(BUILDDIR)/IOCUtilities.o \
+          $(BUILDDIR)/IOCppUtilities.o \
+          $(BUILDDIR)/CppUtilities.o \
+          $(BUILDDIR)/CUtilities.o \
+          $(BUILDDIR)/strings.o
+
+buildModelTree: $(OBJECTS)
+	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/buildModelTree
+
+$(BUILDDIR)/buildModelTree.o: buildModelTree.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -I$(SRCDIR) -o $(BUILDDIR)/buildModelTree.o buildModelTree.cc
+
+$(BUILDDIR)/Newick.o: Newick.hh Newick.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/Newick.o Newick.cc
+
+$(BUILDDIR)/IOCUtilities.o: IOCUtilities.h IOCUtilities.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o $(BUILDDIR)/IOCUtilities.o IOCUtilities.c
+
+$(BUILDDIR)/IOCppUtilities.o: IOCppUtilities.cc IOCppUtilities.hh
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/IOCppUtilities.o IOCppUtilities.cc
+
+$(BUILDDIR)/CppUtilities.o: CppUtilities.cc CppUtilities.hh
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/CppUtilities.o CppUtilities.cc
+
+$(BUILDDIR)/CUtilities.o: CUtilities.c CUtilities.h
+	$(CC) -c $(CFLAGS) $(INCPATH) -o $(BUILDDIR)/CUtilities.o CUtilities.c
+
+$(BUILDDIR)/strings.o: strings.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/strings.o strings.cc
+
+clean:
+	rm -f $(BUILDDIR)/*.o
+
+clean-all:
+	rm -rf $(BUILDDIR) $(BINDIR)/readNewick

@@ -1,0 +1,4122 @@
+
+;; Function char* strpre(const char*, const char*) (_Z6strprePKcS0_)
+
+(note:HI 1 0 113 ("./strings.cc") 43)
+
+(note 113 1 114 ( str (expr_list:REG_DEP_TRUE (reg:DI 5 di [ str ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note 114 113 12 ( pre (expr_list:REG_DEP_TRUE (reg:DI 4 si [ pre ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 12 114 90 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(note 90 12 10 NOTE_INSN_PROLOGUE_END)
+
+(note:HI 10 90 15 NOTE_INSN_FUNCTION_BEG)
+
+(note:HI 15 10 16 ("./strings.cc") 47)
+
+(insn:TI 16 15 17 ./strings.cc:47 (set (reg:QI 0 ax [orig:60 temp.36 ] [60])
+        (mem:QI (reg/v/f:DI 4 si [orig:66 pre ] [66]) [0 S1 A8])) 55 {*movqi_1} (nil)
+    (nil))
+
+(insn:TI 17 16 18 ./strings.cc:47 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:60 temp.36 ] [60])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_TRUE 16 (nil))
+    (nil))
+
+(jump_insn:TI 18 17 110 ./strings.cc:47 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 98)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 16 (insn_list:REG_DEP_TRUE 17 (nil)))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+            (nil))))
+
+(note 110 18 111 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 111 110 112 (set (pc)
+        (label_ref 29)) 548 {jump} (nil)
+    (nil))
+
+(barrier 112 111 107)
+
+(code_label 107 112 42 14 "" [1 uses])
+
+(note:HI 42 107 43 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 43 42 45 NOTE_INSN_DELETED)
+
+(note:HI 45 43 46 NOTE_INSN_DELETED)
+
+(insn:TI 46 45 115 ./strings.cc:47 (set (reg:QI 0 ax [orig:63 D.2512 ] [63])
+        (mem:QI (plus:DI (reg/f:DI 4 si [orig:61 ivtmp.33 ] [61])
+                (const_int 1 [0x1])) [0 S1 A8])) 55 {*movqi_1} (nil)
+    (nil))
+
+(note 115 46 108 ( pre (nil)) NOTE_INSN_VAR_LOCATION)
+
+(note 108 115 44 ("./strings.cc") 49)
+
+(insn 44 108 109 ./strings.cc:49 (parallel [
+            (set (reg/v/f:DI 5 di [orig:65 str ] [65])
+                (plus:DI (reg/v/f:DI 5 di [orig:65 str ] [65])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(note 109 44 47 ("./strings.cc") 47)
+
+(insn:TI 47 109 48 ./strings.cc:47 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:63 D.2512 ] [63])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_OUTPUT 44 (insn_list:REG_DEP_TRUE 46 (nil)))
+    (nil))
+
+(jump_insn:TI 48 47 73 ./strings.cc:47 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 29)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 44 (insn_list:REG_DEP_ANTI 46 (insn_list:REG_DEP_TRUE 47 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 73 48 36 NOTE_INSN_LOOP_BEG)
+
+(note:HI 36 73 37 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 37 36 116 ./strings.cc:47 (parallel [
+            (set (reg/f:DI 4 si [orig:61 ivtmp.33 ] [61])
+                (plus:DI (reg/f:DI 4 si [orig:61 ivtmp.33 ] [61])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(note 116 37 98 ( pre (expr_list:REG_DEP_TRUE (reg:DI 4 si [ pre ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(code_label 98 116 96 12 "" [1 uses])
+
+(note 96 98 38 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 38 96 39 ("./strings.cc") 48)
+
+(insn:TI 39 38 40 ./strings.cc:48 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:63 D.2512 ] [63])
+            (mem:QI (reg/v/f:DI 5 di [orig:65 str ] [65]) [0 S1 A8]))) 10 {*cmpqi_1} (nil)
+    (expr_list:REG_DEAD (reg:QI 0 ax [orig:63 D.2512 ] [63])
+        (nil)))
+
+(jump_insn:TI 40 39 74 ./strings.cc:48 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 107)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 39 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+            (nil))))
+
+(note:HI 74 40 53 NOTE_INSN_LOOP_END)
+
+(note:HI 53 74 60 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 60 53 101 NOTE_INSN_FUNCTION_END)
+
+(insn:TI 101 60 61 ./strings.cc:47 (parallel [
+            (set (reg/f:DI 0 ax [orig:62 D.2513 ] [62])
+                (const_int 0 [0x0]))
+            (clobber (reg:CC 17 flags))
+        ]) 78 {*movdi_xor_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(note:HI 61 101 69 ("./strings.cc") 51)
+
+(insn 69 61 94 ./strings.cc:51 (use (reg/i:DI 0 ax [ <result> ])) -1 (insn_list:REG_DEP_TRUE 101 (nil))
+    (nil))
+
+(jump_insn:TI 94 69 93 ./strings.cc:51 (return) 562 {return_internal} (insn_list:REG_DEP_TRUE 101 (insn_list:REG_DEP_ANTI 69 (nil)))
+    (nil))
+
+(barrier 93 94 21)
+
+(note:HI 21 93 29 ("./strings.cc") 48)
+
+(code_label:HI 29 21 30 3 "" [2 uses])
+
+(note:HI 30 29 31 [bb 6] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 31 30 32 ("./strings.cc") 47)
+
+(insn:TI 32 31 92 ./strings.cc:47 (set (reg/f:DI 0 ax [orig:62 D.2513 ] [62])
+        (reg/v/f:DI 5 di [orig:65 str ] [65])) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 5 di [orig:65 str ] [65])
+        (nil)))
+
+(note 92 32 117 ("./strings.cc") 51)
+
+(insn 117 92 91 (unspec_volatile [
+            (const_int 4 [0x4])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 91 117 80 (return) 562 {return_internal} (insn_list:REG_DEP_TRUE 32 (nil))
+    (nil))
+
+(barrier:HI 80 91 89)
+
+(note 89 80 0 NOTE_INSN_DELETED)
+
+;; Function char* strlop(char*, char) (_Z6strlopPcc)
+
+(note:HI 1 0 86 ("./strings.cc") 81)
+
+(note 86 1 87 ( s (expr_list:REG_DEP_TRUE (reg:DI 5 di [ s ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note 87 86 8 ( ch (expr_list:REG_DEP_TRUE (reg:SI 4 si [ ch ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 8 87 69 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(note 69 8 6 NOTE_INSN_PROLOGUE_END)
+
+(note:HI 6 69 10 NOTE_INSN_FUNCTION_BEG)
+
+(note:HI 10 6 11 ("./strings.cc") 84)
+
+(insn:TI 11 10 78 ./strings.cc:84 (set (reg:QI 0 ax [orig:58 temp.67 ] [58])
+        (mem:QI (reg/v/f:DI 5 di [orig:62 s ] [62]) [0 S1 A8])) 55 {*movqi_1} (nil)
+    (nil))
+
+(note 78 11 5 ("./strings.cc") 81)
+
+(insn 5 78 79 ./strings.cc:81 (set (reg/v:QI 2 cx [orig:63 ch ] [63])
+        (reg:QI 4 si [orig:64 ch ] [64])) 55 {*movqi_1} (nil)
+    (nil))
+
+(note 79 5 12 ("./strings.cc") 84)
+
+(insn:TI 12 79 13 ./strings.cc:84 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:58 temp.67 ] [58])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_TRUE 11 (nil))
+    (nil))
+
+(jump_insn:TI 13 12 88 ./strings.cc:84 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 5 (insn_list:REG_DEP_ANTI 11 (insn_list:REG_DEP_TRUE 12 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note 88 13 15 ( ch (expr_list:REG_DEP_TRUE (reg/v:QI 2 cx [orig:63 ch ] [63])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 15 88 16 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 16 15 17 ./strings.cc:84 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:58 temp.67 ] [58])
+            (reg:QI 4 si [orig:63 ch ] [63]))) 10 {*cmpqi_1} (nil)
+    (expr_list:REG_DEAD (reg:QI 0 ax [orig:58 temp.67 ] [58])
+        (expr_list:REG_DEAD (reg:QI 4 si [orig:63 ch ] [63])
+            (nil))))
+
+(jump_insn:TI 17 16 89 ./strings.cc:84 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 16 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note 89 17 19 ( ch (expr_list:REG_DEP_TRUE (reg:QI 4 si [orig:63 ch ] [63])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 19 89 20 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 20 19 90 ./strings.cc:84 (set (reg/v/f:DI 1 dx [orig:59 last ] [59])
+        (reg/v/f:DI 5 di [orig:62 s ] [62])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 90 20 82 ( last (expr_list:REG_DEP_TRUE (reg/v/f:DI 1 dx [orig:59 last ] [59])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(jump_insn 82 90 83 (set (pc)
+        (label_ref 21)) 548 {jump} (nil)
+    (nil))
+
+(barrier 83 82 75)
+
+(code_label 75 83 30 24 "" [1 uses])
+
+(note:HI 30 75 31 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 31 30 96 ./strings.cc:84 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:60 D.2553 ] [60])
+            (reg/v:QI 2 cx [orig:63 ch ] [63]))) 10 {*cmpqi_1} (nil)
+    (expr_list:REG_DEAD (reg:QI 0 ax [orig:60 D.2553 ] [60])
+        (nil)))
+
+(insn 96 31 32 ./strings.cc:84 (unspec_volatile [
+            (const_int 5 [0x5])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 32 96 60 ./strings.cc:84 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 39)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 31 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 60 32 59 NOTE_INSN_LOOP_END)
+
+(note:HI 59 60 91 NOTE_INSN_LOOP_BEG)
+
+(note 91 59 21 ( ch (expr_list:REG_DEP_TRUE (reg/v:QI 2 cx [orig:63 ch ] [63])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(code_label:HI 21 91 22 19 "" [1 uses])
+
+(note:HI 22 21 23 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 23 22 24 ("./strings.cc") 85)
+
+(insn:TI 24 23 25 ./strings.cc:85 (parallel [
+            (set (reg/v/f:DI 1 dx [orig:59 last ] [59])
+                (plus:DI (reg/v/f:DI 1 dx [orig:59 last ] [59])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(note:HI 25 24 26 ("./strings.cc") 84)
+
+(insn:TI 26 25 27 ./strings.cc:84 (set (reg:QI 0 ax [orig:60 D.2553 ] [60])
+        (mem:QI (reg/v/f:DI 1 dx [orig:59 last ] [59]) [0 S1 A8])) 55 {*movqi_1} (insn_list:REG_DEP_TRUE 24 (nil))
+    (nil))
+
+(insn:TI 27 26 28 ./strings.cc:84 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:60 D.2553 ] [60])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_OUTPUT 24 (insn_list:REG_DEP_TRUE 26 (nil)))
+    (nil))
+
+(jump_insn:TI 28 27 92 ./strings.cc:84 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 75)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 24 (insn_list:REG_DEP_ANTI 26 (insn_list:REG_DEP_TRUE 27 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+            (nil))))
+
+(note 92 28 39 ( ch (expr_list:REG_DEP_TRUE (reg:QI 4 si [orig:63 ch ] [63])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(code_label:HI 39 92 40 20 "" [2 uses])
+
+(note:HI 40 39 41 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 41 40 46 ("./strings.cc") 86)
+
+(note:HI 46 41 47 NOTE_INSN_FUNCTION_END)
+
+(note:HI 47 46 49 ("./strings.cc") 88)
+
+(insn:TI 49 47 80 ./strings.cc:88 (set (reg/i:DI 0 ax [ <result> ])
+        (reg/v/f:DI 5 di [orig:62 s ] [62])) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 5 di [orig:62 s ] [62])
+        (nil)))
+
+(note 80 49 42 ("./strings.cc") 86)
+
+(insn 42 80 81 ./strings.cc:86 (set (mem:QI (reg/v/f:DI 1 dx [orig:59 last ] [59]) [0 S1 A8])
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 1 dx [orig:59 last ] [59])
+        (nil)))
+
+(note 81 42 55 ("./strings.cc") 88)
+
+(insn 55 81 70 ./strings.cc:88 (use (reg/i:DI 0 ax [ <result> ])) -1 (insn_list:REG_DEP_ANTI 42 (insn_list:REG_DEP_TRUE 49 (nil)))
+    (nil))
+
+(note 70 55 71 NOTE_INSN_EPILOGUE_BEG)
+
+(jump_insn:TI 71 70 72 ./strings.cc:88 (return) 562 {return_internal} (insn_list:REG_DEP_ANTI 42 (insn_list:REG_DEP_TRUE 49 (insn_list:REG_DEP_ANTI 55 (nil))))
+    (nil))
+
+(barrier 72 71 93)
+
+(note 93 72 94 ( last (nil)) NOTE_INSN_VAR_LOCATION)
+
+(note 94 93 36 ( ch (expr_list:REG_DEP_TRUE (reg/v:QI 2 cx [orig:63 ch ] [63])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(code_label:HI 36 94 37 16 "" [2 uses])
+
+(note:HI 37 36 38 [bb 6] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 38 37 95 ./strings.cc:84 (set (reg/v/f:DI 1 dx [orig:59 last ] [59])
+        (reg/v/f:DI 5 di [orig:62 s ] [62])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 95 38 84 ( last (expr_list:REG_DEP_TRUE (reg/v/f:DI 1 dx [orig:59 last ] [59])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(jump_insn 84 95 85 (set (pc)
+        (label_ref 39)) 548 {jump} (nil)
+    (nil))
+
+(barrier 85 84 68)
+
+(note 68 85 0 NOTE_INSN_DELETED)
+
+;; Function char* strsplit(char*, char) (_Z8strsplitPcc)
+
+(note:HI 1 0 154 ("./strings.cc") 126)
+
+(note 154 1 155 ( s (expr_list:REG_DEP_TRUE (reg:DI 5 di [ s ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note 155 154 8 ( ch (expr_list:REG_DEP_TRUE (reg:SI 4 si [ ch ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 8 155 115 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(note 115 8 6 NOTE_INSN_PROLOGUE_END)
+
+(note:HI 6 115 10 NOTE_INSN_FUNCTION_BEG)
+
+(note:HI 10 6 11 ("./strings.cc") 128)
+
+(insn:TI 11 10 143 ./strings.cc:128 (set (reg:QI 0 ax [orig:61 D.2584 ] [61])
+        (mem:QI (reg/v/f:DI 5 di [orig:63 s ] [63]) [0 S1 A8])) 55 {*movqi_1} (nil)
+    (nil))
+
+(note 143 11 5 ("./strings.cc") 126)
+
+(insn 5 143 144 ./strings.cc:126 (set (reg/v:QI 1 dx [orig:64 ch ] [64])
+        (reg:QI 4 si [orig:65 ch ] [65])) 55 {*movqi_1} (nil)
+    (nil))
+
+(note 144 5 12 ("./strings.cc") 128)
+
+(insn:TI 12 144 13 ./strings.cc:128 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:61 D.2584 ] [61])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_TRUE 11 (nil))
+    (nil))
+
+(jump_insn:TI 13 12 156 ./strings.cc:128 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 131)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 5 (insn_list:REG_DEP_ANTI 11 (insn_list:REG_DEP_TRUE 12 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 3300 [0xce4])
+            (nil))))
+
+(note 156 13 20 ( ch (expr_list:REG_DEP_TRUE (reg/v:QI 1 dx [orig:64 ch ] [64])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 20 156 21 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 21 20 22 ("./strings.cc") 129)
+
+(insn:TI 22 21 23 ./strings.cc:129 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:61 D.2584 ] [61])
+            (reg:QI 4 si [orig:64 ch ] [64]))) 10 {*cmpqi_1} (nil)
+    (expr_list:REG_DEAD (reg:QI 0 ax [orig:61 D.2584 ] [61])
+        (expr_list:REG_DEAD (reg:QI 4 si [orig:64 ch ] [64])
+            (nil))))
+
+(jump_insn:TI 23 22 157 ./strings.cc:129 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 33)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 22 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+            (nil))))
+
+(note 157 23 145 ( ch (expr_list:REG_DEP_TRUE (reg:QI 4 si [orig:64 ch ] [64])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note 145 157 146 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 146 145 147 (set (pc)
+        (label_ref 43)) 548 {jump} (nil)
+    (nil))
+
+(barrier 147 146 135)
+
+(code_label 135 147 97 42 "" [1 uses])
+
+(note:HI 97 135 41 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 41 97 159 ./strings.cc:129 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v:QI 1 dx [orig:64 ch ] [64])
+            (reg:QI 0 ax [orig:59 temp.105 ] [59]))) 10 {*cmpqi_1} (nil)
+    (expr_list:REG_DEAD (reg:QI 0 ax [orig:59 temp.105 ] [59])
+        (nil)))
+
+(insn 159 41 42 ./strings.cc:129 (unspec_volatile [
+            (const_int 7 [0x7])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 42 159 90 ./strings.cc:129 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 43)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 41 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 90 42 89 NOTE_INSN_LOOP_END)
+
+(note:HI 89 90 158 NOTE_INSN_LOOP_BEG)
+
+(note 158 89 33 ( ch (expr_list:REG_DEP_TRUE (reg/v:QI 1 dx [orig:64 ch ] [64])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(code_label:HI 33 158 34 32 "" [1 uses])
+
+(note:HI 34 33 35 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 35 34 36 ./strings.cc:129 (parallel [
+            (set (reg/v/f:DI 5 di [orig:63 s ] [63])
+                (plus:DI (reg/v/f:DI 5 di [orig:63 s ] [63])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 36 35 37 ./strings.cc:129 (set (reg:QI 0 ax [orig:59 temp.105 ] [59])
+        (mem:QI (reg/v/f:DI 5 di [orig:63 s ] [63]) [0 S1 A8])) 55 {*movqi_1} (insn_list:REG_DEP_TRUE 35 (nil))
+    (nil))
+
+(insn:TI 37 36 160 ./strings.cc:129 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:59 temp.105 ] [59])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_OUTPUT 35 (insn_list:REG_DEP_TRUE 36 (nil)))
+    (nil))
+
+(insn 160 37 38 ./strings.cc:129 (unspec_volatile [
+            (const_int 3 [0x3])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 38 160 71 ./strings.cc:129 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 135)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 35 (insn_list:REG_DEP_ANTI 36 (insn_list:REG_DEP_TRUE 37 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 8900 [0x22c4])
+            (nil))))
+
+(code_label:HI 71 38 72 28 "" [5 uses])
+
+(note:HI 72 71 76 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 76 72 77 NOTE_INSN_FUNCTION_END)
+
+(note:HI 77 76 79 ("./strings.cc") 136)
+
+(insn:TI 79 77 85 ./strings.cc:136 (set (reg/i:DI 0 ax [ <result> ])
+        (reg/v/f:DI 5 di [orig:63 s ] [63])) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 5 di [orig:63 s ] [63])
+        (nil)))
+
+(insn 85 79 116 ./strings.cc:136 (use (reg/i:DI 0 ax [ <result> ])) -1 (insn_list:REG_DEP_TRUE 79 (nil))
+    (nil))
+
+(note 116 85 161 NOTE_INSN_EPILOGUE_BEG)
+
+(insn 161 116 117 ./strings.cc:136 (unspec_volatile [
+            (const_int 1 [0x1])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 117 161 118 ./strings.cc:136 (return) 562 {return_internal} (insn_list:REG_DEP_TRUE 79 (insn_list:REG_DEP_ANTI 85 (nil)))
+    (nil))
+
+(barrier 118 117 131)
+
+(code_label 131 118 15 41 "" [1 uses])
+
+(note:HI 15 131 122 [bb 6] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 122 15 125 ./strings.cc:128 (parallel [
+            (set (reg/v/f:DI 5 di [orig:63 s ] [63])
+                (const_int 0 [0x0]))
+            (clobber (reg:CC 17 flags))
+        ]) 78 {*movdi_xor_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 125 122 126 ./strings.cc:136 (set (reg/i:DI 0 ax [ <result> ])
+        (reg/v/f:DI 5 di [orig:63 s ] [63])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_TRUE 122 (nil))
+    (expr_list:REG_DEAD (reg/v/f:DI 5 di [orig:63 s ] [63])
+        (nil)))
+
+(insn 126 125 127 ./strings.cc:136 (use (reg/i:DI 0 ax [ <result> ])) -1 (insn_list:REG_DEP_ANTI 122 (insn_list:REG_DEP_TRUE 125 (nil)))
+    (nil))
+
+(jump_insn:TI 127 126 130 ./strings.cc:136 (return) 562 {return_internal} (insn_list:REG_DEP_TRUE 122 (insn_list:REG_DEP_TRUE 125 (insn_list:REG_DEP_ANTI 126 (nil))))
+    (nil))
+
+(barrier 130 127 43)
+
+(code_label:HI 43 130 44 29 "" [2 uses])
+
+(note:HI 44 43 45 [bb 7] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 45 44 46 ("./strings.cc") 130)
+
+(insn:TI 46 45 162 ./strings.cc:130 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v:QI 1 dx [orig:64 ch ] [64])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (nil)
+    (nil))
+
+(insn 162 46 47 ./strings.cc:130 (unspec_volatile [
+            (const_int 5 [0x5])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 47 162 50 ./strings.cc:130 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 71)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 46 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 3300 [0xce4])
+            (nil))))
+
+(note:HI 50 47 49 ("./strings.cc") 132)
+
+(note:HI 49 50 51 [bb 8] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 51 49 52 ./strings.cc:132 (set (mem:QI (reg/v/f:DI 5 di [orig:63 s ] [63]) [0 S1 A8])
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (nil))
+
+(insn 52 51 53 ./strings.cc:132 (parallel [
+            (set (reg/v/f:DI 5 di [orig:63 s ] [63])
+                (plus:DI (reg/v/f:DI 5 di [orig:63 s ] [63])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (insn_list:REG_DEP_ANTI 51 (nil))
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(note:HI 53 52 54 ("./strings.cc") 133)
+
+(insn:TI 54 53 55 ./strings.cc:133 (set (reg:QI 2 cx [orig:58 temp.106 ] [58])
+        (mem:QI (reg/v/f:DI 5 di [orig:63 s ] [63]) [0 S1 A8])) 55 {*movqi_1} (insn_list:REG_DEP_TRUE 52 (insn_list:REG_DEP_TRUE 51 (nil)))
+    (nil))
+
+(insn:TI 55 54 56 ./strings.cc:133 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 2 cx [orig:58 temp.106 ] [58])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_OUTPUT 52 (insn_list:REG_DEP_TRUE 54 (nil)))
+    (nil))
+
+(jump_insn:TI 56 55 58 ./strings.cc:133 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 71)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 52 (insn_list:REG_DEP_ANTI 54 (insn_list:REG_DEP_TRUE 55 (insn_list:REG_DEP_ANTI 51 (nil)))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 58 56 59 [bb 9] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 59 58 60 ./strings.cc:133 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 2 cx [orig:58 temp.106 ] [58])
+            (reg/v:QI 1 dx [orig:64 ch ] [64]))) 10 {*cmpqi_1} (nil)
+    (expr_list:REG_DEAD (reg/v:QI 1 dx [orig:64 ch ] [64])
+        (nil)))
+
+(jump_insn:TI 60 59 148 ./strings.cc:133 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 99)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 59 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+            (nil))))
+
+(note 148 60 149 [bb 10] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 149 148 150 (set (pc)
+        (label_ref 71)) 548 {jump} (nil)
+    (nil))
+
+(barrier 150 149 139)
+
+(code_label 139 150 68 43 "" [1 uses])
+
+(note:HI 68 139 69 [bb 11] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 69 68 163 ./strings.cc:133 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:60 temp.104 ] [60])
+            (reg:QI 2 cx [orig:58 temp.106 ] [58]))) 10 {*cmpqi_1} (nil)
+    (expr_list:REG_DEAD (reg:QI 0 ax [orig:60 temp.104 ] [60])
+        (nil)))
+
+(insn 163 69 70 ./strings.cc:133 (unspec_volatile [
+            (const_int 7 [0x7])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 70 163 92 ./strings.cc:133 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 71)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 69 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 92 70 91 NOTE_INSN_LOOP_END)
+
+(note:HI 91 92 99 NOTE_INSN_LOOP_BEG)
+
+(code_label:HI 99 91 98 38 "" [1 uses])
+
+(note:HI 98 99 63 [bb 12] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 63 98 64 ./strings.cc:133 (parallel [
+            (set (reg/v/f:DI 5 di [orig:63 s ] [63])
+                (plus:DI (reg/v/f:DI 5 di [orig:63 s ] [63])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 64 63 65 ./strings.cc:133 (set (reg:QI 0 ax [orig:60 temp.104 ] [60])
+        (mem:QI (reg/v/f:DI 5 di [orig:63 s ] [63]) [0 S1 A8])) 55 {*movqi_1} (insn_list:REG_DEP_TRUE 63 (nil))
+    (nil))
+
+(insn:TI 65 64 164 ./strings.cc:133 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:60 temp.104 ] [60])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_OUTPUT 63 (insn_list:REG_DEP_TRUE 64 (nil)))
+    (nil))
+
+(insn 164 65 66 ./strings.cc:133 (unspec_volatile [
+            (const_int 3 [0x3])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 66 164 151 ./strings.cc:133 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 139)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 63 (insn_list:REG_DEP_ANTI 64 (insn_list:REG_DEP_TRUE 65 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+            (nil))))
+
+(note 151 66 165 [bb 13] NOTE_INSN_BASIC_BLOCK)
+
+(insn 165 151 152 (unspec_volatile [
+            (const_int 3 [0x3])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn 152 165 153 (set (pc)
+        (label_ref 71)) 548 {jump} (nil)
+    (nil))
+
+(barrier 153 152 114)
+
+(note 114 153 0 NOTE_INSN_DELETED)
+
+;; Function char* strtrimto(char*, char) (_Z9strtrimtoPcc)
+
+(note:HI 1 0 90 ("./strings.cc") 155)
+
+(note 90 1 91 ( s (expr_list:REG_DEP_TRUE (reg:DI 5 di [ s ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note 91 90 8 ( ch (expr_list:REG_DEP_TRUE (reg:SI 4 si [ ch ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 8 91 5 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 5 8 6 NOTE_INSN_DELETED)
+
+(note:HI 6 5 45 NOTE_INSN_FUNCTION_BEG)
+
+(note:HI 45 6 67 NOTE_INSN_FUNCTION_END)
+
+(insn/f:TI 67 45 10 ./strings.cc:155 (set (mem:DI (plus:DI (reg/f:DI 7 sp)
+                (const_int -24 [0xffffffffffffffe8])) [0 S8 A8])
+        (reg:DI 3 bx)) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_DEAD (reg:DI 3 bx)
+        (nil)))
+
+(note:HI 10 67 11 ("./strings.cc") 157)
+
+(insn 11 10 79 ./strings.cc:157 (set (reg:SI 3 bx [orig:60 D.2619 ] [60])
+        (sign_extend:SI (reg:QI 4 si [orig:64 ch ] [64]))) 121 {extendqisi2} (insn_list:REG_DEP_ANTI 67 (nil))
+    (expr_list:REG_DEAD (reg:QI 4 si [orig:64 ch ] [64])
+        (nil)))
+
+(note 79 11 68 ("./strings.cc") 155)
+
+(insn/f 68 79 69 ./strings.cc:155 (set (mem:DI (plus:DI (reg/f:DI 7 sp)
+                (const_int -16 [0xfffffffffffffff0])) [0 S8 A8])
+        (reg:DI 6 bp)) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_DEAD (reg:DI 6 bp)
+        (nil)))
+
+(insn/f:TI 69 68 80 ./strings.cc:155 (set (mem:DI (plus:DI (reg/f:DI 7 sp)
+                (const_int -8 [0xfffffffffffffff8])) [0 S8 A8])
+        (reg:DI 41 r12)) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_DEAD (reg:DI 41 r12)
+        (nil)))
+
+(note 80 69 12 ("./strings.cc") 157)
+
+(insn 12 80 92 ./strings.cc:157 (set (reg:SI 4 si [ D.2619 ])
+        (reg:SI 3 bx [orig:60 D.2619 ] [60])) 40 {*movsi_1} (insn_list:REG_DEP_TRUE 11 (nil))
+    (nil))
+
+(note 92 12 81 ( ch (nil)) NOTE_INSN_VAR_LOCATION)
+
+(note 81 92 70 ("./strings.cc") 155)
+
+(insn/f 70 81 71 ./strings.cc:155 (parallel [
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int -24 [0xffffffffffffffe8])))
+            (clobber (reg:CC 17 flags))
+            (clobber (mem:BLK (scratch) [0 A8]))
+        ]) 762 {pro_epilogue_adjust_stack_rex64} (insn_list:REG_DEP_ANTI 67 (insn_list:REG_DEP_ANTI 68 (insn_list:REG_DEP_ANTI 69 (nil))))
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(note 71 70 3 NOTE_INSN_PROLOGUE_END)
+
+(insn:TI 3 71 17 ./strings.cc:155 (set (reg/v/f:DI 41 r12 [orig:62 s ] [62])
+        (reg:DI 5 di [ s ])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_ANTI 69 (nil))
+    (nil))
+
+(note:HI 17 3 65 ("./strings.cc") 158)
+
+(insn:TI 65 17 93 ./strings.cc:158 (set (reg/v/f:DI 6 bp [orig:69 last ] [69])
+        (reg/v/f:DI 41 r12 [orig:62 s ] [62])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_ANTI 68 (insn_list:REG_DEP_TRUE 3 (nil)))
+    (nil))
+
+(note 93 65 82 ( last (expr_list:REG_DEP_TRUE (reg/v/f:DI 6 bp [orig:69 last ] [69])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note 82 93 14 ("./strings.cc") 157)
+
+(call_insn/u:TI 14 82 94 ./strings.cc:157 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strrchr") [flags 0x41] <function_decl 0x2ad10a49e400 strrchr>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_ANTI 3 (insn_list:REG_DEP_TRUE 12 (insn_list:REG_DEP_TRUE 67 (insn_list:REG_DEP_TRUE 68 (insn_list:REG_DEP_TRUE 69 (insn_list:REG_DEP_TRUE 70 (nil)))))))
+    (expr_list:REG_DEAD (reg:SI 4 si [ D.2619 ])
+        (expr_list:REG_DEAD (reg:DI 5 di [ s ])
+            (expr_list:REG_EH_REGION (const_int 0 [0x0])
+                (nil))))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ s ]))
+            (expr_list:REG_DEP_TRUE (use (reg:SI 4 si [ D.2619 ]))
+                (nil)))))
+
+(note 94 14 83 ( s (expr_list:REG_DEP_TRUE (reg/v/f:DI 41 r12 [orig:62 s ] [62])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note 83 94 58 ("./strings.cc") 158)
+
+(insn:TI 58 83 27 ./strings.cc:158 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 0 ax [orig:59 last ] [59])
+            (const_int 0 [0x0]))) 0 {cmpdi_ccno_1_rex64} (insn_list:REG_DEP_OUTPUT 70 (insn_list:REG_DEP_TRUE 14 (nil)))
+    (nil))
+
+(note:HI 27 58 28 ("./strings.cc") 161)
+
+(insn 28 27 29 ./strings.cc:161 (set (reg:SI 4 si [ D.2619 ])
+        (reg:SI 3 bx [orig:60 D.2619 ] [60])) 40 {*movsi_1} (insn_list:REG_DEP_ANTI 14 (insn_list:REG_DEP_OUTPUT 12 (insn_list:REG_DEP_TRUE 11 (nil))))
+    (expr_list:REG_DEAD (reg:SI 3 bx [orig:60 D.2619 ] [60])
+        (nil)))
+
+(insn 29 28 84 ./strings.cc:161 (set (reg:DI 5 di [ s ])
+        (reg/v/f:DI 41 r12 [orig:62 s ] [62])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_ANTI 14 (insn_list:REG_DEP_TRUE 3 (nil)))
+    (expr_list:REG_DEAD (reg/v/f:DI 41 r12 [orig:62 s ] [62])
+        (nil)))
+
+(note 84 29 59 ("./strings.cc") 158)
+
+(insn:TI 59 84 25 ./strings.cc:158 (set (reg/v/f:DI 6 bp [orig:69 last ] [69])
+        (if_then_else:DI (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (reg/v/f:DI 0 ax [orig:59 last ] [59])
+            (reg/v/f:DI 6 bp [orig:69 last ] [69]))) 742 {*movdicc_c_rex64} (insn_list:REG_DEP_TRUE 58 (insn_list:REG_DEP_TRUE 65 (insn_list:REG_DEP_TRUE 14 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_DEAD (reg/v/f:DI 0 ax [orig:59 last ] [59])
+            (nil))))
+
+(note:HI 25 59 26 ("./strings.cc") 159)
+
+(insn:TI 26 25 85 ./strings.cc:159 (set (mem:QI (reg/v/f:DI 6 bp [orig:69 last ] [69]) [0 S1 A8])
+        (const_int 0 [0x0])) 55 {*movqi_1} (insn_list:REG_DEP_TRUE 59 (insn_list:REG_DEP_ANTI 14 (nil)))
+    (nil))
+
+(note 85 26 30 ("./strings.cc") 161)
+
+(call_insn/u:TI 30 85 33 ./strings.cc:161 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strchr") [flags 0x41] <function_decl 0x2ad10a498000 strchr>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_ANTI 58 (insn_list:REG_DEP_ANTI 59 (insn_list:REG_DEP_TRUE 70 (insn_list:REG_DEP_TRUE 29 (insn_list:REG_DEP_TRUE 28 (insn_list:REG_DEP_ANTI 14 (insn_list:REG_DEP_TRUE 26 (nil))))))))
+    (expr_list:REG_DEAD (reg:SI 4 si [ D.2619 ])
+        (expr_list:REG_DEAD (reg:DI 5 di [ s ])
+            (expr_list:REG_EH_REGION (const_int 0 [0x0])
+                (nil))))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ s ]))
+            (expr_list:REG_DEP_TRUE (use (reg:SI 4 si [ D.2619 ]))
+                (nil)))))
+
+(note:HI 33 30 66 ("./strings.cc") 162)
+
+(insn:TI 66 33 61 ./strings.cc:162 (set (reg/f:DI 1 dx [68])
+        (plus:DI (reg/v/f:DI 6 bp [orig:69 last ] [69])
+            (const_int -1 [0xffffffffffffffff]))) 196 {*lea_2_rex64} (insn_list:REG_DEP_OUTPUT 14 (insn_list:REG_DEP_OUTPUT 30 (insn_list:REG_DEP_TRUE 59 (nil))))
+    (expr_list:REG_DEAD (reg/v/f:DI 6 bp [orig:69 last ] [69])
+        (nil)))
+
+(insn 61 66 95 ./strings.cc:162 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 0 ax [orig:58 first ] [58])
+            (const_int 0 [0x0]))) 0 {cmpdi_ccno_1_rex64} (insn_list:REG_DEP_ANTI 59 (insn_list:REG_DEP_OUTPUT 58 (insn_list:REG_DEP_TRUE 30 (nil))))
+    (nil))
+
+(note 95 61 46 ( first (expr_list:REG_DEP_TRUE (reg/v/f:DI 0 ax [orig:58 first ] [58])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 46 95 72 ("./strings.cc") 164)
+
+(note 72 46 73 NOTE_INSN_EPILOGUE_BEG)
+
+(insn 73 72 74 ./strings.cc:164 (set (reg:DI 3 bx)
+        (mem:DI (reg/f:DI 7 sp) [0 S8 A8])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_ANTI 12 (insn_list:REG_DEP_ANTI 28 (insn_list:REG_DEP_OUTPUT 11 (insn_list:REG_DEP_TRUE 70 (insn_list:REG_DEP_ANTI 30 (nil))))))
+    (nil))
+
+(insn:TI 74 73 96 ./strings.cc:164 (set (reg:DI 6 bp)
+        (mem:DI (plus:DI (reg/f:DI 7 sp)
+                (const_int 8 [0x8])) [0 S8 A8])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_ANTI 26 (insn_list:REG_DEP_ANTI 66 (insn_list:REG_DEP_OUTPUT 59 (insn_list:REG_DEP_TRUE 70 (insn_list:REG_DEP_ANTI 30 (nil))))))
+    (nil))
+
+(note 96 74 75 ( last (nil)) NOTE_INSN_VAR_LOCATION)
+
+(insn 75 96 97 ./strings.cc:164 (set (reg:DI 41 r12)
+        (mem:DI (plus:DI (reg/f:DI 7 sp)
+                (const_int 16 [0x10])) [0 S8 A8])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_ANTI 65 (insn_list:REG_DEP_ANTI 29 (insn_list:REG_DEP_OUTPUT 3 (insn_list:REG_DEP_TRUE 70 (insn_list:REG_DEP_ANTI 30 (nil))))))
+    (nil))
+
+(note 97 75 86 ( s (nil)) NOTE_INSN_VAR_LOCATION)
+
+(note 86 97 62 ("./strings.cc") 162)
+
+(insn:TI 62 86 87 ./strings.cc:162 (set (reg/v/f:DI 0 ax [orig:58 first ] [58])
+        (if_then_else:DI (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (reg/f:DI 1 dx [68])
+            (reg/v/f:DI 0 ax [orig:58 first ] [58]))) 742 {*movdicc_c_rex64} (insn_list:REG_DEP_TRUE 61 (insn_list:REG_DEP_TRUE 66 (insn_list:REG_DEP_TRUE 30 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_DEAD (reg/f:DI 1 dx [68])
+            (nil))))
+
+(note 87 62 76 ("./strings.cc") 164)
+
+(insn 76 87 88 ./strings.cc:164 (parallel [
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 24 [0x18])))
+            (clobber (reg:CC 17 flags))
+            (clobber (mem:BLK (scratch) [0 A8]))
+        ]) 762 {pro_epilogue_adjust_stack_rex64} (insn_list:REG_DEP_ANTI 62 (insn_list:REG_DEP_OUTPUT 61 (insn_list:REG_DEP_TRUE 70 (insn_list:REG_DEP_ANTI 14 (insn_list:REG_DEP_ANTI 30 (insn_list:REG_DEP_ANTI 73 (insn_list:REG_DEP_ANTI 74 (insn_list:REG_DEP_ANTI 75 (nil)))))))))
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(note 88 76 41 ("./strings.cc") 162)
+
+(insn:TI 41 88 98 ./strings.cc:162 (parallel [
+            (set (reg/f:DI 0 ax [67])
+                (plus:DI (reg/v/f:DI 0 ax [orig:58 first ] [58])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (insn_list:REG_DEP_OUTPUT 61 (insn_list:REG_DEP_TRUE 62 (nil)))
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(note 98 41 89 ( first (nil)) NOTE_INSN_VAR_LOCATION)
+
+(note 89 98 54 ("./strings.cc") 164)
+
+(insn 54 89 77 ./strings.cc:164 (use (reg/i:DI 0 ax [ <result> ])) -1 (insn_list:REG_DEP_TRUE 41 (nil))
+    (nil))
+
+(jump_insn:TI 77 54 78 ./strings.cc:164 (return) 562 {return_internal} (insn_list:REG_DEP_ANTI 67 (insn_list:REG_DEP_ANTI 68 (insn_list:REG_DEP_ANTI 69 (insn_list:REG_DEP_ANTI 70 (insn_list:REG_DEP_ANTI 3 (insn_list:REG_DEP_ANTI 11 (insn_list:REG_DEP_ANTI 12 (insn_list:REG_DEP_ANTI 58 (insn_list:REG_DEP_ANTI 65 (insn_list:REG_DEP_ANTI 59 (insn_list:REG_DEP_ANTI 26 (insn_list:REG_DEP_TRUE 75 (insn_list:REG_DEP_TRUE 61 (insn_list:REG_DEP_TRUE 76 (insn_list:REG_DEP_TRUE 74 (insn_list:REG_DEP_TRUE 29 (insn_list:REG_DEP_TRUE 28 (insn_list:REG_DEP_TRUE 73 (insn_list:REG_DEP_TRUE 14 (insn_list:REG_DEP_TRUE 30 (insn_list:REG_DEP_TRUE 66 (insn_list:REG_DEP_ANTI 62 (insn_list:REG_DEP_TRUE 41 (insn_list:REG_DEP_ANTI 54 (nil)))))))))))))))))))))))))
+    (nil))
+
+(barrier 78 77 64)
+
+(note 64 78 0 NOTE_INSN_DELETED)
+
+;; Function char* strchomp(char*) (_Z8strchompPc)
+
+(note:HI 1 0 365 ("./strings.cc") 69)
+
+(note 365 1 6 ( s (expr_list:REG_DEP_TRUE (reg:DI 5 di [ s ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 6 365 4 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 4 6 345 NOTE_INSN_FUNCTION_BEG)
+
+(insn/f:TI 345 4 346 ./strings.cc:69 (set (mem:DI (pre_dec:DI (reg/f:DI 7 sp)) [0 S8 A8])
+        (reg:DI 3 bx)) 74 {*pushdi2_rex64} (nil)
+    (expr_list:REG_DEAD (reg:DI 3 bx)
+        (nil)))
+
+(note 346 345 3 NOTE_INSN_PROLOGUE_END)
+
+(insn 3 346 8 ./strings.cc:69 (set (reg/v/f:DI 3 bx [orig:63 s ] [63])
+        (reg:DI 5 di [ s ])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_ANTI 345 (nil))
+    (nil))
+
+(note:HI 8 3 10 ("./strings.cc") 71)
+
+(call_insn/u:TI 10 8 366 ./strings.cc:71 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strlen") [flags 0x41] <function_decl 0x2ad10a49b200 strlen>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_ANTI 3 (insn_list:REG_DEP_TRUE 345 (nil)))
+    (expr_list:REG_DEAD (reg:DI 5 di [ s ])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ s ]))
+            (nil))))
+
+(note 366 10 344 ( s (expr_list:REG_DEP_TRUE (reg/v/f:DI 3 bx [orig:63 s ] [63])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(insn:TI 344 366 367 ./strings.cc:71 (set (reg/v/f:DI 2 cx [orig:60 last ] [60])
+        (plus:DI (reg:DI 0 ax [65])
+            (reg/v/f:DI 3 bx [orig:63 s ] [63]))) 196 {*lea_2_rex64} (insn_list:REG_DEP_TRUE 3 (insn_list:REG_DEP_TRUE 10 (nil)))
+    (expr_list:REG_DEAD (reg:DI 0 ax [65])
+        (nil)))
+
+(note 367 344 14 ( last (expr_list:REG_DEP_TRUE (reg/v/f:DI 2 cx [orig:60 last ] [60])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 14 367 15 ("./strings.cc") 72)
+
+(insn:TI 15 14 16 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 3 bx [orig:63 s ] [63])
+            (reg/v/f:DI 2 cx [orig:60 last ] [60]))) 2 {cmpdi_1_insn_rex64} (insn_list:REG_DEP_OUTPUT 10 (insn_list:REG_DEP_TRUE 3 (insn_list:REG_DEP_TRUE 344 (nil))))
+    (nil))
+
+(jump_insn:TI 16 15 18 ./strings.cc:72 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 45)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 345 (insn_list:REG_DEP_ANTI 3 (insn_list:REG_DEP_ANTI 344 (insn_list:REG_DEP_TRUE 15 (insn_list:REG_DEP_ANTI 10 (nil))))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 18 16 20 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 20 18 343 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (mem:QI (plus:DI (reg/v/f:DI 2 cx [orig:60 last ] [60])
+                    (const_int -1 [0xffffffffffffffff])) [0 S1 A8])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (nil)
+    (nil))
+
+(insn 343 20 368 ./strings.cc:72 (set (reg/v/f:DI 0 ax [orig:58 last.167 ] [58])
+        (plus:DI (reg/v/f:DI 2 cx [orig:60 last ] [60])
+            (const_int -1 [0xffffffffffffffff]))) 196 {*lea_2_rex64} (nil)
+    (nil))
+
+(note 368 343 24 ( last.167 (expr_list:REG_DEP_TRUE (reg/v/f:DI 0 ax [orig:58 last.167 ] [58])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(insn:TI 24 368 369 ./strings.cc:72 (set (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+        (reg/v/f:DI 0 ax [orig:58 last.167 ] [58])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_TRUE 343 (nil))
+    (nil))
+
+(note 369 24 21 ( last.166 (expr_list:REG_DEP_TRUE (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(jump_insn:TI 21 369 28 ./strings.cc:72 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 48)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 343 (insn_list:REG_DEP_ANTI 24 (insn_list:REG_DEP_TRUE 20 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 28 21 78 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 78 28 70 NOTE_INSN_DELETED)
+
+(insn:TI 70 78 71 (parallel [
+            (set (reg/v/f:DI 2 cx [orig:60 last ] [60])
+                (minus:DI (reg/v/f:DI 2 cx [orig:60 last ] [60])
+                    (reg/v/f:DI 3 bx [orig:63 s ] [63])))
+            (clobber (reg:CC 17 flags))
+        ]) 235 {*subdi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn 71 70 72 (set (reg:DI 4 si [68])
+        (const_int 1 [0x1])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn:TI 72 71 342 (parallel [
+            (set (reg:DI 4 si [68])
+                (minus:DI (reg:DI 4 si [68])
+                    (reg/v/f:DI 2 cx [orig:60 last ] [60])))
+            (clobber (reg:CC 17 flags))
+        ]) 235 {*subdi_1_rex64} (insn_list:REG_DEP_TRUE 71 (insn_list:REG_DEP_TRUE 70 (nil)))
+    (expr_list:REG_DEAD (reg/v/f:DI 2 cx [orig:60 last ] [60])
+        (expr_list:REG_UNUSED (reg:CC 17 flags)
+            (expr_list:REG_EQUAL (minus:DI (const_int 1 [0x1])
+                    (reg:DI 66))
+                (nil)))))
+
+(insn:TI 342 72 370 (set (reg:DI 2 cx [69])
+        (plus:DI (reg:DI 0 ax [orig:59 last.166 ] [59])
+            (reg:DI 4 si [68]))) 196 {*lea_2_rex64} (insn_list:REG_DEP_OUTPUT 70 (insn_list:REG_DEP_TRUE 72 (nil)))
+    (expr_list:REG_DEAD (reg:DI 4 si [68])
+        (nil)))
+
+(note 370 342 362 ( last (nil)) NOTE_INSN_VAR_LOCATION)
+
+(note 362 370 77 NOTE_INSN_LOOP_BEG)
+
+(insn:TI 77 362 371 (parallel [
+            (set (reg:DI 0 ax [73])
+                (minus:DI (reg:DI 0 ax [73])
+                    (reg:DI 2 cx [69])))
+            (clobber (reg:CC 17 flags))
+        ]) 235 {*subdi_1_rex64} (insn_list:REG_DEP_TRUE 342 (nil))
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(note 371 77 204 ( last.167 (nil)) NOTE_INSN_VAR_LOCATION)
+
+(insn:TI 204 371 205 (parallel [
+            (set (reg:CCZ 17 flags)
+                (compare:CCZ (and:DI (reg:DI 0 ax [73])
+                        (const_int 7 [0x7]))
+                    (const_int 0 [0x0])))
+            (set (reg:DI 0 ax [74])
+                (and:DI (reg:DI 0 ax [73])
+                    (const_int 7 [0x7])))
+        ]) 298 {*anddi_2} (insn_list:REG_DEP_OUTPUT 70 (insn_list:REG_DEP_OUTPUT 72 (insn_list:REG_DEP_TRUE 77 (nil))))
+    (nil))
+
+(jump_insn:TI 205 204 372 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 37)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 70 (insn_list:REG_DEP_ANTI 71 (insn_list:REG_DEP_ANTI 72 (insn_list:REG_DEP_ANTI 342 (insn_list:REG_DEP_ANTI 77 (insn_list:REG_DEP_TRUE 204 (nil)))))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 1250 [0x4e2])
+            (nil))))
+
+(note 372 205 83 ( last.166 (expr_list:REG_DEP_TRUE (reg:DI 0 ax [orig:59 last.166 ] [59])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 83 372 86 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 86 83 87 ./strings.cc:72 (parallel [
+            (set (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+                (plus:DI (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 87 86 88 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (mem:QI (reg/v/f:DI 1 dx [orig:59 last.166 ] [59]) [0 S1 A8])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (insn_list:REG_DEP_TRUE 86 (nil))
+    (nil))
+
+(jump_insn:TI 88 87 373 ./strings.cc:72 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 48)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 86 (insn_list:REG_DEP_TRUE 87 (nil)))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note 373 88 201 ( last.166 (expr_list:REG_DEP_TRUE (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 201 373 199 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 199 201 200 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 0 ax [74])
+            (const_int 1 [0x1]))) 2 {cmpdi_1_insn_rex64} (nil)
+    (nil))
+
+(jump_insn:TI 200 199 183 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 37)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 199 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 1428 [0x594])
+            (nil))))
+
+(note:HI 183 200 181 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 181 183 381 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 0 ax [74])
+            (const_int 2 [0x2]))) 2 {cmpdi_1_insn_rex64} (nil)
+    (nil))
+
+(insn 381 181 182 (unspec_volatile [
+            (const_int 3 [0x3])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 182 381 165 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 326)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 181 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 1666 [0x682])
+            (nil))))
+
+(note:HI 165 182 163 [bb 6] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 163 165 382 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 0 ax [74])
+            (const_int 3 [0x3]))) 2 {cmpdi_1_insn_rex64} (nil)
+    (nil))
+
+(insn 382 163 164 (unspec_volatile [
+            (const_int 5 [0x5])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 164 382 147 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 327)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 163 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 2000 [0x7d0])
+            (nil))))
+
+(note:HI 147 164 145 [bb 7] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 145 147 383 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 0 ax [74])
+            (const_int 4 [0x4]))) 2 {cmpdi_1_insn_rex64} (nil)
+    (nil))
+
+(insn 383 145 146 (unspec_volatile [
+            (const_int 5 [0x5])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 146 383 129 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 328)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 145 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 2500 [0x9c4])
+            (nil))))
+
+(note:HI 129 146 127 [bb 8] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 127 129 384 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 0 ax [74])
+            (const_int 5 [0x5]))) 2 {cmpdi_1_insn_rex64} (nil)
+    (nil))
+
+(insn 384 127 128 (unspec_volatile [
+            (const_int 5 [0x5])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 128 384 111 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 329)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 127 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 3333 [0xd05])
+            (nil))))
+
+(note:HI 111 128 109 [bb 9] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 109 111 385 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 0 ax [74])
+            (const_int 6 [0x6]))) 2 {cmpdi_1_insn_rex64} (nil)
+    (expr_list:REG_DEAD (reg:DI 0 ax [74])
+        (nil)))
+
+(insn 385 109 110 (unspec_volatile [
+            (const_int 5 [0x5])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 110 385 97 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 330)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 109 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 5000 [0x1388])
+            (nil))))
+
+(note:HI 97 110 100 [bb 10] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 100 97 101 ./strings.cc:72 (parallel [
+            (set (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+                (plus:DI (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 101 100 386 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (mem:QI (reg/v/f:DI 1 dx [orig:59 last.166 ] [59]) [0 S1 A8])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (insn_list:REG_DEP_TRUE 100 (nil))
+    (nil))
+
+(insn 386 101 102 ./strings.cc:72 (unspec_volatile [
+            (const_int 3 [0x3])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 102 386 330 ./strings.cc:72 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 48)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 100 (insn_list:REG_DEP_TRUE 101 (nil)))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(code_label:HI 330 102 115 86 "" [1 uses])
+
+(note:HI 115 330 118 [bb 11] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 118 115 119 ./strings.cc:72 (parallel [
+            (set (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+                (plus:DI (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 119 118 120 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (mem:QI (reg/v/f:DI 1 dx [orig:59 last.166 ] [59]) [0 S1 A8])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (insn_list:REG_DEP_TRUE 118 (nil))
+    (nil))
+
+(jump_insn:TI 120 119 329 ./strings.cc:72 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 48)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 118 (insn_list:REG_DEP_TRUE 119 (nil)))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(code_label:HI 329 120 133 85 "" [1 uses])
+
+(note:HI 133 329 136 [bb 12] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 136 133 137 ./strings.cc:72 (parallel [
+            (set (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+                (plus:DI (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 137 136 138 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (mem:QI (reg/v/f:DI 1 dx [orig:59 last.166 ] [59]) [0 S1 A8])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (insn_list:REG_DEP_TRUE 136 (nil))
+    (nil))
+
+(jump_insn:TI 138 137 328 ./strings.cc:72 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 48)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 136 (insn_list:REG_DEP_TRUE 137 (nil)))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(code_label:HI 328 138 151 84 "" [1 uses])
+
+(note:HI 151 328 154 [bb 13] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 154 151 155 ./strings.cc:72 (parallel [
+            (set (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+                (plus:DI (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 155 154 156 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (mem:QI (reg/v/f:DI 1 dx [orig:59 last.166 ] [59]) [0 S1 A8])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (insn_list:REG_DEP_TRUE 154 (nil))
+    (nil))
+
+(jump_insn:TI 156 155 327 ./strings.cc:72 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 48)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 154 (insn_list:REG_DEP_TRUE 155 (nil)))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(code_label:HI 327 156 169 83 "" [1 uses])
+
+(note:HI 169 327 172 [bb 14] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 172 169 173 ./strings.cc:72 (parallel [
+            (set (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+                (plus:DI (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 173 172 174 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (mem:QI (reg/v/f:DI 1 dx [orig:59 last.166 ] [59]) [0 S1 A8])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (insn_list:REG_DEP_TRUE 172 (nil))
+    (nil))
+
+(jump_insn:TI 174 173 326 ./strings.cc:72 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 48)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 172 (insn_list:REG_DEP_TRUE 173 (nil)))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(code_label:HI 326 174 187 82 "" [1 uses])
+
+(note:HI 187 326 190 [bb 15] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 190 187 191 ./strings.cc:72 (parallel [
+            (set (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+                (plus:DI (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 191 190 192 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (mem:QI (reg/v/f:DI 1 dx [orig:59 last.166 ] [59]) [0 S1 A8])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (insn_list:REG_DEP_TRUE 190 (nil))
+    (nil))
+
+(jump_insn:TI 192 191 37 ./strings.cc:72 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 48)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 190 (insn_list:REG_DEP_TRUE 191 (nil)))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(code_label:HI 37 192 38 56 "" [3 uses])
+
+(note:HI 38 37 43 [bb 16] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 43 38 44 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+            (reg:DI 2 cx [69]))) 2 {cmpdi_1_insn_rex64} (nil)
+    (nil))
+
+(jump_insn:TI 44 43 69 ./strings.cc:72 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 45)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 43 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 69 44 33 NOTE_INSN_LOOP_END)
+
+(note:HI 33 69 341 [bb 17] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 341 33 35 ./strings.cc:72 (set (reg/f:DI 0 ax [75])
+        (plus:DI (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+            (const_int -1 [0xffffffffffffffff]))) 196 {*lea_2_rex64} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+        (nil)))
+
+(insn:TI 35 341 34 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (mem:QI (reg:DI 0 ax [orig:59 last.166 ] [59]) [0 S1 A8])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (insn_list:REG_DEP_TRUE 341 (nil))
+    (nil))
+
+(insn 34 35 36 ./strings.cc:72 (set (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+        (reg/f:DI 0 ax [75])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_TRUE 341 (nil))
+    (nil))
+
+(jump_insn:TI 36 34 210 ./strings.cc:72 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 48)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 341 (insn_list:REG_DEP_ANTI 34 (insn_list:REG_DEP_TRUE 35 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 210 36 214 [bb 18] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 214 210 340 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (mem:QI (plus:DI (reg/f:DI 0 ax [75])
+                    (const_int -1 [0xffffffffffffffff])) [0 S1 A8])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (nil)
+    (nil))
+
+(insn 340 214 215 ./strings.cc:72 (set (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+        (plus:DI (reg/f:DI 0 ax [75])
+            (const_int -1 [0xffffffffffffffff]))) 196 {*lea_2_rex64} (nil)
+    (nil))
+
+(jump_insn:TI 215 340 223 ./strings.cc:72 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 48)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 340 (insn_list:REG_DEP_TRUE 214 (nil)))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 223 215 227 [bb 19] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 227 223 339 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (mem:QI (plus:DI (reg/f:DI 0 ax [75])
+                    (const_int -2 [0xfffffffffffffffe])) [0 S1 A8])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (nil)
+    (nil))
+
+(insn 339 227 228 ./strings.cc:72 (set (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+        (plus:DI (reg/f:DI 0 ax [75])
+            (const_int -2 [0xfffffffffffffffe]))) 196 {*lea_2_rex64} (nil)
+    (nil))
+
+(jump_insn:TI 228 339 236 ./strings.cc:72 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 48)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 339 (insn_list:REG_DEP_TRUE 227 (nil)))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 236 228 240 [bb 20] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 240 236 338 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (mem:QI (plus:DI (reg/f:DI 0 ax [75])
+                    (const_int -3 [0xfffffffffffffffd])) [0 S1 A8])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (nil)
+    (nil))
+
+(insn 338 240 241 ./strings.cc:72 (set (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+        (plus:DI (reg/f:DI 0 ax [75])
+            (const_int -3 [0xfffffffffffffffd]))) 196 {*lea_2_rex64} (nil)
+    (nil))
+
+(jump_insn:TI 241 338 249 ./strings.cc:72 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 48)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 338 (insn_list:REG_DEP_TRUE 240 (nil)))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 249 241 253 [bb 21] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 253 249 337 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (mem:QI (plus:DI (reg/f:DI 0 ax [75])
+                    (const_int -4 [0xfffffffffffffffc])) [0 S1 A8])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (nil)
+    (nil))
+
+(insn 337 253 254 ./strings.cc:72 (set (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+        (plus:DI (reg/f:DI 0 ax [75])
+            (const_int -4 [0xfffffffffffffffc]))) 196 {*lea_2_rex64} (nil)
+    (nil))
+
+(jump_insn:TI 254 337 262 ./strings.cc:72 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 48)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 337 (insn_list:REG_DEP_TRUE 253 (nil)))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 262 254 266 [bb 22] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 266 262 336 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (mem:QI (plus:DI (reg/f:DI 0 ax [75])
+                    (const_int -5 [0xfffffffffffffffb])) [0 S1 A8])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (nil)
+    (nil))
+
+(insn 336 266 267 ./strings.cc:72 (set (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+        (plus:DI (reg/f:DI 0 ax [75])
+            (const_int -5 [0xfffffffffffffffb]))) 196 {*lea_2_rex64} (nil)
+    (nil))
+
+(jump_insn:TI 267 336 275 ./strings.cc:72 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 48)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 336 (insn_list:REG_DEP_TRUE 266 (nil)))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 275 267 279 [bb 23] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 279 275 335 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (mem:QI (plus:DI (reg/f:DI 0 ax [75])
+                    (const_int -6 [0xfffffffffffffffa])) [0 S1 A8])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (nil)
+    (nil))
+
+(insn 335 279 280 ./strings.cc:72 (set (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+        (plus:DI (reg/f:DI 0 ax [75])
+            (const_int -6 [0xfffffffffffffffa]))) 196 {*lea_2_rex64} (nil)
+    (nil))
+
+(jump_insn:TI 280 335 288 ./strings.cc:72 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 48)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 335 (insn_list:REG_DEP_TRUE 279 (nil)))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 288 280 292 [bb 24] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 292 288 334 ./strings.cc:72 (set (reg:CCZ 17 flags)
+        (compare:CCZ (mem:QI (plus:DI (reg/f:DI 0 ax [75])
+                    (const_int -7 [0xfffffffffffffff9])) [0 S1 A8])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (nil)
+    (nil))
+
+(insn 334 292 293 ./strings.cc:72 (set (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+        (plus:DI (reg/f:DI 0 ax [75])
+            (const_int -7 [0xfffffffffffffff9]))) 196 {*lea_2_rex64} (nil)
+    (expr_list:REG_DEAD (reg/f:DI 0 ax [75])
+        (nil)))
+
+(jump_insn:TI 293 334 374 ./strings.cc:72 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 37)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 334 (insn_list:REG_DEP_TRUE 292 (nil)))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+            (nil))))
+
+(note 374 293 375 ( last.166 (expr_list:REG_DEP_TRUE (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note 375 374 376 ( last.167 (expr_list:REG_DEP_TRUE (reg/v/f:DI 0 ax [orig:58 last.167 ] [58])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note 376 375 48 ( last (expr_list:REG_DEP_TRUE (reg/v/f:DI 2 cx [orig:60 last ] [60])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(code_label:HI 48 376 49 55 "" [15 uses])
+
+(note:HI 49 48 50 [bb 25] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 50 49 55 ("./strings.cc") 74)
+
+(note:HI 55 50 56 NOTE_INSN_FUNCTION_END)
+
+(note:HI 56 55 58 ("./strings.cc") 76)
+
+(insn:TI 58 56 377 ./strings.cc:76 (set (reg/i:DI 0 ax [ <result> ])
+        (reg/v/f:DI 3 bx [orig:63 s ] [63])) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 3 bx [orig:63 s ] [63])
+        (nil)))
+
+(note 377 58 363 ( last.167 (nil)) NOTE_INSN_VAR_LOCATION)
+
+(note 363 377 51 ("./strings.cc") 74)
+
+(insn 51 363 364 ./strings.cc:74 (set (mem:QI (plus:DI (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+                (const_int 1 [0x1])) [0 S1 A8])
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+        (nil)))
+
+(note 364 51 64 ("./strings.cc") 76)
+
+(insn 64 364 347 ./strings.cc:76 (use (reg/i:DI 0 ax [ <result> ])) -1 (insn_list:REG_DEP_TRUE 58 (nil))
+    (nil))
+
+(note 347 64 348 NOTE_INSN_EPILOGUE_BEG)
+
+(insn:TI 348 347 378 ./strings.cc:76 (parallel [
+            (set (reg:DI 3 bx)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_ANTI 58 (insn_list:REG_DEP_TRUE 51 (nil)))
+    (nil))
+
+(note 378 348 349 ( s (nil)) NOTE_INSN_VAR_LOCATION)
+
+(jump_insn:TI 349 378 350 ./strings.cc:76 (return) 562 {return_internal} (insn_list:REG_DEP_TRUE 348 (insn_list:REG_DEP_ANTI 51 (insn_list:REG_DEP_TRUE 58 (insn_list:REG_DEP_ANTI 64 (nil)))))
+    (nil))
+
+(barrier 350 349 379)
+
+(note 379 350 45 ( s (expr_list:REG_DEP_TRUE (reg/v/f:DI 3 bx [orig:63 s ] [63])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(code_label:HI 45 379 46 51 "" [2 uses])
+
+(note:HI 46 45 47 [bb 26] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 47 46 355 ./strings.cc:72 (set (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+        (reg/v/f:DI 3 bx [orig:63 s ] [63])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 355 47 356 ./strings.cc:76 (set (reg/i:DI 0 ax [ <result> ])
+        (reg/v/f:DI 3 bx [orig:63 s ] [63])) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 3 bx [orig:63 s ] [63])
+        (nil)))
+
+(insn 356 355 352 ./strings.cc:76 (use (reg/i:DI 0 ax [ <result> ])) -1 (insn_list:REG_DEP_TRUE 355 (nil))
+    (nil))
+
+(note 352 356 353 ("./strings.cc") 74)
+
+(insn:TI 353 352 354 ./strings.cc:74 (set (mem:QI (plus:DI (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+                (const_int 1 [0x1])) [0 S1 A8])
+        (const_int 0 [0x0])) 55 {*movqi_1} (insn_list:REG_DEP_TRUE 47 (nil))
+    (expr_list:REG_DEAD (reg/v/f:DI 1 dx [orig:59 last.166 ] [59])
+        (nil)))
+
+(note 354 353 357 ("./strings.cc") 76)
+
+(insn:TI 357 354 380 ./strings.cc:76 (parallel [
+            (set (reg:DI 3 bx)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_ANTI 47 (insn_list:REG_DEP_ANTI 355 (insn_list:REG_DEP_TRUE 353 (nil))))
+    (nil))
+
+(note 380 357 358 ( s (nil)) NOTE_INSN_VAR_LOCATION)
+
+(jump_insn:TI 358 380 361 ./strings.cc:76 (return) 562 {return_internal} (insn_list:REG_DEP_TRUE 357 (insn_list:REG_DEP_TRUE 47 (insn_list:REG_DEP_ANTI 353 (insn_list:REG_DEP_TRUE 355 (insn_list:REG_DEP_ANTI 356 (nil))))))
+    (nil))
+
+(barrier 361 358 332)
+
+(note 332 361 0 NOTE_INSN_DELETED)
+
+;; Function char* strtrim(char*) (_Z7strtrimPc)
+
+(note:HI 1 0 514 ("./strings.cc") 141)
+
+(note 514 1 6 ( s (expr_list:REG_DEP_TRUE (reg:DI 5 di [ s ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 6 514 4 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 4 6 13 NOTE_INSN_FUNCTION_BEG)
+
+(note:HI 13 4 496 NOTE_INSN_DELETED)
+
+(insn/f:TI 496 13 3 ./strings.cc:141 (set (mem:DI (pre_dec:DI (reg/f:DI 7 sp)) [0 S8 A8])
+        (reg:DI 41 r12)) 74 {*pushdi2_rex64} (nil)
+    (expr_list:REG_DEAD (reg:DI 41 r12)
+        (nil)))
+
+(insn 3 496 497 ./strings.cc:141 (set (reg/v/f:DI 41 r12 [orig:64 s ] [64])
+        (reg:DI 5 di [ s ])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_ANTI 496 (nil))
+    (nil))
+
+(insn/f:TI 497 3 498 ./strings.cc:141 (set (mem:DI (pre_dec:DI (reg/f:DI 7 sp)) [0 S8 A8])
+        (reg:DI 6 bp)) 74 {*pushdi2_rex64} (insn_list:REG_DEP_TRUE 496 (nil))
+    (expr_list:REG_DEAD (reg:DI 6 bp)
+        (nil)))
+
+(insn/f:TI 498 497 499 ./strings.cc:141 (set (mem:DI (pre_dec:DI (reg/f:DI 7 sp)) [0 S8 A8])
+        (reg:DI 3 bx)) 74 {*pushdi2_rex64} (insn_list:REG_DEP_TRUE 496 (insn_list:REG_DEP_TRUE 497 (nil)))
+    (expr_list:REG_DEAD (reg:DI 3 bx)
+        (nil)))
+
+(note 499 498 8 NOTE_INSN_PROLOGUE_END)
+
+(note:HI 8 499 10 ("./strings.cc") 143)
+
+(call_insn/u:TI 10 8 515 ./strings.cc:143 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strlen") [flags 0x41] <function_decl 0x2ad10a49b200 strlen>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_ANTI 3 (insn_list:REG_DEP_TRUE 496 (insn_list:REG_DEP_TRUE 497 (insn_list:REG_DEP_TRUE 498 (nil)))))
+    (expr_list:REG_DEAD (reg:DI 5 di [ s ])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ s ]))
+            (nil))))
+
+(note 515 10 14 ( s (expr_list:REG_DEP_TRUE (reg/v/f:DI 41 r12 [orig:64 s ] [64])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(insn:TI 14 515 516 ./strings.cc:143 (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+        (plus:DI (plus:DI (reg:DI 0 ax [66])
+                (reg/v/f:DI 41 r12 [orig:64 s ] [64]))
+            (const_int -1 [0xffffffffffffffff]))) 196 {*lea_2_rex64} (insn_list:REG_DEP_ANTI 498 (insn_list:REG_DEP_TRUE 3 (insn_list:REG_DEP_TRUE 10 (nil))))
+    (expr_list:REG_DEAD (reg:DI 0 ax [66])
+        (nil)))
+
+(note 516 14 15 ( last (expr_list:REG_DEP_TRUE (reg/v/f:DI 3 bx [orig:58 last ] [58])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 15 516 16 ("./strings.cc") 144)
+
+(insn:TI 16 15 17 ./strings.cc:144 (set (reg:CC 17 flags)
+        (compare:CC (reg/v/f:DI 41 r12 [orig:64 s ] [64])
+            (reg/v/f:DI 3 bx [orig:58 last ] [58]))) 2 {cmpdi_1_insn_rex64} (insn_list:REG_DEP_OUTPUT 10 (insn_list:REG_DEP_TRUE 3 (insn_list:REG_DEP_TRUE 14 (nil))))
+    (nil))
+
+(jump_insn:TI 17 16 95 ./strings.cc:144 (set (pc)
+        (if_then_else (gtu (reg:CC 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 496 (insn_list:REG_DEP_ANTI 497 (insn_list:REG_DEP_ANTI 498 (insn_list:REG_DEP_ANTI 3 (insn_list:REG_DEP_ANTI 14 (insn_list:REG_DEP_TRUE 16 (insn_list:REG_DEP_ANTI 10 (nil))))))))
+    (expr_list:REG_DEAD (reg:CC 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 95 17 97 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 97 95 488 ./strings.cc:144 (set (reg:SI 5 di [78])
+        (sign_extend:SI (mem:QI (reg/v/f:DI 3 bx [orig:58 last ] [58]) [0 S1 A8]))) 121 {extendqisi2} (nil)
+    (nil))
+
+(insn 488 97 93 (set (reg:DI 6 bp [76])
+        (reg/v/f:DI 3 bx [orig:58 last ] [58])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn:TI 93 488 94 (parallel [
+            (set (reg:DI 6 bp [76])
+                (minus:DI (reg:DI 6 bp [76])
+                    (reg/v/f:DI 41 r12 [orig:64 s ] [64])))
+            (clobber (reg:CC 17 flags))
+        ]) 235 {*subdi_1_rex64} (insn_list:REG_DEP_TRUE 488 (nil))
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 94 93 99 (parallel [
+            (set (reg:DI 6 bp [76])
+                (and:DI (reg:DI 6 bp [76])
+                    (const_int 7 [0x7])))
+            (clobber (reg:CC 17 flags))
+        ]) 297 {*anddi_1_rex64} (insn_list:REG_DEP_TRUE 93 (nil))
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(call_insn/u:TI 99 94 101 ./strings.cc:144 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 97 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di)
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+            (nil))))
+
+(insn:TI 101 99 102 ./strings.cc:144 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:79 D.2604 ] [79])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_OUTPUT 93 (insn_list:REG_DEP_OUTPUT 94 (insn_list:REG_DEP_TRUE 99 (nil))))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:79 D.2604 ] [79])
+        (nil)))
+
+(jump_insn:TI 102 101 111 ./strings.cc:144 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 488 (insn_list:REG_DEP_ANTI 93 (insn_list:REG_DEP_ANTI 94 (insn_list:REG_DEP_ANTI 97 (insn_list:REG_DEP_TRUE 101 (insn_list:REG_DEP_ANTI 99 (nil)))))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 111 102 107 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 107 111 109 ./strings.cc:145 (parallel [
+            (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                (plus:DI (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 109 107 110 ./strings.cc:144 (set (reg:CC 17 flags)
+        (compare:CC (reg/v/f:DI 41 r12 [orig:64 s ] [64])
+            (reg/v/f:DI 3 bx [orig:58 last ] [58]))) 2 {cmpdi_1_insn_rex64} (insn_list:REG_DEP_TRUE 107 (nil))
+    (nil))
+
+(jump_insn:TI 110 109 291 ./strings.cc:144 (set (pc)
+        (if_then_else (gtu (reg:CC 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 107 (insn_list:REG_DEP_TRUE 109 (nil)))
+    (expr_list:REG_DEAD (reg:CC 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 291 110 289 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 289 291 519 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 6 bp [76])
+            (const_int 0 [0x0]))) 0 {cmpdi_ccno_1_rex64} (nil)
+    (nil))
+
+(insn 519 289 290 (unspec_volatile [
+            (const_int 3 [0x3])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 290 519 266 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 474)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 289 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 1250 [0x4e2])
+            (nil))))
+
+(note:HI 266 290 264 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 264 266 520 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 6 bp [76])
+            (const_int 1 [0x1]))) 2 {cmpdi_1_insn_rex64} (nil)
+    (nil))
+
+(insn 520 264 265 (unspec_volatile [
+            (const_int 3 [0x3])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 265 520 241 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 480)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 264 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 1428 [0x594])
+            (nil))))
+
+(note:HI 241 265 239 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 239 241 521 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 6 bp [76])
+            (const_int 2 [0x2]))) 2 {cmpdi_1_insn_rex64} (nil)
+    (nil))
+
+(insn 521 239 240 (unspec_volatile [
+            (const_int 5 [0x5])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 240 521 216 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 481)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 239 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 1666 [0x682])
+            (nil))))
+
+(note:HI 216 240 214 [bb 6] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 214 216 522 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 6 bp [76])
+            (const_int 3 [0x3]))) 2 {cmpdi_1_insn_rex64} (nil)
+    (nil))
+
+(insn 522 214 215 (unspec_volatile [
+            (const_int 5 [0x5])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 215 522 191 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 482)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 214 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 2000 [0x7d0])
+            (nil))))
+
+(note:HI 191 215 189 [bb 7] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 189 191 523 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 6 bp [76])
+            (const_int 4 [0x4]))) 2 {cmpdi_1_insn_rex64} (nil)
+    (nil))
+
+(insn 523 189 190 (unspec_volatile [
+            (const_int 5 [0x5])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 190 523 166 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 483)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 189 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 2500 [0x9c4])
+            (nil))))
+
+(note:HI 166 190 164 [bb 8] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 164 166 524 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 6 bp [76])
+            (const_int 5 [0x5]))) 2 {cmpdi_1_insn_rex64} (nil)
+    (nil))
+
+(insn 524 164 165 (unspec_volatile [
+            (const_int 5 [0x5])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 165 524 141 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 484)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 164 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 3333 [0xd05])
+            (nil))))
+
+(note:HI 141 165 139 [bb 9] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 139 141 525 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:DI 6 bp [76])
+            (const_int 6 [0x6]))) 2 {cmpdi_1_insn_rex64} (nil)
+    (expr_list:REG_DEAD (reg:DI 6 bp [76])
+        (nil)))
+
+(insn 525 139 140 (unspec_volatile [
+            (const_int 5 [0x5])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 140 525 124 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 485)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 139 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 5000 [0x1388])
+            (nil))))
+
+(note:HI 124 140 118 [bb 10] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 118 124 526 ./strings.cc:144 (set (reg:SI 5 di [82])
+        (sign_extend:SI (mem:QI (reg/v/f:DI 3 bx [orig:58 last ] [58]) [0 S1 A8]))) 121 {extendqisi2} (nil)
+    (nil))
+
+(insn 526 118 120 ./strings.cc:144 (unspec_volatile [
+            (const_int 5 [0x5])
+        ] 7) -1 (nil)
+    (nil))
+
+(call_insn/u:TI 120 526 122 ./strings.cc:144 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 118 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di)
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+            (nil))))
+
+(insn:TI 122 120 527 ./strings.cc:144 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:83 D.2604 ] [83])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 120 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:83 D.2604 ] [83])
+        (nil)))
+
+(insn 527 122 123 ./strings.cc:144 (unspec_volatile [
+            (const_int 2 [0x2])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 123 527 132 ./strings.cc:144 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 118 (insn_list:REG_DEP_TRUE 122 (insn_list:REG_DEP_ANTI 120 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 132 123 128 [bb 11] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 128 132 485 ./strings.cc:145 (parallel [
+            (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                (plus:DI (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(code_label:HI 485 128 149 140 "" [1 uses])
+
+(note:HI 149 485 143 [bb 12] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 143 149 145 ./strings.cc:144 (set (reg:SI 5 di [84])
+        (sign_extend:SI (mem:QI (reg/v/f:DI 3 bx [orig:58 last ] [58]) [0 S1 A8]))) 121 {extendqisi2} (nil)
+    (nil))
+
+(call_insn/u:TI 145 143 147 ./strings.cc:144 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 143 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di)
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+            (nil))))
+
+(insn:TI 147 145 148 ./strings.cc:144 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:85 D.2604 ] [85])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 145 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:85 D.2604 ] [85])
+        (nil)))
+
+(jump_insn:TI 148 147 157 ./strings.cc:144 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 143 (insn_list:REG_DEP_TRUE 147 (insn_list:REG_DEP_ANTI 145 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 157 148 153 [bb 13] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 153 157 484 ./strings.cc:145 (parallel [
+            (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                (plus:DI (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(code_label:HI 484 153 174 139 "" [1 uses])
+
+(note:HI 174 484 168 [bb 14] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 168 174 170 ./strings.cc:144 (set (reg:SI 5 di [86])
+        (sign_extend:SI (mem:QI (reg/v/f:DI 3 bx [orig:58 last ] [58]) [0 S1 A8]))) 121 {extendqisi2} (nil)
+    (nil))
+
+(call_insn/u:TI 170 168 172 ./strings.cc:144 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 168 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di)
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+            (nil))))
+
+(insn:TI 172 170 173 ./strings.cc:144 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:87 D.2604 ] [87])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 170 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:87 D.2604 ] [87])
+        (nil)))
+
+(jump_insn:TI 173 172 182 ./strings.cc:144 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 168 (insn_list:REG_DEP_TRUE 172 (insn_list:REG_DEP_ANTI 170 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 182 173 178 [bb 15] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 178 182 483 ./strings.cc:145 (parallel [
+            (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                (plus:DI (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(code_label:HI 483 178 199 138 "" [1 uses])
+
+(note:HI 199 483 193 [bb 16] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 193 199 195 ./strings.cc:144 (set (reg:SI 5 di [88])
+        (sign_extend:SI (mem:QI (reg/v/f:DI 3 bx [orig:58 last ] [58]) [0 S1 A8]))) 121 {extendqisi2} (nil)
+    (nil))
+
+(call_insn/u:TI 195 193 197 ./strings.cc:144 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 193 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di)
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+            (nil))))
+
+(insn:TI 197 195 198 ./strings.cc:144 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:89 D.2604 ] [89])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 195 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:89 D.2604 ] [89])
+        (nil)))
+
+(jump_insn:TI 198 197 207 ./strings.cc:144 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 193 (insn_list:REG_DEP_TRUE 197 (insn_list:REG_DEP_ANTI 195 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 207 198 203 [bb 17] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 203 207 482 ./strings.cc:145 (parallel [
+            (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                (plus:DI (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(code_label:HI 482 203 224 137 "" [1 uses])
+
+(note:HI 224 482 218 [bb 18] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 218 224 220 ./strings.cc:144 (set (reg:SI 5 di [90])
+        (sign_extend:SI (mem:QI (reg/v/f:DI 3 bx [orig:58 last ] [58]) [0 S1 A8]))) 121 {extendqisi2} (nil)
+    (nil))
+
+(call_insn/u:TI 220 218 222 ./strings.cc:144 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 218 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di)
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+            (nil))))
+
+(insn:TI 222 220 223 ./strings.cc:144 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:91 D.2604 ] [91])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 220 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:91 D.2604 ] [91])
+        (nil)))
+
+(jump_insn:TI 223 222 232 ./strings.cc:144 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 218 (insn_list:REG_DEP_TRUE 222 (insn_list:REG_DEP_ANTI 220 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 232 223 228 [bb 19] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 228 232 481 ./strings.cc:145 (parallel [
+            (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                (plus:DI (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(code_label:HI 481 228 249 136 "" [1 uses])
+
+(note:HI 249 481 243 [bb 20] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 243 249 245 ./strings.cc:144 (set (reg:SI 5 di [92])
+        (sign_extend:SI (mem:QI (reg/v/f:DI 3 bx [orig:58 last ] [58]) [0 S1 A8]))) 121 {extendqisi2} (nil)
+    (nil))
+
+(call_insn/u:TI 245 243 247 ./strings.cc:144 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 243 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di)
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+            (nil))))
+
+(insn:TI 247 245 248 ./strings.cc:144 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:93 D.2604 ] [93])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 245 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:93 D.2604 ] [93])
+        (nil)))
+
+(jump_insn:TI 248 247 257 ./strings.cc:144 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 243 (insn_list:REG_DEP_TRUE 247 (insn_list:REG_DEP_ANTI 245 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 257 248 253 [bb 21] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 253 257 480 ./strings.cc:145 (parallel [
+            (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                (plus:DI (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(code_label:HI 480 253 274 135 "" [1 uses])
+
+(note:HI 274 480 268 [bb 22] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 268 274 270 ./strings.cc:144 (set (reg:SI 5 di [94])
+        (sign_extend:SI (mem:QI (reg/v/f:DI 3 bx [orig:58 last ] [58]) [0 S1 A8]))) 121 {extendqisi2} (nil)
+    (nil))
+
+(call_insn/u:TI 270 268 272 ./strings.cc:144 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 268 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di)
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+            (nil))))
+
+(insn:TI 272 270 273 ./strings.cc:144 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:95 D.2604 ] [95])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 270 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:95 D.2604 ] [95])
+        (nil)))
+
+(jump_insn:TI 273 272 282 ./strings.cc:144 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 268 (insn_list:REG_DEP_TRUE 272 (insn_list:REG_DEP_ANTI 270 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 282 273 278 [bb 23] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 278 282 280 ./strings.cc:145 (parallel [
+            (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                (plus:DI (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 280 278 281 ./strings.cc:144 (set (reg:CC 17 flags)
+        (compare:CC (reg/v/f:DI 41 r12 [orig:64 s ] [64])
+            (reg/v/f:DI 3 bx [orig:58 last ] [58]))) 2 {cmpdi_1_insn_rex64} (insn_list:REG_DEP_TRUE 278 (nil))
+    (nil))
+
+(jump_insn:TI 281 280 81 ./strings.cc:144 (set (pc)
+        (if_then_else (gtu (reg:CC 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 278 (insn_list:REG_DEP_TRUE 280 (nil)))
+    (expr_list:REG_DEAD (reg:CC 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 81 281 474 NOTE_INSN_LOOP_BEG)
+
+(code_label:HI 474 81 89 133 "" [2 uses])
+
+(note:HI 89 474 30 [bb 24] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 30 89 32 ./strings.cc:144 (set (reg:SI 5 di [80])
+        (sign_extend:SI (mem:QI (reg/v/f:DI 3 bx [orig:58 last ] [58]) [0 S1 A8]))) 121 {extendqisi2} (nil)
+    (nil))
+
+(call_insn/u:TI 32 30 34 ./strings.cc:144 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 30 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di)
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+            (nil))))
+
+(insn:TI 34 32 35 ./strings.cc:144 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:81 D.2604 ] [81])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 32 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:81 D.2604 ] [81])
+        (nil)))
+
+(jump_insn:TI 35 34 82 ./strings.cc:144 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 30 (insn_list:REG_DEP_TRUE 34 (insn_list:REG_DEP_ANTI 32 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 82 35 22 NOTE_INSN_LOOP_END)
+
+(note:HI 22 82 495 [bb 25] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 495 22 293 ./strings.cc:145 (set (reg/f:DI 6 bp [77])
+        (plus:DI (reg/v/f:DI 3 bx [orig:58 last ] [58])
+            (const_int -1 [0xffffffffffffffff]))) 196 {*lea_2_rex64} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 3 bx [orig:58 last ] [58])
+        (nil)))
+
+(insn:TI 293 495 24 ./strings.cc:144 (set (reg:SI 5 di [68])
+        (sign_extend:SI (mem:QI (reg:DI 6 bp [orig:58 last ] [58]) [0 S1 A8]))) 121 {extendqisi2} (insn_list:REG_DEP_TRUE 495 (nil))
+    (nil))
+
+(insn 24 293 295 ./strings.cc:145 (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+        (reg/f:DI 6 bp [77])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_TRUE 495 (nil))
+    (nil))
+
+(call_insn/u:TI 295 24 297 ./strings.cc:144 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 293 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di)
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+            (nil))))
+
+(insn:TI 297 295 298 ./strings.cc:144 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:61 D.2604 ] [61])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 295 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:61 D.2604 ] [61])
+        (nil)))
+
+(jump_insn:TI 298 297 307 ./strings.cc:144 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 495 (insn_list:REG_DEP_ANTI 24 (insn_list:REG_DEP_ANTI 293 (insn_list:REG_DEP_TRUE 297 (insn_list:REG_DEP_ANTI 295 (nil))))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 307 298 303 [bb 26] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 303 307 313 ./strings.cc:145 (parallel [
+            (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                (plus:DI (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 313 303 315 ./strings.cc:144 (set (reg:SI 5 di [96])
+        (sign_extend:SI (mem:QI (reg/v/f:DI 3 bx [orig:58 last ] [58]) [0 S1 A8]))) 121 {extendqisi2} (insn_list:REG_DEP_TRUE 303 (nil))
+    (nil))
+
+(call_insn/u:TI 315 313 317 ./strings.cc:144 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 313 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di)
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+            (nil))))
+
+(insn:TI 317 315 318 ./strings.cc:144 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:97 D.2604 ] [97])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_OUTPUT 303 (insn_list:REG_DEP_TRUE 315 (nil)))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:97 D.2604 ] [97])
+        (nil)))
+
+(jump_insn:TI 318 317 327 ./strings.cc:144 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 303 (insn_list:REG_DEP_ANTI 313 (insn_list:REG_DEP_TRUE 317 (insn_list:REG_DEP_ANTI 315 (nil)))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 327 318 333 [bb 27] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 333 327 494 ./strings.cc:144 (set (reg:SI 5 di [98])
+        (sign_extend:SI (mem:QI (plus:DI (reg/f:DI 6 bp [77])
+                    (const_int -2 [0xfffffffffffffffe])) [0 S1 A8]))) 121 {extendqisi2} (nil)
+    (nil))
+
+(insn 494 333 335 ./strings.cc:145 (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+        (plus:DI (reg/f:DI 6 bp [77])
+            (const_int -2 [0xfffffffffffffffe]))) 196 {*lea_2_rex64} (nil)
+    (nil))
+
+(call_insn/u:TI 335 494 337 ./strings.cc:144 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 333 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di)
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+            (nil))))
+
+(insn:TI 337 335 338 ./strings.cc:144 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:99 D.2604 ] [99])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 335 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:99 D.2604 ] [99])
+        (nil)))
+
+(jump_insn:TI 338 337 347 ./strings.cc:144 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 494 (insn_list:REG_DEP_ANTI 333 (insn_list:REG_DEP_TRUE 337 (insn_list:REG_DEP_ANTI 335 (nil)))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 347 338 353 [bb 28] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 353 347 493 ./strings.cc:144 (set (reg:SI 5 di [100])
+        (sign_extend:SI (mem:QI (plus:DI (reg/f:DI 6 bp [77])
+                    (const_int -3 [0xfffffffffffffffd])) [0 S1 A8]))) 121 {extendqisi2} (nil)
+    (nil))
+
+(insn 493 353 355 ./strings.cc:145 (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+        (plus:DI (reg/f:DI 6 bp [77])
+            (const_int -3 [0xfffffffffffffffd]))) 196 {*lea_2_rex64} (nil)
+    (nil))
+
+(call_insn/u:TI 355 493 357 ./strings.cc:144 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 353 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di)
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+            (nil))))
+
+(insn:TI 357 355 358 ./strings.cc:144 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:101 D.2604 ] [101])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 355 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:101 D.2604 ] [101])
+        (nil)))
+
+(jump_insn:TI 358 357 367 ./strings.cc:144 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 493 (insn_list:REG_DEP_ANTI 353 (insn_list:REG_DEP_TRUE 357 (insn_list:REG_DEP_ANTI 355 (nil)))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 367 358 373 [bb 29] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 373 367 492 ./strings.cc:144 (set (reg:SI 5 di [102])
+        (sign_extend:SI (mem:QI (plus:DI (reg/f:DI 6 bp [77])
+                    (const_int -4 [0xfffffffffffffffc])) [0 S1 A8]))) 121 {extendqisi2} (nil)
+    (nil))
+
+(insn 492 373 375 ./strings.cc:145 (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+        (plus:DI (reg/f:DI 6 bp [77])
+            (const_int -4 [0xfffffffffffffffc]))) 196 {*lea_2_rex64} (nil)
+    (nil))
+
+(call_insn/u:TI 375 492 377 ./strings.cc:144 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 373 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di)
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+            (nil))))
+
+(insn:TI 377 375 378 ./strings.cc:144 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:103 D.2604 ] [103])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 375 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:103 D.2604 ] [103])
+        (nil)))
+
+(jump_insn:TI 378 377 387 ./strings.cc:144 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 492 (insn_list:REG_DEP_ANTI 373 (insn_list:REG_DEP_TRUE 377 (insn_list:REG_DEP_ANTI 375 (nil)))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 387 378 393 [bb 30] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 393 387 491 ./strings.cc:144 (set (reg:SI 5 di [104])
+        (sign_extend:SI (mem:QI (plus:DI (reg/f:DI 6 bp [77])
+                    (const_int -5 [0xfffffffffffffffb])) [0 S1 A8]))) 121 {extendqisi2} (nil)
+    (nil))
+
+(insn 491 393 395 ./strings.cc:145 (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+        (plus:DI (reg/f:DI 6 bp [77])
+            (const_int -5 [0xfffffffffffffffb]))) 196 {*lea_2_rex64} (nil)
+    (nil))
+
+(call_insn/u:TI 395 491 397 ./strings.cc:144 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 393 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di)
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+            (nil))))
+
+(insn:TI 397 395 398 ./strings.cc:144 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:105 D.2604 ] [105])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 395 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:105 D.2604 ] [105])
+        (nil)))
+
+(jump_insn:TI 398 397 407 ./strings.cc:144 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 491 (insn_list:REG_DEP_ANTI 393 (insn_list:REG_DEP_TRUE 397 (insn_list:REG_DEP_ANTI 395 (nil)))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 407 398 413 [bb 31] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 413 407 490 ./strings.cc:144 (set (reg:SI 5 di [106])
+        (sign_extend:SI (mem:QI (plus:DI (reg/f:DI 6 bp [77])
+                    (const_int -6 [0xfffffffffffffffa])) [0 S1 A8]))) 121 {extendqisi2} (nil)
+    (nil))
+
+(insn 490 413 415 ./strings.cc:145 (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+        (plus:DI (reg/f:DI 6 bp [77])
+            (const_int -6 [0xfffffffffffffffa]))) 196 {*lea_2_rex64} (nil)
+    (nil))
+
+(call_insn/u:TI 415 490 417 ./strings.cc:144 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 413 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di)
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+            (nil))))
+
+(insn:TI 417 415 418 ./strings.cc:144 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:107 D.2604 ] [107])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 415 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:107 D.2604 ] [107])
+        (nil)))
+
+(jump_insn:TI 418 417 427 ./strings.cc:144 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 36)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 490 (insn_list:REG_DEP_ANTI 413 (insn_list:REG_DEP_TRUE 417 (insn_list:REG_DEP_ANTI 415 (nil)))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 427 418 489 [bb 32] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 489 427 425 ./strings.cc:145 (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+        (plus:DI (reg/f:DI 6 bp [77])
+            (const_int -7 [0xfffffffffffffff9]))) 196 {*lea_2_rex64} (nil)
+    (expr_list:REG_DEAD (reg/f:DI 6 bp [77])
+        (nil)))
+
+(insn:TI 425 489 426 ./strings.cc:144 (set (reg:CC 17 flags)
+        (compare:CC (reg/v/f:DI 41 r12 [orig:64 s ] [64])
+            (reg/v/f:DI 3 bx [orig:58 last ] [58]))) 2 {cmpdi_1_insn_rex64} (insn_list:REG_DEP_TRUE 489 (nil))
+    (nil))
+
+(jump_insn:TI 426 425 36 ./strings.cc:144 (set (pc)
+        (if_then_else (leu (reg:CC 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 474)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 489 (insn_list:REG_DEP_TRUE 425 (nil)))
+    (expr_list:REG_DEAD (reg:CC 17 flags)
+        (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+            (nil))))
+
+(code_label:HI 36 426 37 88 "" [19 uses])
+
+(note:HI 37 36 38 [bb 33] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 38 37 39 ("./strings.cc") 146)
+
+(insn:TI 39 38 40 ./strings.cc:146 (set (mem:QI (plus:DI (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                (const_int 1 [0x1])) [0 S1 A8])
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 3 bx [orig:58 last ] [58])
+        (nil)))
+
+(note:HI 40 39 41 ("./strings.cc") 147)
+
+(insn 41 40 42 ./strings.cc:147 (set (reg:QI 0 ax [orig:60 D.2609 ] [60])
+        (mem:QI (reg/v/f:DI 41 r12 [orig:64 s ] [64]) [0 S1 A8])) 55 {*movqi_1} (insn_list:REG_DEP_TRUE 39 (nil))
+    (nil))
+
+(insn:TI 42 41 43 ./strings.cc:147 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:60 D.2609 ] [60])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_TRUE 41 (nil))
+    (nil))
+
+(jump_insn:TI 43 42 83 ./strings.cc:147 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 471)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 41 (insn_list:REG_DEP_TRUE 42 (insn_list:REG_DEP_ANTI 39 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+            (nil))))
+
+(note:HI 83 43 511 NOTE_INSN_LOOP_BEG)
+
+(note 511 83 512 [bb 34] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 512 511 513 (set (pc)
+        (label_ref 63)) 548 {jump} (nil)
+    (nil))
+
+(barrier 513 512 47)
+
+(code_label:HI 47 513 48 93 "" [1 uses])
+
+(note:HI 48 47 49 [bb 35] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 49 48 50 ("./strings.cc") 148)
+
+(insn:TI 50 49 51 ./strings.cc:148 (parallel [
+            (set (reg/v/f:DI 41 r12 [orig:64 s ] [64])
+                (plus:DI (reg/v/f:DI 41 r12 [orig:64 s ] [64])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(note:HI 51 50 52 ("./strings.cc") 147)
+
+(insn:TI 52 51 53 ./strings.cc:147 (set (reg:QI 0 ax [orig:60 D.2609 ] [60])
+        (mem:QI (reg/v/f:DI 41 r12 [orig:64 s ] [64]) [0 S1 A8])) 55 {*movqi_1} (insn_list:REG_DEP_TRUE 50 (nil))
+    (nil))
+
+(insn:TI 53 52 54 ./strings.cc:147 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:60 D.2609 ] [60])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_OUTPUT 50 (insn_list:REG_DEP_TRUE 52 (nil)))
+    (nil))
+
+(jump_insn:TI 54 53 471 ./strings.cc:147 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 63)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 50 (insn_list:REG_DEP_ANTI 52 (insn_list:REG_DEP_TRUE 53 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(code_label:HI 471 54 90 132 "" [1 uses])
+
+(note:HI 90 471 57 [bb 36] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 57 90 59 ./strings.cc:147 (set (reg:SI 5 di [orig:69 D.2609 ] [69])
+        (sign_extend:SI (reg:QI 0 ax [orig:60 D.2609 ] [60]))) 121 {extendqisi2} (nil)
+    (expr_list:REG_DEAD (reg:QI 0 ax [orig:60 D.2609 ] [60])
+        (nil)))
+
+(call_insn/u:TI 59 57 61 ./strings.cc:147 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 57 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di [ D.2609 ])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di [ D.2609 ]))
+            (nil))))
+
+(insn:TI 61 59 62 ./strings.cc:147 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:59 D.2611 ] [59])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 59 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:59 D.2611 ] [59])
+        (nil)))
+
+(jump_insn:TI 62 61 84 ./strings.cc:147 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 47)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 57 (insn_list:REG_DEP_TRUE 61 (insn_list:REG_DEP_ANTI 59 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+            (nil))))
+
+(note:HI 84 62 63 NOTE_INSN_LOOP_END)
+
+(code_label:HI 63 84 64 91 "" [2 uses])
+
+(note:HI 64 63 68 [bb 37] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 68 64 69 NOTE_INSN_FUNCTION_END)
+
+(note:HI 69 68 424 NOTE_INSN_DELETED)
+
+(note:HI 424 69 500 ("./strings.cc") 144)
+
+(note 500 424 501 NOTE_INSN_EPILOGUE_BEG)
+
+(insn:TI 501 500 517 ./strings.cc:150 (parallel [
+            (set (reg:DI 3 bx)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (nil)
+    (nil))
+
+(note 517 501 502 ( last (nil)) NOTE_INSN_VAR_LOCATION)
+
+(insn:TI 502 517 509 ./strings.cc:150 (parallel [
+            (set (reg:DI 6 bp)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_TRUE 501 (nil))
+    (nil))
+
+(note 509 502 71 ("./strings.cc") 150)
+
+(insn:TI 71 509 77 ./strings.cc:150 (set (reg/i:DI 0 ax [ <result> ])
+        (reg/v/f:DI 41 r12 [orig:64 s ] [64])) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 41 r12 [orig:64 s ] [64])
+        (nil)))
+
+(insn 77 71 510 ./strings.cc:150 (use (reg/i:DI 0 ax [ <result> ])) -1 (insn_list:REG_DEP_TRUE 71 (nil))
+    (nil))
+
+(note 510 77 503 ("./strings.cc") 144)
+
+(insn:TI 503 510 518 ./strings.cc:150 (parallel [
+            (set (reg:DI 41 r12)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_ANTI 71 (insn_list:REG_DEP_TRUE 502 (nil)))
+    (nil))
+
+(note 518 503 504 ( s (nil)) NOTE_INSN_VAR_LOCATION)
+
+(jump_insn:TI 504 518 505 ./strings.cc:150 (return) 562 {return_internal} (insn_list:REG_DEP_TRUE 503 (insn_list:REG_DEP_TRUE 502 (insn_list:REG_DEP_TRUE 501 (insn_list:REG_DEP_TRUE 71 (insn_list:REG_DEP_ANTI 77 (nil))))))
+    (nil))
+
+(barrier 505 504 487)
+
+(note 487 505 0 NOTE_INSN_DELETED)
+
+;; Function char* strsplit(char*) (_Z8strsplitPc)
+
+(note:HI 1 0 134 ("./strings.cc") 108)
+
+(note 134 1 6 ( s (expr_list:REG_DEP_TRUE (reg:DI 5 di [ s ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 6 134 4 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 4 6 99 NOTE_INSN_FUNCTION_BEG)
+
+(insn/f:TI 99 4 100 ./strings.cc:108 (set (mem:DI (pre_dec:DI (reg/f:DI 7 sp)) [0 S8 A8])
+        (reg:DI 3 bx)) 74 {*pushdi2_rex64} (nil)
+    (expr_list:REG_DEAD (reg:DI 3 bx)
+        (nil)))
+
+(note 100 99 8 NOTE_INSN_PROLOGUE_END)
+
+(note:HI 8 100 9 ("./strings.cc") 110)
+
+(insn 9 8 129 ./strings.cc:110 (set (reg:QI 0 ax [orig:61 D.2569 ] [61])
+        (mem:QI (reg:DI 5 di [orig:63 s ] [63]) [0 S1 A8])) 55 {*movqi_1} (insn_list:REG_DEP_TRUE 99 (nil))
+    (nil))
+
+(note 129 9 3 ("./strings.cc") 108)
+
+(insn 3 129 130 ./strings.cc:108 (set (reg/v/f:DI 3 bx [orig:63 s ] [63])
+        (reg:DI 5 di [ s ])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_ANTI 99 (nil))
+    (expr_list:REG_DEAD (reg:DI 5 di [ s ])
+        (nil)))
+
+(note 130 3 10 ("./strings.cc") 110)
+
+(insn:TI 10 130 11 ./strings.cc:110 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:61 D.2569 ] [61])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_TRUE 9 (nil))
+    (nil))
+
+(jump_insn:TI 11 10 135 ./strings.cc:110 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 124)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 3 (insn_list:REG_DEP_ANTI 9 (insn_list:REG_DEP_TRUE 10 (insn_list:REG_DEP_ANTI 99 (nil)))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 3300 [0xce4])
+            (nil))))
+
+(note 135 11 88 ( s (expr_list:REG_DEP_TRUE (reg/v/f:DI 3 bx [orig:63 s ] [63])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(code_label:HI 88 135 82 150 "" [1 uses])
+
+(note:HI 82 88 26 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 26 82 28 ./strings.cc:111 (set (reg:SI 5 di [orig:64 D.2569 ] [64])
+        (sign_extend:SI (reg:QI 0 ax [orig:61 D.2569 ] [61]))) 121 {extendqisi2} (nil)
+    (expr_list:REG_DEAD (reg:QI 0 ax [orig:61 D.2569 ] [61])
+        (nil)))
+
+(call_insn/u:TI 28 26 30 ./strings.cc:111 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 26 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di [ D.2569 ])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di [ D.2569 ]))
+            (nil))))
+
+(insn:TI 30 28 31 ./strings.cc:111 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:60 D.2575 ] [60])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 28 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:60 D.2575 ] [60])
+        (nil)))
+
+(jump_insn:TI 31 30 77 ./strings.cc:111 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 125)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 26 (insn_list:REG_DEP_TRUE 30 (insn_list:REG_DEP_ANTI 28 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 77 31 76 NOTE_INSN_LOOP_END)
+
+(note:HI 76 77 18 NOTE_INSN_LOOP_BEG)
+
+(note:HI 18 76 19 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 19 18 20 ("./strings.cc") 111)
+
+(insn:TI 20 19 21 ./strings.cc:111 (parallel [
+            (set (reg/v/f:DI 3 bx [orig:63 s ] [63])
+                (plus:DI (reg/v/f:DI 3 bx [orig:63 s ] [63])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 21 20 22 ./strings.cc:111 (set (reg:QI 0 ax [orig:61 D.2569 ] [61])
+        (mem:QI (reg/v/f:DI 3 bx [orig:63 s ] [63]) [0 S1 A8])) 55 {*movqi_1} (insn_list:REG_DEP_TRUE 20 (nil))
+    (nil))
+
+(insn:TI 22 21 23 ./strings.cc:111 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:61 D.2569 ] [61])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_OUTPUT 20 (insn_list:REG_DEP_TRUE 21 (nil)))
+    (nil))
+
+(jump_insn:TI 23 22 58 ./strings.cc:111 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 88)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 20 (insn_list:REG_DEP_ANTI 21 (insn_list:REG_DEP_TRUE 22 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 8900 [0x22c4])
+            (nil))))
+
+(code_label:HI 58 23 59 144 "" [2 uses])
+
+(note:HI 59 58 63 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 63 59 64 NOTE_INSN_FUNCTION_END)
+
+(note:HI 64 63 66 ("./strings.cc") 118)
+
+(insn:TI 66 64 72 ./strings.cc:118 (set (reg/i:DI 0 ax [ <result> ])
+        (reg/v/f:DI 3 bx [orig:63 s ] [63])) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 3 bx [orig:63 s ] [63])
+        (nil)))
+
+(insn 72 66 101 ./strings.cc:118 (use (reg/i:DI 0 ax [ <result> ])) -1 (insn_list:REG_DEP_TRUE 66 (nil))
+    (nil))
+
+(note 101 72 102 NOTE_INSN_EPILOGUE_BEG)
+
+(insn:TI 102 101 136 ./strings.cc:118 (parallel [
+            (set (reg:DI 3 bx)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_ANTI 66 (nil))
+    (nil))
+
+(note 136 102 103 ( s (nil)) NOTE_INSN_VAR_LOCATION)
+
+(jump_insn:TI 103 136 104 ./strings.cc:118 (return) 562 {return_internal} (insn_list:REG_DEP_TRUE 102 (insn_list:REG_DEP_TRUE 66 (insn_list:REG_DEP_ANTI 72 (nil))))
+    (nil))
+
+(barrier 104 103 137)
+
+(note 137 104 124 ( s (expr_list:REG_DEP_TRUE (reg/v/f:DI 3 bx [orig:63 s ] [63])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(code_label 124 137 13 152 "" [1 uses])
+
+(note:HI 13 124 105 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 105 13 108 ./strings.cc:110 (parallel [
+            (set (reg/v/f:DI 3 bx [orig:63 s ] [63])
+                (const_int 0 [0x0]))
+            (clobber (reg:CC 17 flags))
+        ]) 78 {*movdi_xor_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 108 105 109 ./strings.cc:118 (set (reg/i:DI 0 ax [ <result> ])
+        (reg/v/f:DI 3 bx [orig:63 s ] [63])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_TRUE 105 (nil))
+    (expr_list:REG_DEAD (reg/v/f:DI 3 bx [orig:63 s ] [63])
+        (nil)))
+
+(insn 109 108 110 ./strings.cc:118 (use (reg/i:DI 0 ax [ <result> ])) -1 (insn_list:REG_DEP_TRUE 108 (nil))
+    (nil))
+
+(insn:TI 110 109 138 ./strings.cc:118 (parallel [
+            (set (reg:DI 3 bx)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_ANTI 108 (insn_list:REG_DEP_OUTPUT 105 (nil)))
+    (nil))
+
+(note 138 110 111 ( s (expr_list:REG_DEP_TRUE (reg:DI 5 di [ s ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(jump_insn:TI 111 138 114 ./strings.cc:118 (return) 562 {return_internal} (insn_list:REG_DEP_TRUE 105 (insn_list:REG_DEP_TRUE 110 (insn_list:REG_DEP_TRUE 108 (insn_list:REG_DEP_ANTI 109 (nil)))))
+    (nil))
+
+(barrier 114 111 34)
+
+(note:HI 34 114 139 ("./strings.cc") 114)
+
+(note 139 34 125 ( s (expr_list:REG_DEP_TRUE (reg/v/f:DI 3 bx [orig:63 s ] [63])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(code_label 125 139 33 153 "" [1 uses])
+
+(note:HI 33 125 35 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 35 33 36 ./strings.cc:114 (set (mem:QI (reg/v/f:DI 3 bx [orig:63 s ] [63]) [0 S1 A8])
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (nil))
+
+(insn 36 35 37 ./strings.cc:114 (parallel [
+            (set (reg/v/f:DI 3 bx [orig:63 s ] [63])
+                (plus:DI (reg/v/f:DI 3 bx [orig:63 s ] [63])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (insn_list:REG_DEP_ANTI 35 (nil))
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(note:HI 37 36 38 ("./strings.cc") 115)
+
+(insn:TI 38 37 39 ./strings.cc:115 (set (reg:QI 0 ax [orig:58 temp.240 ] [58])
+        (mem:QI (reg/v/f:DI 3 bx [orig:63 s ] [63]) [0 S1 A8])) 55 {*movqi_1} (insn_list:REG_DEP_TRUE 36 (insn_list:REG_DEP_TRUE 35 (nil)))
+    (nil))
+
+(insn:TI 39 38 40 ./strings.cc:115 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:58 temp.240 ] [58])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_OUTPUT 36 (insn_list:REG_DEP_TRUE 38 (nil)))
+    (nil))
+
+(jump_insn:TI 40 39 78 ./strings.cc:115 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 94)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 36 (insn_list:REG_DEP_ANTI 38 (insn_list:REG_DEP_TRUE 39 (insn_list:REG_DEP_ANTI 35 (nil)))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+            (nil))))
+
+(note:HI 78 40 131 NOTE_INSN_LOOP_BEG)
+
+(note 131 78 132 [bb 6] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 132 131 133 (set (pc)
+        (label_ref 58)) 548 {jump} (nil)
+    (nil))
+
+(barrier 133 132 44)
+
+(code_label:HI 44 133 45 148 "" [1 uses])
+
+(note:HI 45 44 46 [bb 7] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 46 45 47 ./strings.cc:115 (parallel [
+            (set (reg/v/f:DI 3 bx [orig:63 s ] [63])
+                (plus:DI (reg/v/f:DI 3 bx [orig:63 s ] [63])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 47 46 48 ./strings.cc:115 (set (reg:QI 0 ax [orig:58 temp.240 ] [58])
+        (mem:QI (reg/v/f:DI 3 bx [orig:63 s ] [63]) [0 S1 A8])) 55 {*movqi_1} (insn_list:REG_DEP_TRUE 46 (nil))
+    (nil))
+
+(insn:TI 48 47 49 ./strings.cc:115 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:58 temp.240 ] [58])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_OUTPUT 46 (insn_list:REG_DEP_TRUE 47 (nil)))
+    (nil))
+
+(jump_insn:TI 49 48 94 ./strings.cc:115 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 58)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 46 (insn_list:REG_DEP_ANTI 47 (insn_list:REG_DEP_TRUE 48 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(code_label:HI 94 49 83 151 "" [1 uses])
+
+(note:HI 83 94 52 [bb 8] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 52 83 54 ./strings.cc:115 (set (reg:SI 5 di [orig:65 temp.240 ] [65])
+        (sign_extend:SI (reg:QI 0 ax [orig:58 temp.240 ] [58]))) 121 {extendqisi2} (nil)
+    (expr_list:REG_DEAD (reg:QI 0 ax [orig:58 temp.240 ] [58])
+        (nil)))
+
+(call_insn/u:TI 54 52 56 ./strings.cc:115 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 52 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di [ temp.240 ])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di [ temp.240 ]))
+            (nil))))
+
+(insn:TI 56 54 57 ./strings.cc:115 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:59 D.2579 ] [59])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 54 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:59 D.2579 ] [59])
+        (nil)))
+
+(jump_insn:TI 57 56 79 ./strings.cc:115 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 44)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 52 (insn_list:REG_DEP_TRUE 56 (insn_list:REG_DEP_ANTI 54 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+            (nil))))
+
+(note:HI 79 57 121 NOTE_INSN_LOOP_END)
+
+(note 121 79 116 [bb 9] NOTE_INSN_BASIC_BLOCK)
+
+(note 116 121 117 ("./strings.cc") 118)
+
+(insn:TI 117 116 118 ./strings.cc:118 (set (reg/i:DI 0 ax [ <result> ])
+        (reg/v/f:DI 3 bx [orig:63 s ] [63])) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 3 bx [orig:63 s ] [63])
+        (nil)))
+
+(insn 118 117 119 ./strings.cc:118 (use (reg/i:DI 0 ax [ <result> ])) -1 (insn_list:REG_DEP_TRUE 117 (nil))
+    (nil))
+
+(insn:TI 119 118 140 ./strings.cc:118 (parallel [
+            (set (reg:DI 3 bx)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_ANTI 117 (nil))
+    (nil))
+
+(note 140 119 141 ( s (nil)) NOTE_INSN_VAR_LOCATION)
+
+(insn 141 140 120 ./strings.cc:118 (unspec_volatile [
+            (const_int 1 [0x1])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 120 141 123 ./strings.cc:118 (return) 562 {return_internal} (insn_list:REG_DEP_TRUE 119 (insn_list:REG_DEP_TRUE 117 (insn_list:REG_DEP_ANTI 118 (nil))))
+    (nil))
+
+(barrier 123 120 98)
+
+(note 98 123 0 NOTE_INSN_DELETED)
+
+;; Function char* strlopspace(char*) (_Z11strlopspacePc)
+
+(note:HI 1 0 87 ("./strings.cc") 93)
+
+(note 87 1 6 ( s (expr_list:REG_DEP_TRUE (reg:DI 5 di [ s ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 6 87 4 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 4 6 69 NOTE_INSN_FUNCTION_BEG)
+
+(insn/f:TI 69 4 3 ./strings.cc:93 (set (mem:DI (pre_dec:DI (reg/f:DI 7 sp)) [0 S8 A8])
+        (reg:DI 6 bp)) 74 {*pushdi2_rex64} (nil)
+    (expr_list:REG_DEAD (reg:DI 6 bp)
+        (nil)))
+
+(insn 3 69 70 ./strings.cc:93 (set (reg/v/f:DI 6 bp [orig:62 s ] [62])
+        (reg:DI 5 di [ s ])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_ANTI 69 (nil))
+    (nil))
+
+(insn/f:TI 70 3 8 ./strings.cc:93 (set (mem:DI (pre_dec:DI (reg/f:DI 7 sp)) [0 S8 A8])
+        (reg:DI 3 bx)) 74 {*pushdi2_rex64} (insn_list:REG_DEP_TRUE 69 (nil))
+    (expr_list:REG_DEAD (reg:DI 3 bx)
+        (nil)))
+
+(note:HI 8 70 14 ("./strings.cc") 96)
+
+(insn 14 8 88 ./strings.cc:96 (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+        (reg:DI 5 di [orig:62 s ] [62])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_ANTI 70 (nil))
+    (nil))
+
+(note 88 14 82 ( last (expr_list:REG_DEP_TRUE (reg/v/f:DI 3 bx [orig:58 last ] [58])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note 82 88 71 ("./strings.cc") 93)
+
+(insn/f:TI 71 82 72 ./strings.cc:93 (parallel [
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int -8 [0xfffffffffffffff8])))
+            (clobber (reg:CC 17 flags))
+            (clobber (mem:BLK (scratch) [0 A8]))
+        ]) 762 {pro_epilogue_adjust_stack_rex64} (insn_list:REG_DEP_TRUE 69 (insn_list:REG_DEP_TRUE 70 (nil)))
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(note 72 71 83 NOTE_INSN_PROLOGUE_END)
+
+(note 83 72 9 ("./strings.cc") 96)
+
+(insn 9 83 10 ./strings.cc:96 (set (reg:QI 0 ax [orig:60 D.2562 ] [60])
+        (mem:QI (reg:DI 5 di [orig:62 s ] [62]) [0 S1 A8])) 55 {*movqi_1} (insn_list:REG_DEP_TRUE 69 (insn_list:REG_DEP_TRUE 70 (insn_list:REG_DEP_TRUE 71 (nil))))
+    (expr_list:REG_DEAD (reg:DI 5 di [orig:62 s ] [62])
+        (nil)))
+
+(insn:TI 10 9 11 ./strings.cc:96 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:60 D.2562 ] [60])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_OUTPUT 71 (insn_list:REG_DEP_TRUE 9 (nil)))
+    (nil))
+
+(jump_insn:TI 11 10 58 ./strings.cc:96 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 30)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 3 (insn_list:REG_DEP_ANTI 9 (insn_list:REG_DEP_ANTI 14 (insn_list:REG_DEP_TRUE 10 (insn_list:REG_DEP_ANTI 69 (insn_list:REG_DEP_ANTI 70 (insn_list:REG_DEP_ANTI 71 (nil))))))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+            (nil))))
+
+(note:HI 58 11 84 NOTE_INSN_LOOP_BEG)
+
+(note 84 58 85 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 85 84 86 (set (pc)
+        (label_ref 38)) 548 {jump} (nil)
+    (nil))
+
+(barrier 86 85 89)
+
+(note 89 86 22 ( s (expr_list:REG_DEP_TRUE (reg/v/f:DI 6 bp [orig:62 s ] [62])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(code_label:HI 22 89 23 159 "" [1 uses])
+
+(note:HI 23 22 24 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 24 23 25 ("./strings.cc") 97)
+
+(insn:TI 25 24 26 ./strings.cc:97 (parallel [
+            (set (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                (plus:DI (reg/v/f:DI 3 bx [orig:58 last ] [58])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(note:HI 26 25 27 ("./strings.cc") 96)
+
+(insn:TI 27 26 28 ./strings.cc:96 (set (reg:QI 0 ax [orig:60 D.2562 ] [60])
+        (mem:QI (reg/v/f:DI 3 bx [orig:58 last ] [58]) [0 S1 A8])) 55 {*movqi_1} (insn_list:REG_DEP_TRUE 25 (nil))
+    (nil))
+
+(insn:TI 28 27 29 ./strings.cc:96 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:60 D.2562 ] [60])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_OUTPUT 25 (insn_list:REG_DEP_TRUE 27 (nil)))
+    (nil))
+
+(jump_insn:TI 29 28 90 ./strings.cc:96 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 38)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 25 (insn_list:REG_DEP_ANTI 27 (insn_list:REG_DEP_TRUE 28 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note 90 29 30 ( s (expr_list:REG_DEP_TRUE (reg/v/f:DI 6 bp [orig:62 s ] [62])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(code_label:HI 30 90 31 158 "" [1 uses])
+
+(note:HI 31 30 32 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 32 31 34 ./strings.cc:96 (set (reg:SI 5 di [orig:63 D.2562 ] [63])
+        (sign_extend:SI (reg:QI 0 ax [orig:60 D.2562 ] [60]))) 121 {extendqisi2} (nil)
+    (expr_list:REG_DEAD (reg:QI 0 ax [orig:60 D.2562 ] [60])
+        (nil)))
+
+(call_insn/u:TI 34 32 36 ./strings.cc:96 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 32 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di [ D.2562 ])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di [ D.2562 ]))
+            (nil))))
+
+(insn:TI 36 34 37 ./strings.cc:96 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:59 D.2564 ] [59])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 34 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:59 D.2564 ] [59])
+        (nil)))
+
+(jump_insn:TI 37 36 59 ./strings.cc:96 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 22)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 32 (insn_list:REG_DEP_TRUE 36 (insn_list:REG_DEP_ANTI 34 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+            (nil))))
+
+(note:HI 59 37 91 NOTE_INSN_LOOP_END)
+
+(note 91 59 38 ( s (expr_list:REG_DEP_TRUE (reg/v/f:DI 6 bp [orig:62 s ] [62])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(code_label:HI 38 91 39 157 "" [2 uses])
+
+(note:HI 39 38 40 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 40 39 45 ("./strings.cc") 98)
+
+(note:HI 45 40 41 NOTE_INSN_FUNCTION_END)
+
+(insn:TI 41 45 46 ./strings.cc:98 (set (mem:QI (reg/v/f:DI 3 bx [orig:58 last ] [58]) [0 S1 A8])
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 3 bx [orig:58 last ] [58])
+        (nil)))
+
+(note:HI 46 41 73 ("./strings.cc") 100)
+
+(note 73 46 74 NOTE_INSN_EPILOGUE_BEG)
+
+(insn 74 73 48 ./strings.cc:100 (parallel [
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+            (clobber (reg:CC 17 flags))
+            (clobber (mem:BLK (scratch) [0 A8]))
+        ]) 762 {pro_epilogue_adjust_stack_rex64} (insn_list:REG_DEP_OUTPUT 41 (nil))
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn 48 74 75 ./strings.cc:100 (set (reg/i:DI 0 ax [ <result> ])
+        (reg/v/f:DI 6 bp [orig:62 s ] [62])) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 6 bp [orig:62 s ] [62])
+        (nil)))
+
+(insn:TI 75 48 92 ./strings.cc:100 (parallel [
+            (set (reg:DI 3 bx)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_TRUE 41 (insn_list:REG_DEP_TRUE 74 (nil)))
+    (nil))
+
+(note 92 75 54 ( last (nil)) NOTE_INSN_VAR_LOCATION)
+
+(insn 54 92 76 ./strings.cc:100 (use (reg/i:DI 0 ax [ <result> ])) -1 (insn_list:REG_DEP_TRUE 48 (nil))
+    (nil))
+
+(insn:TI 76 54 93 ./strings.cc:100 (parallel [
+            (set (reg:DI 6 bp)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_ANTI 48 (insn_list:REG_DEP_TRUE 75 (insn_list:REG_DEP_TRUE 41 (insn_list:REG_DEP_TRUE 74 (nil)))))
+    (nil))
+
+(note 93 76 77 ( s (expr_list:REG_DEP_TRUE (reg:DI 5 di [orig:62 s ] [62])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(jump_insn:TI 77 93 78 ./strings.cc:100 (return) 562 {return_internal} (insn_list:REG_DEP_ANTI 41 (insn_list:REG_DEP_TRUE 74 (insn_list:REG_DEP_TRUE 76 (insn_list:REG_DEP_TRUE 75 (insn_list:REG_DEP_TRUE 48 (insn_list:REG_DEP_ANTI 54 (nil)))))))
+    (nil))
+
+(barrier 78 77 68)
+
+(note 68 78 0 NOTE_INSN_DELETED)
+
+;; Function char* strcasepre(const char*, const char*) (_Z10strcaseprePKcS0_)
+
+(note:HI 1 0 117 ("./strings.cc") 56)
+
+(note 117 1 118 ( str (expr_list:REG_DEP_TRUE (reg:DI 5 di [ str ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note 118 117 7 ( pre (expr_list:REG_DEP_TRUE (reg:DI 4 si [ pre ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 7 118 5 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 5 7 10 NOTE_INSN_FUNCTION_BEG)
+
+(note:HI 10 5 11 ("./strings.cc") 60)
+
+(insn:TI 11 10 106 ./strings.cc:60 (set (reg:QI 0 ax [orig:62 D.2522 ] [62])
+        (mem:QI (reg/v/f:DI 4 si [orig:65 pre ] [65]) [0 S1 A8])) 55 {*movqi_1} (nil)
+    (nil))
+
+(note 106 11 81 ("./strings.cc") 56)
+
+(insn/f 81 106 3 ./strings.cc:56 (set (mem:DI (pre_dec:DI (reg/f:DI 7 sp)) [0 S8 A8])
+        (reg:DI 41 r12)) 74 {*pushdi2_rex64} (nil)
+    (expr_list:REG_DEAD (reg:DI 41 r12)
+        (nil)))
+
+(insn 3 81 82 ./strings.cc:56 (set (reg/v/f:DI 41 r12 [orig:64 str ] [64])
+        (reg:DI 5 di [ str ])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_ANTI 81 (nil))
+    (expr_list:REG_DEAD (reg:DI 5 di [ str ])
+        (nil)))
+
+(insn/f:TI 82 3 107 ./strings.cc:56 (set (mem:DI (pre_dec:DI (reg/f:DI 7 sp)) [0 S8 A8])
+        (reg:DI 6 bp)) 74 {*pushdi2_rex64} (insn_list:REG_DEP_TRUE 81 (nil))
+    (expr_list:REG_DEAD (reg:DI 6 bp)
+        (nil)))
+
+(note 107 82 21 ("./strings.cc") 60)
+
+(insn 21 107 12 ./strings.cc:60 (set (reg/f:DI 6 bp [orig:58 ivtmp.302 ] [58])
+        (reg/v/f:DI 4 si [orig:65 pre ] [65])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_ANTI 82 (nil))
+    (expr_list:REG_DEAD (reg/v/f:DI 4 si [orig:65 pre ] [65])
+        (nil)))
+
+(insn:TI 12 21 108 ./strings.cc:60 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:62 D.2522 ] [62])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_TRUE 11 (nil))
+    (nil))
+
+(note 108 12 83 ("./strings.cc") 56)
+
+(insn/f 83 108 84 ./strings.cc:56 (set (mem:DI (pre_dec:DI (reg/f:DI 7 sp)) [0 S8 A8])
+        (reg:DI 3 bx)) 74 {*pushdi2_rex64} (insn_list:REG_DEP_TRUE 81 (insn_list:REG_DEP_TRUE 82 (nil)))
+    (expr_list:REG_DEAD (reg:DI 3 bx)
+        (nil)))
+
+(note 84 83 109 NOTE_INSN_PROLOGUE_END)
+
+(note 109 84 13 ("./strings.cc") 60)
+
+(jump_insn:TI 13 109 119 ./strings.cc:60 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 22)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 3 (insn_list:REG_DEP_ANTI 11 (insn_list:REG_DEP_ANTI 21 (insn_list:REG_DEP_TRUE 12 (insn_list:REG_DEP_ANTI 81 (insn_list:REG_DEP_ANTI 82 (insn_list:REG_DEP_ANTI 83 (nil))))))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+            (nil))))
+
+(note 119 13 114 ( str (expr_list:REG_DEP_TRUE (reg/v/f:DI 41 r12 [orig:64 str ] [64])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note 114 119 115 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 115 114 116 (set (pc)
+        (label_ref 14)) 548 {jump} (nil)
+    (nil))
+
+(barrier 116 115 37)
+
+(note:HI 37 116 120 ("./strings.cc") 62)
+
+(note 120 37 121 ( str (expr_list:REG_DEP_TRUE (reg/v/f:DI 41 r12 [orig:64 str ] [64])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note 121 120 105 ( pre (nil)) NOTE_INSN_VAR_LOCATION)
+
+(code_label 105 121 36 170 "" [1 uses])
+
+(note:HI 36 105 39 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 39 36 40 ("./strings.cc") 60)
+
+(insn:TI 40 39 110 ./strings.cc:60 (set (reg:QI 0 ax [orig:62 D.2522 ] [62])
+        (mem:QI (plus:DI (reg/f:DI 6 bp [orig:58 ivtmp.302 ] [58])
+                (const_int 1 [0x1])) [0 S1 A8])) 55 {*movqi_1} (nil)
+    (nil))
+
+(note 110 40 38 ("./strings.cc") 62)
+
+(insn 38 110 111 ./strings.cc:62 (parallel [
+            (set (reg/v/f:DI 41 r12 [orig:64 str ] [64])
+                (plus:DI (reg/v/f:DI 41 r12 [orig:64 str ] [64])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(note 111 38 41 ("./strings.cc") 60)
+
+(insn 41 111 42 ./strings.cc:60 (parallel [
+            (set (reg/f:DI 6 bp [orig:58 ivtmp.302 ] [58])
+                (plus:DI (reg/f:DI 6 bp [orig:58 ivtmp.302 ] [58])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (insn_list:REG_DEP_ANTI 40 (nil))
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 42 41 43 ./strings.cc:60 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 0 ax [orig:62 D.2522 ] [62])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_OUTPUT 38 (insn_list:REG_DEP_OUTPUT 41 (insn_list:REG_DEP_TRUE 40 (nil))))
+    (nil))
+
+(jump_insn:TI 43 42 68 ./strings.cc:60 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref/s 14)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 38 (insn_list:REG_DEP_ANTI 40 (insn_list:REG_DEP_ANTI 41 (insn_list:REG_DEP_TRUE 42 (nil)))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+            (nil))))
+
+(note:HI 68 43 122 NOTE_INSN_LOOP_BEG)
+
+(note 122 68 123 ( str (expr_list:REG_DEP_TRUE (reg/v/f:DI 41 r12 [orig:64 str ] [64])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note 123 122 22 ( pre (expr_list:REG_DEP_TRUE (reg:DI 4 si [ pre ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(code_label:HI 22 123 23 166 "" [1 uses])
+
+(note:HI 23 22 24 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 24 23 25 ("./strings.cc") 61)
+
+(insn:TI 25 24 27 ./strings.cc:61 (set (reg:SI 5 di [orig:66 D.2522 ] [66])
+        (sign_extend:SI (reg:QI 0 ax [orig:62 D.2522 ] [62]))) 121 {extendqisi2} (nil)
+    (expr_list:REG_DEAD (reg:QI 0 ax [orig:62 D.2522 ] [62])
+        (nil)))
+
+(call_insn/u:TI 27 25 124 ./strings.cc:61 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("tolower") [flags 0x41] <function_decl 0x2ad10a4b3500 tolower>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 25 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di [ D.2522 ])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di [ D.2522 ]))
+            (nil))))
+
+(note 124 27 29 ( pre (nil)) NOTE_INSN_VAR_LOCATION)
+
+(insn:TI 29 124 28 ./strings.cc:61 (set (reg:SI 5 di [67])
+        (sign_extend:SI (mem:QI (reg/v/f:DI 41 r12 [orig:64 str ] [64]) [0 S1 A8]))) 121 {extendqisi2} (insn_list:REG_DEP_OUTPUT 25 (insn_list:REG_DEP_ANTI 27 (nil)))
+    (nil))
+
+(insn 28 29 31 ./strings.cc:61 (set (reg:SI 3 bx [orig:60 D.2525 ] [60])
+        (reg:SI 0 ax)) 40 {*movsi_1} (insn_list:REG_DEP_TRUE 27 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax)
+        (nil)))
+
+(call_insn/u:TI 31 28 33 ./strings.cc:61 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("tolower") [flags 0x41] <function_decl 0x2ad10a4b3500 tolower>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_ANTI 28 (insn_list:REG_DEP_TRUE 29 (insn_list:REG_DEP_ANTI 27 (nil))))
+    (expr_list:REG_DEAD (reg:SI 5 di)
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+            (nil))))
+
+(insn:TI 33 31 34 ./strings.cc:61 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 3 bx [orig:60 D.2525 ] [60])
+            (reg:SI 0 ax [orig:59 D.2528 ] [59]))) 5 {*cmpsi_1_insn} (insn_list:REG_DEP_OUTPUT 27 (insn_list:REG_DEP_TRUE 28 (insn_list:REG_DEP_TRUE 31 (nil))))
+    (expr_list:REG_DEAD (reg:SI 3 bx [orig:60 D.2525 ] [60])
+        (expr_list:REG_DEAD (reg:SI 0 ax [orig:59 D.2528 ] [59])
+            (nil))))
+
+(jump_insn:TI 34 33 69 ./strings.cc:61 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 105)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 25 (insn_list:REG_DEP_ANTI 27 (insn_list:REG_DEP_ANTI 28 (insn_list:REG_DEP_ANTI 29 (insn_list:REG_DEP_TRUE 33 (insn_list:REG_DEP_ANTI 31 (nil)))))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+            (nil))))
+
+(note:HI 69 34 48 NOTE_INSN_LOOP_END)
+
+(note:HI 48 69 93 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(note 93 48 95 ("./strings.cc") 64)
+
+(insn:TI 95 93 96 ./strings.cc:64 (parallel [
+            (set (reg:DI 3 bx)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (nil)
+    (nil))
+
+(insn:TI 96 95 97 ./strings.cc:64 (parallel [
+            (set (reg:DI 6 bp)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_TRUE 95 (nil))
+    (nil))
+
+(insn:TI 97 96 125 ./strings.cc:64 (parallel [
+            (set (reg:DI 41 r12)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_TRUE 96 (nil))
+    (nil))
+
+(note 125 97 112 ( str (nil)) NOTE_INSN_VAR_LOCATION)
+
+(note 112 125 91 ("./strings.cc") 61)
+
+(insn:TI 91 112 113 ./strings.cc:60 (parallel [
+            (set (reg/f:DI 0 ax [orig:61 D.2523 ] [61])
+                (const_int 0 [0x0]))
+            (clobber (reg:CC 17 flags))
+        ]) 78 {*movdi_xor_rex64} (nil)
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(note 113 91 94 ("./strings.cc") 64)
+
+(insn 94 113 98 ./strings.cc:64 (use (reg/i:DI 0 ax [ <result> ])) -1 (insn_list:REG_DEP_TRUE 91 (nil))
+    (nil))
+
+(jump_insn:TI 98 94 101 ./strings.cc:64 (return) 562 {return_internal} (insn_list:REG_DEP_TRUE 97 (insn_list:REG_DEP_TRUE 96 (insn_list:REG_DEP_TRUE 95 (insn_list:REG_DEP_TRUE 91 (insn_list:REG_DEP_ANTI 94 (nil))))))
+    (nil))
+
+(barrier 101 98 126)
+
+(note 126 101 127 ( str (expr_list:REG_DEP_TRUE (reg/v/f:DI 41 r12 [orig:64 str ] [64])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note 127 126 14 ( pre (expr_list:REG_DEP_TRUE (reg:DI 4 si [ pre ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(code_label:HI 14 127 15 164 "" [2 uses])
+
+(note:HI 15 14 55 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 55 15 85 NOTE_INSN_FUNCTION_END)
+
+(note 85 55 86 NOTE_INSN_EPILOGUE_BEG)
+
+(insn:TI 86 85 87 ./strings.cc:64 (parallel [
+            (set (reg:DI 3 bx)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (nil)
+    (nil))
+
+(insn:TI 87 86 16 ./strings.cc:64 (parallel [
+            (set (reg:DI 6 bp)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_TRUE 86 (nil))
+    (nil))
+
+(insn:TI 16 87 64 ./strings.cc:60 (set (reg/f:DI 0 ax [orig:61 D.2523 ] [61])
+        (reg/v/f:DI 41 r12 [orig:64 str ] [64])) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 41 r12 [orig:64 str ] [64])
+        (nil)))
+
+(insn 64 16 88 ./strings.cc:64 (use (reg/i:DI 0 ax [ <result> ])) -1 (insn_list:REG_DEP_TRUE 16 (nil))
+    (nil))
+
+(insn:TI 88 64 128 ./strings.cc:64 (parallel [
+            (set (reg:DI 41 r12)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_ANTI 16 (insn_list:REG_DEP_TRUE 87 (nil)))
+    (nil))
+
+(note 128 88 89 ( str (expr_list:REG_DEP_TRUE (reg:DI 5 di [ str ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(jump_insn:TI 89 128 90 ./strings.cc:64 (return) 562 {return_internal} (insn_list:REG_DEP_TRUE 88 (insn_list:REG_DEP_TRUE 87 (insn_list:REG_DEP_TRUE 86 (insn_list:REG_DEP_TRUE 16 (insn_list:REG_DEP_ANTI 64 (nil))))))
+    (nil))
+
+(barrier 90 89 80)
+
+(note 80 90 0 NOTE_INSN_DELETED)
+
+;; Function char* strclean(char*) (_Z8strcleanPc)
+
+(note:HI 1 0 106 ("./strings.cc") 29)
+
+(note 106 1 6 ( s (expr_list:REG_DEP_TRUE (reg:DI 5 di [ s ])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note:HI 6 106 4 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 4 6 90 NOTE_INSN_FUNCTION_BEG)
+
+(insn/f:TI 90 4 3 ./strings.cc:29 (set (mem:DI (pre_dec:DI (reg/f:DI 7 sp)) [0 S8 A8])
+        (reg:DI 43 r14)) 74 {*pushdi2_rex64} (nil)
+    (expr_list:REG_DEAD (reg:DI 43 r14)
+        (nil)))
+
+(insn 3 90 91 ./strings.cc:29 (set (reg/v/f:DI 43 r14 [orig:66 s ] [66])
+        (reg:DI 5 di [ s ])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_ANTI 90 (nil))
+    (nil))
+
+(insn/f:TI 91 3 8 ./strings.cc:29 (set (mem:DI (pre_dec:DI (reg/f:DI 7 sp)) [0 S8 A8])
+        (reg:DI 42 r13)) 74 {*pushdi2_rex64} (insn_list:REG_DEP_TRUE 90 (nil))
+    (expr_list:REG_DEAD (reg:DI 42 r13)
+        (nil)))
+
+(note:HI 8 91 14 ("./strings.cc") 33)
+
+(insn 14 8 107 ./strings.cc:33 (set (reg/v/f:DI 42 r13 [orig:59 p ] [59])
+        (reg:DI 5 di [orig:66 s ] [66])) 81 {*movdi_1_rex64} (insn_list:REG_DEP_ANTI 91 (nil))
+    (nil))
+
+(note 107 14 104 ( p (expr_list:REG_DEP_TRUE (reg/v/f:DI 42 r13 [orig:59 p ] [59])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(note 104 107 92 ("./strings.cc") 29)
+
+(insn/f:TI 92 104 93 ./strings.cc:29 (set (mem:DI (pre_dec:DI (reg/f:DI 7 sp)) [0 S8 A8])
+        (reg:DI 41 r12)) 74 {*pushdi2_rex64} (insn_list:REG_DEP_TRUE 90 (insn_list:REG_DEP_TRUE 91 (nil)))
+    (expr_list:REG_DEAD (reg:DI 41 r12)
+        (nil)))
+
+(insn/f:TI 93 92 94 ./strings.cc:29 (set (mem:DI (pre_dec:DI (reg/f:DI 7 sp)) [0 S8 A8])
+        (reg:DI 6 bp)) 74 {*pushdi2_rex64} (insn_list:REG_DEP_TRUE 90 (insn_list:REG_DEP_TRUE 91 (insn_list:REG_DEP_TRUE 92 (nil))))
+    (expr_list:REG_DEAD (reg:DI 6 bp)
+        (nil)))
+
+(insn/f:TI 94 93 95 ./strings.cc:29 (set (mem:DI (pre_dec:DI (reg/f:DI 7 sp)) [0 S8 A8])
+        (reg:DI 3 bx)) 74 {*pushdi2_rex64} (insn_list:REG_DEP_TRUE 90 (insn_list:REG_DEP_TRUE 91 (insn_list:REG_DEP_TRUE 92 (insn_list:REG_DEP_TRUE 93 (nil)))))
+    (expr_list:REG_DEAD (reg:DI 3 bx)
+        (nil)))
+
+(note 95 94 105 NOTE_INSN_PROLOGUE_END)
+
+(note 105 95 9 ("./strings.cc") 33)
+
+(insn 9 105 10 ./strings.cc:33 (set (reg:QI 3 bx [orig:64 D.2495 ] [64])
+        (mem:QI (reg:DI 5 di [orig:66 s ] [66]) [0 S1 A8])) 55 {*movqi_1} (insn_list:REG_DEP_TRUE 90 (insn_list:REG_DEP_TRUE 91 (insn_list:REG_DEP_TRUE 92 (insn_list:REG_DEP_TRUE 93 (insn_list:REG_DEP_TRUE 94 (nil))))))
+    (nil))
+
+(insn:TI 10 9 11 ./strings.cc:33 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 3 bx [orig:64 D.2495 ] [64])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_TRUE 9 (nil))
+    (nil))
+
+(jump_insn:TI 11 10 18 ./strings.cc:33 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 56)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 3 (insn_list:REG_DEP_ANTI 9 (insn_list:REG_DEP_ANTI 14 (insn_list:REG_DEP_TRUE 10 (insn_list:REG_DEP_ANTI 90 (insn_list:REG_DEP_ANTI 91 (insn_list:REG_DEP_ANTI 92 (insn_list:REG_DEP_ANTI 93 (insn_list:REG_DEP_ANTI 94 (nil))))))))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 1000 [0x3e8])
+            (nil))))
+
+(note:HI 18 11 19 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 19 18 76 ./strings.cc:33 (set (reg/f:DI 41 r12 [orig:58 ivtmp.331 ] [58])
+        (reg:DI 5 di [orig:66 s ] [66])) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_DEAD (reg:DI 5 di [orig:66 s ] [66])
+        (nil)))
+
+(note:HI 76 19 108 NOTE_INSN_LOOP_BEG)
+
+(note 108 76 21 ( s (expr_list:REG_DEP_TRUE (reg/v/f:DI 43 r14 [orig:66 s ] [66])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(code_label:HI 21 108 22 175 "" [1 uses])
+
+(note:HI 22 21 23 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 23 22 24 ("./strings.cc") 34)
+
+(insn:TI 24 23 25 ./strings.cc:34 (set (reg:SI 6 bp [orig:63 D.2499 ] [63])
+        (sign_extend:SI (reg:QI 3 bx [orig:64 D.2495 ] [64]))) 121 {extendqisi2} (nil)
+    (nil))
+
+(insn:TI 25 24 26 ./strings.cc:34 (set (reg:SI 5 di [ D.2499 ])
+        (reg:SI 6 bp [orig:63 D.2499 ] [63])) 40 {*movsi_1} (insn_list:REG_DEP_TRUE 24 (nil))
+    (nil))
+
+(call_insn/u:TI 26 25 28 ./strings.cc:34 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isalnum") [flags 0x41] <function_decl 0x2ad10a4adb00 isalnum>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 25 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di [ D.2499 ])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di [ D.2499 ]))
+            (nil))))
+
+(insn:TI 28 26 29 ./strings.cc:34 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:62 D.2500 ] [62])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 26 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:62 D.2500 ] [62])
+        (nil)))
+
+(jump_insn:TI 29 28 31 ./strings.cc:34 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 41)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 24 (insn_list:REG_DEP_ANTI 25 (insn_list:REG_DEP_TRUE 28 (insn_list:REG_DEP_ANTI 26 (nil)))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 3000 [0xbb8])
+            (nil))))
+
+(note:HI 31 29 32 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 32 31 33 ./strings.cc:34 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 3 bx [orig:64 D.2495 ] [64])
+            (const_int 45 [0x2d]))) 10 {*cmpqi_1} (nil)
+    (expr_list:REG_DEAD (reg:QI 3 bx [orig:64 D.2495 ] [64])
+        (nil)))
+
+(jump_insn:TI 33 32 35 ./strings.cc:34 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 41)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_TRUE 32 (nil))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 4880 [0x1310])
+            (nil))))
+
+(note:HI 35 33 36 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(insn:TI 36 35 112 ./strings.cc:34 (set (reg:SI 5 di [ D.2499 ])
+        (reg:SI 6 bp [orig:63 D.2499 ] [63])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 112 36 37 ./strings.cc:34 (unspec_volatile [
+            (const_int 5 [0x5])
+        ] 7) -1 (nil)
+    (nil))
+
+(call_insn/u:TI 37 112 39 ./strings.cc:34 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("isspace") [flags 0x41] <function_decl 0x2ad10a4b2900 isspace>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 36 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di [ D.2499 ])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di [ D.2499 ]))
+            (nil))))
+
+(insn:TI 39 37 113 ./strings.cc:34 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 0 ax [orig:61 D.2501 ] [61])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (insn_list:REG_DEP_TRUE 37 (nil))
+    (expr_list:REG_DEAD (reg:SI 0 ax [orig:61 D.2501 ] [61])
+        (nil)))
+
+(insn 113 39 40 ./strings.cc:34 (unspec_volatile [
+            (const_int 2 [0x2])
+        ] 7) -1 (nil)
+    (nil))
+
+(jump_insn:TI 40 113 41 ./strings.cc:34 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 49)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 36 (insn_list:REG_DEP_TRUE 39 (insn_list:REG_DEP_ANTI 37 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 5000 [0x1388])
+            (nil))))
+
+(code_label:HI 41 40 42 176 "" [2 uses])
+
+(note:HI 42 41 43 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 43 42 44 ("./strings.cc") 35)
+
+(insn:TI 44 43 45 ./strings.cc:35 (set (reg:SI 5 di [ D.2499 ])
+        (reg:SI 6 bp [orig:63 D.2499 ] [63])) 40 {*movsi_1} (nil)
+    (expr_list:REG_DEAD (reg:SI 6 bp [orig:63 D.2499 ] [63])
+        (nil)))
+
+(call_insn/u:TI 45 44 47 ./strings.cc:35 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("tolower") [flags 0x41] <function_decl 0x2ad10a4b3500 tolower>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (insn_list:REG_DEP_TRUE 44 (nil))
+    (expr_list:REG_DEAD (reg:SI 5 di [ D.2499 ])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:SI 5 di [ D.2499 ]))
+            (nil))))
+
+(insn:TI 47 45 48 ./strings.cc:35 (set (mem:QI (reg/v/f:DI 42 r13 [orig:59 p ] [59]) [0 S1 A8])
+        (reg:QI 0 ax [orig:60 D.2502 ] [60])) 55 {*movqi_1} (insn_list:REG_DEP_TRUE 45 (nil))
+    (expr_list:REG_DEAD (reg:QI 0 ax [orig:60 D.2502 ] [60])
+        (nil)))
+
+(insn 48 47 49 ./strings.cc:35 (parallel [
+            (set (reg/v/f:DI 42 r13 [orig:59 p ] [59])
+                (plus:DI (reg/v/f:DI 42 r13 [orig:59 p ] [59])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (insn_list:REG_DEP_ANTI 47 (nil))
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(code_label:HI 49 48 50 179 "" [1 uses])
+
+(note:HI 50 49 51 [bb 6] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 51 50 52 ("./strings.cc") 33)
+
+(insn:TI 52 51 53 ./strings.cc:33 (set (reg:QI 3 bx [orig:64 D.2495 ] [64])
+        (mem:QI (plus:DI (reg/f:DI 41 r12 [orig:58 ivtmp.331 ] [58])
+                (const_int 1 [0x1])) [0 S1 A8])) 55 {*movqi_1} (nil)
+    (nil))
+
+(insn 53 52 54 ./strings.cc:33 (parallel [
+            (set (reg/f:DI 41 r12 [orig:58 ivtmp.331 ] [58])
+                (plus:DI (reg/f:DI 41 r12 [orig:58 ivtmp.331 ] [58])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (insn_list:REG_DEP_ANTI 52 (nil))
+    (expr_list:REG_UNUSED (reg:CC 17 flags)
+        (nil)))
+
+(insn:TI 54 53 55 ./strings.cc:33 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 3 bx [orig:64 D.2495 ] [64])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (insn_list:REG_DEP_OUTPUT 53 (insn_list:REG_DEP_TRUE 52 (nil)))
+    (nil))
+
+(jump_insn:TI 55 54 77 ./strings.cc:33 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 21)
+            (pc))) 533 {*jcc_1} (insn_list:REG_DEP_ANTI 52 (insn_list:REG_DEP_ANTI 53 (insn_list:REG_DEP_TRUE 54 (nil))))
+    (expr_list:REG_DEAD (reg:CCZ 17 flags)
+        (expr_list:REG_BR_PROB (const_int 9000 [0x2328])
+            (nil))))
+
+(note:HI 77 55 109 NOTE_INSN_LOOP_END)
+
+(note 109 77 56 ( s (expr_list:REG_DEP_TRUE (reg/v/f:DI 43 r14 [orig:66 s ] [66])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(code_label:HI 56 109 57 174 "" [1 uses])
+
+(note:HI 57 56 58 [bb 7] NOTE_INSN_BASIC_BLOCK)
+
+(note:HI 58 57 63 ("./strings.cc") 36)
+
+(note:HI 63 58 59 NOTE_INSN_FUNCTION_END)
+
+(insn:TI 59 63 64 ./strings.cc:36 (set (mem:QI (reg/v/f:DI 42 r13 [orig:59 p ] [59]) [0 S1 A8])
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 42 r13 [orig:59 p ] [59])
+        (nil)))
+
+(note:HI 64 59 66 ("./strings.cc") 38)
+
+(insn 66 64 72 ./strings.cc:38 (set (reg/i:DI 0 ax [ <result> ])
+        (reg/v/f:DI 43 r14 [orig:66 s ] [66])) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_DEAD (reg/v/f:DI 43 r14 [orig:66 s ] [66])
+        (nil)))
+
+(insn 72 66 96 ./strings.cc:38 (use (reg/i:DI 0 ax [ <result> ])) -1 (insn_list:REG_DEP_TRUE 66 (nil))
+    (nil))
+
+(note 96 72 97 NOTE_INSN_EPILOGUE_BEG)
+
+(insn:TI 97 96 98 ./strings.cc:38 (parallel [
+            (set (reg:DI 3 bx)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_TRUE 59 (nil))
+    (nil))
+
+(insn:TI 98 97 99 ./strings.cc:38 (parallel [
+            (set (reg:DI 6 bp)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_TRUE 97 (insn_list:REG_DEP_TRUE 59 (nil)))
+    (nil))
+
+(insn:TI 99 98 100 ./strings.cc:38 (parallel [
+            (set (reg:DI 41 r12)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_TRUE 98 (insn_list:REG_DEP_TRUE 59 (nil)))
+    (nil))
+
+(insn:TI 100 99 110 ./strings.cc:38 (parallel [
+            (set (reg:DI 42 r13)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_TRUE 99 (insn_list:REG_DEP_TRUE 59 (nil)))
+    (nil))
+
+(note 110 100 101 ( p (nil)) NOTE_INSN_VAR_LOCATION)
+
+(insn:TI 101 110 111 ./strings.cc:38 (parallel [
+            (set (reg:DI 43 r14)
+                (mem:DI (reg/f:DI 7 sp) [0 S8 A8]))
+            (set (reg/f:DI 7 sp)
+                (plus:DI (reg/f:DI 7 sp)
+                    (const_int 8 [0x8])))
+        ]) 77 {popdi1} (insn_list:REG_DEP_ANTI 66 (insn_list:REG_DEP_TRUE 100 (insn_list:REG_DEP_TRUE 59 (nil))))
+    (nil))
+
+(note 111 101 102 ( s (expr_list:REG_DEP_TRUE (reg:DI 5 di [orig:66 s ] [66])
+    (const_int 0 [0x0]))) NOTE_INSN_VAR_LOCATION)
+
+(jump_insn:TI 102 111 103 ./strings.cc:38 (return) 562 {return_internal} (insn_list:REG_DEP_ANTI 59 (insn_list:REG_DEP_TRUE 100 (insn_list:REG_DEP_TRUE 99 (insn_list:REG_DEP_TRUE 101 (insn_list:REG_DEP_TRUE 98 (insn_list:REG_DEP_TRUE 97 (insn_list:REG_DEP_TRUE 66 (insn_list:REG_DEP_ANTI 72 (nil)))))))))
+    (nil))
+
+(barrier 103 102 89)
+
+(note 89 103 0 NOTE_INSN_DELETED)

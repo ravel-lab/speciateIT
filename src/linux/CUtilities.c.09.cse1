@@ -1,0 +1,3855 @@
+
+;; Function compareInt (compareInt)
+
+66 registers.
+
+Register 58 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; 4 bytes.
+
+Register 59 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; 4 bytes.
+
+Register 60 used 2 times across 0 insns; set 2 times; dies in 0 places; 4 bytes.
+
+Register 61 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes.
+
+Register 62 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; pointer.
+
+Register 63 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; pointer.
+
+Register 64 used 1 times across 0 insns; set 1 time; dies in 0 places; 1 bytes.
+
+4 basic blocks, 6 edges.
+
+Basic block 0 prev -1, next 1, loop_depth 0, count 0, freq 10000, maybe hot.
+Predecessors:  ENTRY [100.0%]  (fallthru,exec)
+Successors:  2 [67.0%]  1 [33.0%]  (fallthru)
+
+Basic block 1 prev 0, next 2, loop_depth 0, count 0, freq 3300, maybe hot.
+Predecessors:  0 [33.0%]  (fallthru)
+Successors:  3 [100.0%] 
+
+Basic block 2 prev 1, next 3, loop_depth 0, count 0, freq 6700, maybe hot.
+Predecessors:  0 [67.0%] 
+Successors:  3 [100.0%]  (fallthru)
+
+Basic block 3 prev 2, next -2, loop_depth 0, count 0, freq 10000, maybe hot.
+Predecessors:  2 [100.0%]  (fallthru) 1 [100.0%] 
+Successors:  EXIT [100.0%]  (fallthru)
+
+;; Processing block from 1 to 29, 10 sets.
+;; Processing block from 1 to 24, 9 sets.
+;; Processing block from 25 to 29, 4 sets.
+;; Processing block from 30 to 0, 3 sets.
+Deleted 1 trivially dead insns
+
+
+try_optimize_cfg iteration 1
+
+(note 1 0 10 ("./CUtilities.c") 179)
+
+;; Start of basic block 0, registers live: (nil)
+(note 10 1 6 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 6 10 7 0 ./CUtilities.c:179 (set (reg/v/f:DI 62 [ e1 ])
+        (reg:DI 5 di [ e1 ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 7 6 8 0 ./CUtilities.c:179 (set (reg/v/f:DI 63 [ e2 ])
+        (reg:DI 4 si [ e2 ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 8 7 12 0 NOTE_INSN_FUNCTION_BEG)
+
+(note 12 8 13 0 ("./CUtilities.c") 180)
+
+(insn 13 12 14 0 ./CUtilities.c:180 (set (reg/v:SI 59 [ v1 ])
+        (mem:SI (reg/v/f:DI 62 [ e1 ]) [4 S4 A32])) 40 {*movsi_1} (nil)
+    (nil))
+
+(note 14 13 15 0 ("./CUtilities.c") 181)
+
+(insn 15 14 16 0 ./CUtilities.c:181 (set (reg/v:SI 58 [ v2 ])
+        (mem:SI (reg/v/f:DI 63 [ e2 ]) [4 S4 A32])) 40 {*movsi_1} (nil)
+    (nil))
+
+(note 16 15 17 0 ("./CUtilities.c") 183)
+
+(insn 17 16 18 0 ./CUtilities.c:183 (set (reg:CCGC 17 flags)
+        (compare:CCGC (reg/v:SI 59 [ v1 ])
+            (reg/v:SI 58 [ v2 ]))) 5 {*cmpsi_1_insn} (nil)
+    (nil))
+
+(jump_insn 18 17 20 0 ./CUtilities.c:183 (set (pc)
+        (if_then_else (ge (reg:CCGC 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 24)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 6700 [0x1a2c])
+        (nil)))
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 20 18 21 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(insn 21 20 22 1 ./CUtilities.c:183 (set (reg:SI 60 [ D.5980 ])
+        (const_int -1 [0xffffffffffffffff])) 40 {*movsi_1} (nil)
+    (nil))
+
+(jump_insn 22 21 23 1 ./CUtilities.c:183 (set (pc)
+        (label_ref 29)) 548 {jump} (nil)
+    (nil))
+;; End of basic block 1, registers live:
+ (nil)
+
+(barrier 23 22 24)
+
+;; Start of basic block 2, registers live: (nil)
+(code_label 24 23 25 2 2 "" [1 uses])
+
+(note 25 24 26 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(insn 26 25 27 2 ./CUtilities.c:183 (set (reg:CCGC 17 flags)
+        (compare:CCGC (reg/v:SI 59 [ v1 ])
+            (reg/v:SI 58 [ v2 ]))) 5 {*cmpsi_1_insn} (nil)
+    (nil))
+
+(insn 27 26 28 2 ./CUtilities.c:183 (set (reg:QI 64)
+        (gt:QI (reg:CCGC 17 flags)
+            (const_int 0 [0x0]))) 527 {*setcc_1} (nil)
+    (expr_list:REG_EQUAL (gt:QI (reg/v:SI 59 [ v1 ])
+            (reg/v:SI 58 [ v2 ]))
+        (nil)))
+
+(insn 28 27 29 2 ./CUtilities.c:183 (parallel [
+            (set (reg:SI 60 [ D.5980 ])
+                (zero_extend:SI (reg:QI 64)))
+            (clobber (reg:CC 17 flags))
+        ]) 108 {*zero_extendqisi2_movzbw_and} (nil)
+    (nil))
+;; End of basic block 2, registers live:
+ (nil)
+
+;; Start of basic block 3, registers live: (nil)
+(code_label 29 28 30 3 4 "" [1 uses])
+
+(note 30 29 34 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(note 34 30 35 3 NOTE_INSN_FUNCTION_END)
+
+(note 35 34 37 3 ("./CUtilities.c") 184)
+
+(insn 37 35 43 3 ./CUtilities.c:184 (set (reg/i:SI 0 ax [ <result> ])
+        (reg:SI 60 [ D.5980 ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 43 37 0 3 ./CUtilities.c:184 (use (reg/i:SI 0 ax [ <result> ])) -1 (nil)
+    (nil))
+;; End of basic block 3, registers live:
+ (nil)
+
+
+;; Function compareDouble (compareDouble)
+
+70 registers.
+
+Register 58 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none.
+
+Register 59 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none.
+
+Register 60 used 2 times across 0 insns; set 2 times; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 61 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 62 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 63 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 64 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 65 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 66 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 67 used 1 times across 0 insns; set 1 time; dies in 0 places; 1 bytes; NO_REGS or none.
+
+Register 68 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+4 basic blocks, 6 edges.
+
+Basic block 0 prev -1, next 1, loop_depth 0, count 0, freq 10000, maybe hot.
+Predecessors:  ENTRY [100.0%]  (fallthru,exec)
+Successors:  1 [65.0%]  (fallthru) 2 [35.0%] 
+
+Basic block 1 prev 0, next 2, loop_depth 0, count 0, freq 6495, maybe hot.
+Predecessors:  0 [65.0%]  (fallthru)
+Successors:  3 [100.0%] 
+
+Basic block 2 prev 1, next 3, loop_depth 0, count 0, freq 3505, maybe hot.
+Predecessors:  0 [35.0%] 
+Successors:  3 [100.0%]  (fallthru)
+
+Basic block 3 prev 2, next -2, loop_depth 0, count 0, freq 10000, maybe hot.
+Predecessors:  1 [100.0%]  2 [100.0%]  (fallthru)
+Successors:  EXIT [100.0%]  (fallthru)
+
+;; Processing block from 1 to 33, 14 sets.
+;; Processing block from 1 to 26, 11 sets.
+;; Processing block from 27 to 33, 6 sets.
+;; Processing block from 34 to 0, 3 sets.
+Deleted 2 trivially dead insns
+
+
+try_optimize_cfg iteration 1
+
+(note 1 0 7 ("./CUtilities.c") 188)
+
+;; Start of basic block 0, registers live: (nil)
+(note 7 1 3 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 3 7 4 0 ./CUtilities.c:188 (set (reg/v/f:DI 62 [ e1 ])
+        (reg:DI 5 di [ e1 ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 4 3 5 0 ./CUtilities.c:188 (set (reg/v/f:DI 63 [ e2 ])
+        (reg:DI 4 si [ e2 ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 5 4 9 0 NOTE_INSN_FUNCTION_BEG)
+
+(note 9 5 10 0 ("./CUtilities.c") 189)
+
+(insn 10 9 11 0 ./CUtilities.c:189 (set (reg/v:DF 59 [ v1 ])
+        (mem:DF (reg/v/f:DI 62 [ e1 ]) [6 S8 A64])) 94 {*movdf_integer} (nil)
+    (nil))
+
+(note 11 10 12 0 ("./CUtilities.c") 190)
+
+(insn 12 11 13 0 ./CUtilities.c:190 (set (reg/v:DF 58 [ v2 ])
+        (mem:DF (reg/v/f:DI 63 [ e2 ]) [6 S8 A64])) 94 {*movdf_integer} (nil)
+    (nil))
+
+(note 13 12 14 0 ("./CUtilities.c") 192)
+
+(insn 14 13 15 0 ./CUtilities.c:192 (set (reg:DF 64)
+        (minus:DF (reg/v:DF 58 [ v2 ])
+            (reg/v:DF 59 [ v1 ]))) 619 {*fop_df_1_sse} (nil)
+    (nil))
+
+(insn 15 14 16 0 ./CUtilities.c:192 (set (reg:DF 65)
+        (mem/u/c/i:DF (symbol_ref/u:DI ("*.LC0") [flags 0x2]) [6 S8 A64])) 94 {*movdf_integer} (nil)
+    (expr_list:REG_EQUAL (const_double:DF 0.0 [0x0.0p+0])
+        (nil)))
+
+(insn 16 15 17 0 ./CUtilities.c:192 (set (reg:CCFPU 17 flags)
+        (compare:CCFPU (reg:DF 64)
+            (reg:DF 65))) 31 {*cmpfp_iu_sse} (nil)
+    (nil))
+
+(jump_insn 17 16 22 0 ./CUtilities.c:192 (set (pc)
+        (if_then_else (unle (reg:CCFPU 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 26)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 3505 [0xdb1])
+        (nil)))
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 22 17 23 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(insn 23 22 24 1 ./CUtilities.c:192 (set (reg:SI 60 [ D.5990 ])
+        (const_int -1 [0xffffffffffffffff])) 40 {*movsi_1} (nil)
+    (nil))
+
+(jump_insn 24 23 25 1 ./CUtilities.c:192 (set (pc)
+        (label_ref 33)) 548 {jump} (nil)
+    (nil))
+;; End of basic block 1, registers live:
+ (nil)
+
+(barrier 25 24 26)
+
+;; Start of basic block 2, registers live: (nil)
+(code_label 26 25 27 2 8 "" [1 uses])
+
+(note 27 26 28 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(insn 28 27 30 2 ./CUtilities.c:192 (set (reg:DF 66)
+        (minus:DF (reg/v:DF 59 [ v1 ])
+            (reg/v:DF 58 [ v2 ]))) 619 {*fop_df_1_sse} (nil)
+    (nil))
+
+(insn 30 28 31 2 ./CUtilities.c:192 (set (reg:CCFPU 17 flags)
+        (compare:CCFPU (reg:DF 66)
+            (reg:DF 65))) 31 {*cmpfp_iu_sse} (nil)
+    (nil))
+
+(insn 31 30 32 2 ./CUtilities.c:192 (set (reg:QI 67)
+        (gt:QI (reg:CCFPU 17 flags)
+            (const_int 0 [0x0]))) 527 {*setcc_1} (nil)
+    (expr_list:REG_EQUAL (gt:QI (reg:DF 66)
+            (const_double:DF 0.0 [0x0.0p+0]))
+        (nil)))
+
+(insn 32 31 33 2 ./CUtilities.c:192 (parallel [
+            (set (reg:SI 60 [ D.5990 ])
+                (zero_extend:SI (reg:QI 67)))
+            (clobber (reg:CC 17 flags))
+        ]) 108 {*zero_extendqisi2_movzbw_and} (nil)
+    (nil))
+;; End of basic block 2, registers live:
+ (nil)
+
+;; Start of basic block 3, registers live: (nil)
+(code_label 33 32 34 3 11 "" [1 uses])
+
+(note 34 33 38 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(note 38 34 39 3 NOTE_INSN_FUNCTION_END)
+
+(note 39 38 41 3 ("./CUtilities.c") 193)
+
+(insn 41 39 47 3 ./CUtilities.c:193 (set (reg/i:SI 0 ax [ <result> ])
+        (reg:SI 60 [ D.5990 ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 47 41 0 3 ./CUtilities.c:193 (use (reg/i:SI 0 ax [ <result> ])) -1 (nil)
+    (nil))
+;; End of basic block 3, registers live:
+ (nil)
+
+
+;; Function compareDouble2 (compareDouble2)
+
+69 registers.
+
+Register 58 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none.
+
+Register 59 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none.
+
+Register 60 used 3 times across 0 insns; set 3 times; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 61 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 62 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 63 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 64 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 65 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 66 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 67 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+6 basic blocks, 9 edges.
+
+Basic block 0 prev -1, next 1, loop_depth 0, count 0, freq 10000, maybe hot.
+Predecessors:  ENTRY [100.0%]  (fallthru,exec)
+Successors:  1 [65.0%]  (fallthru) 2 [35.0%] 
+
+Basic block 1 prev 0, next 2, loop_depth 0, count 0, freq 6495, maybe hot.
+Predecessors:  0 [65.0%]  (fallthru)
+Successors:  5 [100.0%] 
+
+Basic block 2 prev 1, next 3, loop_depth 0, count 0, freq 3505, maybe hot.
+Predecessors:  0 [35.0%] 
+Successors:  3 [13.6%]  (fallthru) 4 [86.5%] 
+
+Basic block 3 prev 2, next 4, loop_depth 0, count 0, freq 475, maybe hot.
+Predecessors:  2 [13.6%]  (fallthru)
+Successors:  5 [100.0%] 
+
+Basic block 4 prev 3, next 5, loop_depth 0, count 0, freq 3030, maybe hot.
+Predecessors:  2 [86.5%] 
+Successors:  5 [100.0%]  (fallthru)
+
+Basic block 5 prev 4, next -2, loop_depth 0, count 0, freq 10000, maybe hot.
+Predecessors:  1 [100.0%]  4 [100.0%]  (fallthru) 3 [100.0%] 
+Successors:  EXIT [100.0%]  (fallthru)
+
+;; Processing block from 1 to 43, 13 sets.
+;; Processing block from 1 to 40, 15 sets.
+;; Processing block from 1 to 26, 11 sets.
+;; Processing block from 27 to 43, 5 sets.
+;; Processing block from 27 to 40, 7 sets.
+;; Processing block from 41 to 43, 1 sets.
+;; Processing block from 44 to 0, 3 sets.
+Deleted 2 trivially dead insns
+
+
+try_optimize_cfg iteration 1
+
+(note 1 0 7 ("./CUtilities.c") 197)
+
+;; Start of basic block 0, registers live: (nil)
+(note 7 1 3 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 3 7 4 0 ./CUtilities.c:197 (set (reg/v/f:DI 62 [ e1 ])
+        (reg:DI 5 di [ e1 ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 4 3 5 0 ./CUtilities.c:197 (set (reg/v/f:DI 63 [ e2 ])
+        (reg:DI 4 si [ e2 ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 5 4 9 0 NOTE_INSN_FUNCTION_BEG)
+
+(note 9 5 10 0 ("./CUtilities.c") 198)
+
+(insn 10 9 11 0 ./CUtilities.c:198 (set (reg/v:DF 59 [ v1 ])
+        (mem:DF (reg/v/f:DI 62 [ e1 ]) [6 S8 A64])) 94 {*movdf_integer} (nil)
+    (nil))
+
+(note 11 10 12 0 ("./CUtilities.c") 199)
+
+(insn 12 11 13 0 ./CUtilities.c:199 (set (reg/v:DF 58 [ v2 ])
+        (mem:DF (reg/v/f:DI 63 [ e2 ]) [6 S8 A64])) 94 {*movdf_integer} (nil)
+    (nil))
+
+(note 13 12 14 0 ("./CUtilities.c") 201)
+
+(insn 14 13 15 0 ./CUtilities.c:201 (set (reg:DF 64)
+        (minus:DF (reg/v:DF 58 [ v2 ])
+            (reg/v:DF 59 [ v1 ]))) 619 {*fop_df_1_sse} (nil)
+    (nil))
+
+(insn 15 14 16 0 ./CUtilities.c:201 (set (reg:DF 65)
+        (mem/u/c/i:DF (symbol_ref/u:DI ("*.LC1") [flags 0x2]) [6 S8 A64])) 94 {*movdf_integer} (nil)
+    (expr_list:REG_EQUAL (const_double:DF 0.0 [0x0.0p+0])
+        (nil)))
+
+(insn 16 15 17 0 ./CUtilities.c:201 (set (reg:CCFPU 17 flags)
+        (compare:CCFPU (reg:DF 64)
+            (reg:DF 65))) 31 {*cmpfp_iu_sse} (nil)
+    (nil))
+
+(jump_insn 17 16 22 0 ./CUtilities.c:201 (set (pc)
+        (if_then_else (unle (reg:CCFPU 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 26)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 3505 [0xdb1])
+        (nil)))
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 22 17 23 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(insn 23 22 24 1 ./CUtilities.c:201 (set (reg:SI 60 [ iftmp.46 ])
+        (const_int 1 [0x1])) 40 {*movsi_1} (nil)
+    (nil))
+
+(jump_insn 24 23 25 1 ./CUtilities.c:201 (set (pc)
+        (label_ref 43)) 548 {jump} (nil)
+    (nil))
+;; End of basic block 1, registers live:
+ (nil)
+
+(barrier 25 24 26)
+
+;; Start of basic block 2, registers live: (nil)
+(code_label 26 25 27 2 15 "" [1 uses])
+
+(note 27 26 28 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(insn 28 27 30 2 ./CUtilities.c:201 (set (reg:DF 66)
+        (minus:DF (reg/v:DF 59 [ v1 ])
+            (reg/v:DF 58 [ v2 ]))) 619 {*fop_df_1_sse} (nil)
+    (nil))
+
+(insn 30 28 31 2 ./CUtilities.c:201 (set (reg:CCFPU 17 flags)
+        (compare:CCFPU (reg:DF 66)
+            (reg:DF 65))) 31 {*cmpfp_iu_sse} (nil)
+    (nil))
+
+(jump_insn 31 30 36 2 ./CUtilities.c:201 (set (pc)
+        (if_then_else (unle (reg:CCFPU 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 40)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 8645 [0x21c5])
+        (nil)))
+;; End of basic block 2, registers live:
+ (nil)
+
+;; Start of basic block 3, registers live: (nil)
+(note 36 31 37 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(insn 37 36 38 3 ./CUtilities.c:201 (set (reg:SI 60 [ iftmp.46 ])
+        (const_int -1 [0xffffffffffffffff])) 40 {*movsi_1} (nil)
+    (nil))
+
+(jump_insn 38 37 39 3 ./CUtilities.c:201 (set (pc)
+        (label_ref 43)) 548 {jump} (nil)
+    (nil))
+;; End of basic block 3, registers live:
+ (nil)
+
+(barrier 39 38 40)
+
+;; Start of basic block 4, registers live: (nil)
+(code_label 40 39 41 4 19 "" [1 uses])
+
+(note 41 40 42 4 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(insn 42 41 43 4 ./CUtilities.c:201 (set (reg:SI 60 [ iftmp.46 ])
+        (const_int 0 [0x0])) 40 {*movsi_1} (nil)
+    (nil))
+;; End of basic block 4, registers live:
+ (nil)
+
+;; Start of basic block 5, registers live: (nil)
+(code_label 43 42 44 5 18 "" [2 uses])
+
+(note 44 43 48 5 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(note 48 44 49 5 NOTE_INSN_FUNCTION_END)
+
+(note 49 48 51 5 ("./CUtilities.c") 202)
+
+(insn 51 49 57 5 ./CUtilities.c:202 (set (reg/i:SI 0 ax [ <result> ])
+        (reg:SI 60 [ iftmp.46 ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 57 51 0 5 ./CUtilities.c:202 (use (reg/i:SI 0 ax [ <result> ])) -1 (nil)
+    (nil))
+;; End of basic block 5, registers live:
+ (nil)
+
+
+;; Function readLine (readLine)
+
+105 registers.
+
+Register 88 used 2 times across 0 insns; set 2 times; dies in 0 places; NO_REGS or none.
+
+Register 89 used 2 times across 0 insns; set 2 times; dies in 0 places; NO_REGS or none; pointer.
+
+Register 90 used 4 times across 0 insns; set 4 times; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 91 used 3 times across 0 insns; set 3 times; dies in 0 places; NO_REGS or none.
+
+Register 92 used 2 times across 0 insns; set 2 times; user var; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 93 used 2 times across 0 insns; set 2 times; user var; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 94 used 2 times across 0 insns; set 2 times; dies in 0 places; 1 bytes; NO_REGS or none.
+
+Register 95 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 96 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 97 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 98 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 99 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 100 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 101 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 102 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 103 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+14 basic blocks, 21 edges.
+
+Basic block 0 prev -1, next 1, loop_depth 0, count 0, freq 1393, maybe hot.
+Predecessors:  ENTRY [100.0%]  (fallthru,exec)
+Successors:  4 [30.0%]  1 [70.0%]  (fallthru)
+
+Basic block 1 prev 0, next 2, loop_depth 0, count 0, freq 975, maybe hot.
+Predecessors:  0 [70.0%]  (fallthru)
+Successors:  11 [5.0%]  2 [95.0%]  (fallthru)
+
+Basic block 2 prev 1, next 3, loop_depth 0, count 0, freq 926, maybe hot.
+Predecessors:  1 [95.0%]  (fallthru)
+Successors:  5 [95.0%]  3 [5.0%]  (fallthru)
+
+Basic block 3 prev 2, next 4, loop_depth 0, count 0, freq 46, maybe hot.
+Predecessors:  2 [5.0%]  (fallthru)
+Successors:  11 [100.0%] 
+
+Basic block 4 prev 3, next 5, loop_depth 0, count 0, freq 418, maybe hot.
+Predecessors:  0 [30.0%] 
+Successors:  13 [100.0%] 
+
+Basic block 5 prev 4, next 6, loop_depth 0, count 0, freq 880, maybe hot.
+Predecessors:  2 [95.0%] 
+Successors:  6 [100.0%]  (fallthru)
+
+Basic block 6 prev 5, next 7, loop_depth 1, count 0, freq 9025, maybe hot.
+Predecessors:  9 [95.0%]  (dfs_back) 5 [100.0%]  (fallthru)
+Successors:  8 [29.0%]  7 [71.0%]  (fallthru)
+
+Basic block 7 prev 6, next 8, loop_depth 1, count 0, freq 6408, maybe hot.
+Predecessors:  6 [71.0%]  (fallthru)
+Successors:  9 [71.0%]  8 [29.0%]  (fallthru)
+
+Basic block 8 prev 7, next 9, loop_depth 0, count 0, freq 451, maybe hot.
+Predecessors:  7 [29.0%]  (fallthru) 6 [29.0%] 
+Successors:  12 [100.0%] 
+Invalid sum of incoming frequencies 4475, should be 451
+
+Basic block 9 prev 8, next 10, loop_depth 1, count 0, freq 8574, maybe hot.
+Predecessors:  7 [71.0%] 
+Successors:  6 [95.0%]  (dfs_back) 10 [5.0%]  (fallthru,loop_exit)
+Invalid sum of incoming frequencies 4550, should be 8574
+
+Basic block 10 prev 9, next 11, loop_depth 0, count 0, freq 429, maybe hot.
+Predecessors:  9 [5.0%]  (fallthru,loop_exit)
+Successors:  12 [100.0%] 
+
+Basic block 11 prev 10, next 12, loop_depth 0, count 0, freq 95, maybe hot.
+Predecessors:  1 [5.0%]  3 [100.0%] 
+Successors:  12 [100.0%]  (fallthru)
+
+Basic block 12 prev 11, next 13, loop_depth 0, count 0, freq 975, maybe hot.
+Predecessors:  11 [100.0%]  (fallthru) 8 [100.0%]  10 [100.0%] 
+Successors:  13 [100.0%]  (fallthru)
+
+Basic block 13 prev 12, next -2, loop_depth 0, count 0, freq 1393, maybe hot.
+Predecessors:  4 [100.0%]  12 [100.0%]  (fallthru)
+Successors:  EXIT [100.0%]  (fallthru)
+
+;; Processing block from 1 to 72, 16 sets.
+;; Processing block from 1 to 80, 21 sets.
+;; Processing block from 1 to 59, 15 sets.
+;; Processing block from 60 to 72, 9 sets.
+;; Processing block from 73 to 80, 8 sets.
+;; Processing block from 81 to 98, 12 sets.
+;; Processing block from 81 to 111, 21 sets.
+;; Processing block from 81 to 92, 9 sets.
+;; Processing block from 93 to 98, 5 sets.
+;; Processing block from 99 to 111, 12 sets.
+;; Processing block from 112 to 115, 2 sets.
+;; Processing block from 116 to 119, 1 sets.
+;; Processing block from 120 to 0, 3 sets.
+Deleted 1 trivially dead insns
+
+
+try_optimize_cfg iteration 1
+
+Forwarding edge 2->3 to 11 failed.
+(note 1 0 40 ("./CUtilities.c") 160)
+
+;; Start of basic block 0, registers live: (nil)
+(note 40 1 33 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 33 40 34 0 ./CUtilities.c:160 (set (reg/v:SI 96 [ offset ])
+        (reg:SI 5 di [ offset ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 34 33 35 0 ./CUtilities.c:160 (set (reg/v/f:DI 97 [ buffer ])
+        (reg:DI 4 si [ buffer ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 35 34 36 0 ./CUtilities.c:160 (set (reg/v:SI 98 [ bSize ])
+        (reg:SI 1 dx [ bSize ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 36 35 37 0 ./CUtilities.c:160 (set (reg/v/f:DI 99 [ s ])
+        (reg:DI 2 cx [ s ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 37 36 38 0 ./CUtilities.c:160 (set (reg/v:SI 100 [ sSize ])
+        (reg:SI 37 r8 [ sSize ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(note 38 37 42 0 NOTE_INSN_FUNCTION_BEG)
+
+(note 42 38 43 0 ("./CUtilities.c") 163)
+
+(insn 43 42 44 0 ./CUtilities.c:163 (set (reg:CCGC 17 flags)
+        (compare:CCGC (reg/v:SI 96 [ offset ])
+            (reg/v:SI 98 [ bSize ]))) 5 {*cmpsi_1_insn} (nil)
+    (nil))
+
+(jump_insn 44 43 46 0 ./CUtilities.c:163 (set (pc)
+        (if_then_else (ge (reg:CCGC 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 59)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 3000 [0xbb8])
+        (nil)))
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 46 44 47 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(note 47 46 48 1 ("./CUtilities.c") 169)
+
+(insn 48 47 49 1 ./CUtilities.c:169 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v:SI 100 [ sSize ])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (nil)
+    (nil))
+
+(jump_insn 49 48 51 1 ./CUtilities.c:169 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 111)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+        (nil)))
+;; End of basic block 1, registers live:
+ (nil)
+
+;; Start of basic block 2, registers live: (nil)
+(note 51 49 52 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(insn 52 51 53 2 ./CUtilities.c:169 (set (reg:DI 101 [ offset ])
+        (sign_extend:DI (reg/v:SI 96 [ offset ]))) 115 {extendsidi2_rex64} (nil)
+    (nil))
+
+(insn 53 52 54 2 ./CUtilities.c:169 (set (reg:QI 94 [ D.5967 ])
+        (mem:QI (plus:DI (reg:DI 101 [ offset ])
+                (reg/v/f:DI 97 [ buffer ])) [0 S1 A8])) 55 {*movqi_1} (nil)
+    (nil))
+
+(insn 54 53 55 2 ./CUtilities.c:169 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 94 [ D.5967 ])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (nil)
+    (nil))
+
+(jump_insn 55 54 58 2 ./CUtilities.c:169 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 72)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+        (nil)))
+;; End of basic block 2, registers live:
+ (nil)
+
+;; Start of basic block 3, registers live: (nil)
+(note 58 55 56 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 56 58 57 3 ./CUtilities.c:169 (set (pc)
+        (label_ref 111)) 548 {jump} (nil)
+    (nil))
+;; End of basic block 3, registers live:
+ (nil)
+
+(barrier 57 56 59)
+
+;; Start of basic block 4, registers live: (nil)
+(code_label 59 57 60 4 25 "" [1 uses])
+
+(note 60 59 61 4 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(note 61 60 62 4 ("./CUtilities.c") 165)
+
+(insn 62 61 63 4 ./CUtilities.c:165 (set (reg:SI 2 cx [ bSize ])
+        (reg/v:SI 98 [ bSize ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 63 62 64 4 ./CUtilities.c:165 (set (reg:SI 1 dx [ offset ])
+        (reg/v:SI 96 [ offset ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 64 63 65 4 ./CUtilities.c:165 (set (reg:DI 4 si)
+        (symbol_ref/f:DI ("*.LC2") [flags 0x2] <string_cst 0x2b7f6e561680>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 65 64 66 4 ./CUtilities.c:165 (set (reg:DI 5 di [ stderr ])
+        (mem/f/c/i:DI (symbol_ref:DI ("stderr") [flags 0x40] <var_decl 0x2b7f6e1a64d0 stderr>) [14 stderr+0 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 66 65 67 4 ./CUtilities.c:165 (set (reg:QI 0 ax)
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (nil))
+
+(call_insn 67 66 68 4 ./CUtilities.c:165 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("fprintf") [flags 0x41] <function_decl 0x2b7f6e042700 fprintf>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:QI 0 ax))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ stderr ]))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+                (expr_list:REG_DEP_TRUE (use (reg:SI 1 dx [ offset ]))
+                    (expr_list:REG_DEP_TRUE (use (reg:SI 2 cx [ bSize ]))
+                        (nil)))))))
+
+(insn 68 67 69 4 ./CUtilities.c:165 (set (reg:SI 90 [ prephitmp.169 ])
+        (const_int 0 [0x0])) 40 {*movsi_1} (nil)
+    (nil))
+
+(note 69 68 70 4 ("./CUtilities.c") 166)
+
+(jump_insn 70 69 71 4 ./CUtilities.c:166 (set (pc)
+        (label_ref 119)) 548 {jump} (nil)
+    (nil))
+;; End of basic block 4, registers live:
+ (nil)
+
+(barrier 71 70 72)
+
+;; Start of basic block 5, registers live: (nil)
+(code_label 72 71 73 5 29 "" [1 uses])
+
+(note 73 72 74 5 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(insn 74 73 75 5 ./CUtilities.c:166 (set (reg/f:DI 89 [ ivtmp.175 ])
+        (reg/v/f:DI 99 [ s ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 75 74 76 5 ./CUtilities.c:166 (parallel [
+            (set (reg:SI 102)
+                (plus:SI (reg/v:SI 96 [ offset ])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 208 {*addsi_1} (nil)
+    (nil))
+
+(insn 76 75 77 5 ./CUtilities.c:166 (set (reg:DI 103)
+        (sign_extend:DI (reg:SI 102))) 115 {extendsidi2_rex64} (nil)
+    (nil))
+
+(insn 77 76 78 5 ./CUtilities.c:166 (parallel [
+            (set (reg:DI 88 [ ivtmp.176 ])
+                (plus:DI (reg:DI 103)
+                    (reg/v/f:DI 97 [ buffer ])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (nil))
+
+(insn 78 77 79 5 ./CUtilities.c:166 (set (reg/v:SI 93 [ i ])
+        (reg/v:SI 96 [ offset ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 79 78 139 5 ./CUtilities.c:166 (set (reg/v:SI 92 [ j ])
+        (const_int 0 [0x0])) 40 {*movsi_1} (nil)
+    (nil))
+;; End of basic block 5, registers live:
+ (nil)
+
+(note 139 79 80 6 NOTE_INSN_LOOP_BEG)
+
+;; Start of basic block 6, registers live: (nil)
+(code_label 80 139 81 6 31 "" [1 uses])
+
+(note 81 80 82 6 [bb 6] NOTE_INSN_BASIC_BLOCK)
+
+(note 82 81 83 6 ("./CUtilities.c") 170)
+
+(insn 83 82 84 6 ./CUtilities.c:170 (set (mem:QI (reg/f:DI 89 [ ivtmp.175 ]) [0 S1 A8])
+        (reg:QI 94 [ D.5967 ])) 55 {*movqi_1} (nil)
+    (nil))
+
+(note 84 83 85 6 ("./CUtilities.c") 169)
+
+(insn 85 84 86 6 ./CUtilities.c:169 (parallel [
+            (set (reg/v:SI 93 [ i ])
+                (plus:SI (reg/v:SI 93 [ i ])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 208 {*addsi_1} (nil)
+    (nil))
+
+(insn 86 85 87 6 ./CUtilities.c:169 (parallel [
+            (set (reg/v:SI 92 [ j ])
+                (plus:SI (reg/v:SI 92 [ j ])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 208 {*addsi_1} (nil)
+    (nil))
+
+(insn 87 86 88 6 ./CUtilities.c:169 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v:SI 98 [ bSize ])
+            (reg/v:SI 93 [ i ]))) 5 {*cmpsi_1_insn} (nil)
+    (nil))
+
+(jump_insn 88 87 135 6 ./CUtilities.c:169 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 92)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 2900 [0xb54])
+        (nil)))
+;; End of basic block 6, registers live:
+ (nil)
+
+;; Start of basic block 7, registers live: (nil)
+(note 135 88 89 7 [bb 7] NOTE_INSN_BASIC_BLOCK)
+
+(insn 89 135 90 7 ./CUtilities.c:169 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v:SI 100 [ sSize ])
+            (reg/v:SI 92 [ j ]))) 5 {*cmpsi_1_insn} (nil)
+    (nil))
+
+(jump_insn 90 89 92 7 ./CUtilities.c:169 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 98)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 7100 [0x1bbc])
+        (nil)))
+;; End of basic block 7, registers live:
+ (nil)
+
+;; Start of basic block 8, registers live: (nil)
+(code_label 92 90 93 8 34 "" [1 uses])
+
+(note 93 92 94 8 [bb 8] NOTE_INSN_BASIC_BLOCK)
+
+(insn 94 93 95 8 ./CUtilities.c:169 (set (reg:DI 91 [ prephitmp.166 ])
+        (sign_extend:DI (reg/v:SI 92 [ j ]))) 115 {extendsidi2_rex64} (nil)
+    (nil))
+
+(insn 95 94 96 8 ./CUtilities.c:169 (parallel [
+            (set (reg:SI 90 [ prephitmp.169 ])
+                (plus:SI (reg/v:SI 92 [ j ])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 208 {*addsi_1} (nil)
+    (nil))
+
+(jump_insn 96 95 97 8 ./CUtilities.c:169 (set (pc)
+        (label_ref 115)) 548 {jump} (nil)
+    (nil))
+;; End of basic block 8, registers live:
+ (nil)
+
+(barrier 97 96 98)
+
+;; Start of basic block 9, registers live: (nil)
+(code_label 98 97 99 9 32 "" [1 uses])
+
+(note 99 98 100 9 [bb 9] NOTE_INSN_BASIC_BLOCK)
+
+(insn 100 99 101 9 ./CUtilities.c:169 (set (reg:QI 94 [ D.5967 ])
+        (mem:QI (reg:DI 88 [ ivtmp.176 ]) [0 S1 A8])) 55 {*movqi_1} (nil)
+    (nil))
+
+(insn 101 100 102 9 ./CUtilities.c:169 (parallel [
+            (set (reg/f:DI 89 [ ivtmp.175 ])
+                (plus:DI (reg/f:DI 89 [ ivtmp.175 ])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (nil))
+
+(insn 102 101 103 9 ./CUtilities.c:169 (parallel [
+            (set (reg:DI 88 [ ivtmp.176 ])
+                (plus:DI (reg:DI 88 [ ivtmp.176 ])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (nil))
+
+(insn 103 102 104 9 ./CUtilities.c:169 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 94 [ D.5967 ])
+            (const_int 10 [0xa]))) 10 {*cmpqi_1} (nil)
+    (nil))
+
+(jump_insn 104 103 140 9 ./CUtilities.c:169 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 80)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+        (nil)))
+;; End of basic block 9, registers live:
+ (nil)
+
+(note 140 104 106 9 NOTE_INSN_LOOP_END)
+
+;; Start of basic block 10, registers live: (nil)
+(note 106 140 107 10 [bb 10] NOTE_INSN_BASIC_BLOCK)
+
+(insn 107 106 108 10 ./CUtilities.c:169 (set (reg:DI 91 [ prephitmp.166 ])
+        (sign_extend:DI (reg/v:SI 92 [ j ]))) 115 {extendsidi2_rex64} (nil)
+    (nil))
+
+(insn 108 107 109 10 ./CUtilities.c:169 (parallel [
+            (set (reg:SI 90 [ prephitmp.169 ])
+                (plus:SI (reg/v:SI 92 [ j ])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 208 {*addsi_1} (nil)
+    (nil))
+
+(jump_insn 109 108 110 10 ./CUtilities.c:169 (set (pc)
+        (label_ref 115)) 548 {jump} (nil)
+    (nil))
+;; End of basic block 10, registers live:
+ (nil)
+
+(barrier 110 109 111)
+
+;; Start of basic block 11, registers live: (nil)
+(code_label 111 110 112 11 27 "" [2 uses])
+
+(note 112 111 113 11 [bb 11] NOTE_INSN_BASIC_BLOCK)
+
+(insn 113 112 114 11 ./CUtilities.c:169 (set (reg:DI 91 [ prephitmp.166 ])
+        (const_int 0 [0x0])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 114 113 115 11 ./CUtilities.c:169 (set (reg:SI 90 [ prephitmp.169 ])
+        (const_int 1 [0x1])) 40 {*movsi_1} (nil)
+    (nil))
+;; End of basic block 11, registers live:
+ (nil)
+
+;; Start of basic block 12, registers live: (nil)
+(code_label 115 114 116 12 35 "" [2 uses])
+
+(note 116 115 117 12 [bb 12] NOTE_INSN_BASIC_BLOCK)
+
+(note 117 116 118 12 ("./CUtilities.c") 172)
+
+(insn 118 117 119 12 ./CUtilities.c:172 (set (mem:QI (plus:DI (reg/v/f:DI 99 [ s ])
+                (reg:DI 91 [ prephitmp.166 ])) [0 S1 A8])
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (nil))
+;; End of basic block 12, registers live:
+ (nil)
+
+;; Start of basic block 13, registers live: (nil)
+(code_label 119 118 120 13 30 "" [1 uses])
+
+(note 120 119 124 13 [bb 13] NOTE_INSN_BASIC_BLOCK)
+
+(note 124 120 125 13 NOTE_INSN_FUNCTION_END)
+
+(note 125 124 127 13 ("./CUtilities.c") 175)
+
+(insn 127 125 133 13 ./CUtilities.c:175 (set (reg/i:SI 0 ax [ <result> ])
+        (reg:SI 90 [ prephitmp.169 ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 133 127 0 13 ./CUtilities.c:175 (use (reg/i:SI 0 ax [ <result> ])) -1 (nil)
+    (nil))
+;; End of basic block 13, registers live:
+ (nil)
+
+
+;; Function newcmem (newcmem)
+
+69 registers.
+
+Register 58 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 59 used 2 times across 0 insns; set 2 times; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 60 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 61 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 62 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none; pointer.
+
+Register 63 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 64 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 65 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 66 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 67 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none; pointer.
+
+7 basic blocks, 9 edges.
+
+Basic block 0 prev -1, next 1, loop_depth 0, count 0, freq 10000, maybe hot.
+Predecessors:  ENTRY [100.0%]  (fallthru,exec)
+Successors:  1 [93.5%]  (fallthru) 3 [6.5%] 
+
+Basic block 1 prev 0, next 2, loop_depth 0, count 0, freq 9355, maybe hot.
+Predecessors:  0 [93.5%]  (fallthru)
+Successors:  2 [1.0%]  (fallthru) 6 [99.0%] 
+
+Basic block 2 prev 1, next 3, loop_depth 0, count 0, freq 94, maybe hot.
+Predecessors:  1 [1.0%]  (fallthru)
+Successors: 
+
+Basic block 3 prev 2, next 4, loop_depth 0, count 0, freq 645, maybe hot.
+Predecessors:  0 [6.5%] 
+Successors:  4 [1.0%]  (fallthru) 5 [99.0%] 
+
+Basic block 4 prev 3, next 5, loop_depth 0, count 0, freq 6.
+Predecessors:  3 [1.0%]  (fallthru)
+Successors: 
+
+Basic block 5 prev 4, next 6, loop_depth 0, count 0, freq 639, maybe hot.
+Predecessors:  3 [99.0%] 
+Successors:  6 [100.0%]  (fallthru)
+
+Basic block 6 prev 5, next -2, loop_depth 0, count 0, freq 9900, maybe hot.
+Predecessors:  1 [99.0%]  5 [100.0%]  (fallthru)
+Successors:  EXIT [100.0%]  (fallthru)
+
+;; Processing block from 1 to 67, 12 sets.
+;; Processing block from 1 to 64, 19 sets.
+;; Processing block from 1 to 47, 30 sets.
+;; Processing block from 48 to 67, 3 sets.
+;; Processing block from 48 to 64, 10 sets.
+;; Processing block from 65 to 67, 1 sets.
+;; Processing block from 68 to 0, 3 sets.
+Deleted 2 trivially dead insns
+
+
+try_optimize_cfg iteration 1
+
+(note 1 0 7 ("./CUtilities.c") 237)
+
+;; Start of basic block 0, registers live: (nil)
+(note 7 1 3 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 3 7 4 0 ./CUtilities.c:237 (set (reg/v:SI 63 [ number ])
+        (reg:SI 5 di [ number ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 4 3 5 0 ./CUtilities.c:237 (set (reg/v:SI 64 [ size ])
+        (reg:SI 4 si [ size ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(note 5 4 9 0 NOTE_INSN_FUNCTION_BEG)
+
+(note 9 5 10 0 ("./CUtilities.c") 239)
+
+(insn 10 9 11 0 ./CUtilities.c:239 (parallel [
+            (set (reg/v:SI 58 [ len ])
+                (mult:SI (reg/v:SI 64 [ size ])
+                    (reg/v:SI 63 [ number ])))
+            (clobber (reg:CC 17 flags))
+        ]) 256 {*mulsi3_1} (nil)
+    (nil))
+
+(note 11 10 12 0 ("./CUtilities.c") 241)
+
+(call_insn/u 12 11 13 0 ./CUtilities.c:241 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("__errno_location") [flags 0x41] <function_decl 0x2b7f6e2d1700 __errno_location>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (nil))
+
+(insn 13 12 14 0 ./CUtilities.c:241 (set (reg:DI 61 [ D.6026 ])
+        (reg:DI 0 ax)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 14 13 15 0 ./CUtilities.c:241 (set (mem:SI (reg:DI 61 [ D.6026 ]) [4 S4 A32])
+        (const_int 0 [0x0])) 40 {*movsi_1} (nil)
+    (nil))
+
+(note 15 14 16 0 ("./CUtilities.c") 243)
+
+(insn 16 15 17 0 ./CUtilities.c:243 (set (reg:CCNO 17 flags)
+        (compare:CCNO (reg/v:SI 58 [ len ])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (nil)
+    (nil))
+
+(jump_insn 17 16 19 0 ./CUtilities.c:243 (set (pc)
+        (if_then_else (le (reg:CCNO 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 47)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 645 [0x285])
+        (nil)))
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 19 17 20 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(note 20 19 21 1 ("./CUtilities.c") 245)
+
+(insn 21 20 22 1 ./CUtilities.c:245 (set (reg:DI 65 [ size ])
+        (sign_extend:DI (reg/v:SI 64 [ size ]))) 115 {extendsidi2_rex64} (nil)
+    (nil))
+
+(insn 22 21 23 1 ./CUtilities.c:245 (set (reg:DI 66 [ number ])
+        (sign_extend:DI (reg/v:SI 63 [ number ]))) 115 {extendsidi2_rex64} (nil)
+    (nil))
+
+(insn 23 22 24 1 ./CUtilities.c:245 (set (reg:DI 4 si [ size ])
+        (reg:DI 65 [ size ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 24 23 25 1 ./CUtilities.c:245 (set (reg:DI 5 di [ number ])
+        (reg:DI 66 [ number ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(call_insn 25 24 26 1 ./CUtilities.c:245 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("calloc") [flags 0x41] <function_decl 0x2b7f6e054100 calloc>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ number ]))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si [ size ]))
+            (nil))))
+
+(insn 26 25 28 1 ./CUtilities.c:245 (set (reg/v/f:DI 59 [ memp ])
+        (reg:DI 0 ax)) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_NOALIAS (reg/f:DI 67)
+        (nil)))
+
+(note 28 26 29 1 ("./CUtilities.c") 247)
+
+(insn 29 28 30 1 ./CUtilities.c:247 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 59 [ memp ])
+            (const_int 0 [0x0]))) 0 {cmpdi_ccno_1_rex64} (nil)
+    (nil))
+
+(jump_insn 30 29 32 1 ./CUtilities.c:247 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 67)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 9900 [0x26ac])
+        (nil)))
+;; End of basic block 1, registers live:
+ (nil)
+
+;; Start of basic block 2, registers live: (nil)
+(note 32 30 33 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(note 33 32 34 2 ("./CUtilities.c") 249)
+
+(insn 34 33 35 2 ./CUtilities.c:249 (set (reg:SI 5 di)
+        (mem:SI (reg:DI 61 [ D.6026 ]) [4 S4 A32])) 40 {*movsi_1} (nil)
+    (nil))
+
+(call_insn 35 34 36 2 ./CUtilities.c:249 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strerror") [flags 0x41] <function_decl 0x2b7f6e2a0000 strerror>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+        (nil)))
+
+(insn 36 35 37 2 ./CUtilities.c:249 (set (reg:DI 60 [ D.6031 ])
+        (reg:DI 0 ax)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 37 36 38 2 ./CUtilities.c:249 (set (reg:DI 2 cx [ D.6031 ])
+        (reg:DI 60 [ D.6031 ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 38 37 39 2 ./CUtilities.c:249 (set (reg:SI 1 dx [ len ])
+        (reg/v:SI 58 [ len ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 39 38 40 2 ./CUtilities.c:249 (set (reg:DI 4 si)
+        (symbol_ref/f:DI ("*.LC3") [flags 0x2] <string_cst 0x2b7f6e4695b0>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 40 39 41 2 ./CUtilities.c:249 (set (reg:DI 5 di [ stderr ])
+        (mem/f/c/i:DI (symbol_ref:DI ("stderr") [flags 0x40] <var_decl 0x2b7f6e1a64d0 stderr>) [14 stderr+0 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 41 40 42 2 ./CUtilities.c:249 (set (reg:QI 0 ax)
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (nil))
+
+(call_insn 42 41 43 2 ./CUtilities.c:249 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("fprintf") [flags 0x41] <function_decl 0x2b7f6e042700 fprintf>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:QI 0 ax))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ stderr ]))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+                (expr_list:REG_DEP_TRUE (use (reg:SI 1 dx [ len ]))
+                    (expr_list:REG_DEP_TRUE (use (reg:DI 2 cx [ D.6031 ]))
+                        (nil)))))))
+
+(note 43 42 44 2 ("./CUtilities.c") 251)
+
+(insn 44 43 45 2 ./CUtilities.c:251 (set (reg:SI 5 di)
+        (const_int 1 [0x1])) 40 {*movsi_1} (nil)
+    (nil))
+
+(call_insn 45 44 46 2 ./CUtilities.c:251 (call (mem:QI (symbol_ref:DI ("exit") [flags 0x41] <function_decl 0x2b7f6e059100 exit>) [0 S1 A8])
+        (const_int 0 [0x0])) 555 {*call_0} (nil)
+    (expr_list:REG_NORETURN (const_int 0 [0x0])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+        (nil)))
+;; End of basic block 2, registers live:
+ (nil)
+
+(barrier 46 45 47)
+
+;; Start of basic block 3, registers live: (nil)
+(code_label 47 46 48 3 98 "" [1 uses])
+
+(note 48 47 49 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(note 49 48 50 3 ("./CUtilities.c") 254)
+
+(insn 50 49 51 3 ./CUtilities.c:254 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v:SI 58 [ len ])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (nil)
+    (nil))
+
+(jump_insn 51 50 53 3 ./CUtilities.c:254 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 64)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 9900 [0x26ac])
+        (nil)))
+;; End of basic block 3, registers live:
+ (nil)
+
+;; Start of basic block 4, registers live: (nil)
+(note 53 51 54 4 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(note 54 53 55 4 ("./CUtilities.c") 256)
+
+(insn 55 54 56 4 ./CUtilities.c:256 (set (reg:SI 1 dx [ len ])
+        (reg/v:SI 58 [ len ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 56 55 57 4 ./CUtilities.c:256 (set (reg:DI 4 si)
+        (symbol_ref/f:DI ("*.LC4") [flags 0x2] <string_cst 0x2b7f6e6293c0>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 57 56 58 4 ./CUtilities.c:256 (set (reg:DI 5 di [ stderr ])
+        (mem/f/c/i:DI (symbol_ref:DI ("stderr") [flags 0x40] <var_decl 0x2b7f6e1a64d0 stderr>) [14 stderr+0 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 58 57 59 4 ./CUtilities.c:256 (set (reg:QI 0 ax)
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (nil))
+
+(call_insn 59 58 60 4 ./CUtilities.c:256 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("fprintf") [flags 0x41] <function_decl 0x2b7f6e042700 fprintf>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:QI 0 ax))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ stderr ]))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+                (expr_list:REG_DEP_TRUE (use (reg:SI 1 dx [ len ]))
+                    (nil))))))
+
+(note 60 59 61 4 ("./CUtilities.c") 257)
+
+(insn 61 60 62 4 ./CUtilities.c:257 (set (reg:SI 5 di)
+        (const_int 1 [0x1])) 40 {*movsi_1} (nil)
+    (nil))
+
+(call_insn 62 61 63 4 ./CUtilities.c:257 (call (mem:QI (symbol_ref:DI ("exit") [flags 0x41] <function_decl 0x2b7f6e059100 exit>) [0 S1 A8])
+        (const_int 0 [0x0])) 555 {*call_0} (nil)
+    (expr_list:REG_NORETURN (const_int 0 [0x0])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+        (nil)))
+;; End of basic block 4, registers live:
+ (nil)
+
+(barrier 63 62 64)
+
+;; Start of basic block 5, registers live: (nil)
+(code_label 64 63 65 5 102 "" [1 uses])
+
+(note 65 64 66 5 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(insn 66 65 67 5 ./CUtilities.c:257 (set (reg/v/f:DI 59 [ memp ])
+        (const_int 0 [0x0])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+;; End of basic block 5, registers live:
+ (nil)
+
+;; Start of basic block 6, registers live: (nil)
+(code_label 67 66 68 6 100 "" [1 uses])
+
+(note 68 67 72 6 [bb 6] NOTE_INSN_BASIC_BLOCK)
+
+(note 72 68 73 6 NOTE_INSN_FUNCTION_END)
+
+(note 73 72 75 6 ("./CUtilities.c") 261)
+
+(insn 75 73 81 6 ./CUtilities.c:261 (set (reg/i:DI 0 ax [ <result> ])
+        (reg/v/f:DI 59 [ memp ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 81 75 0 6 ./CUtilities.c:261 (use (reg/i:DI 0 ax [ <result> ])) -1 (nil)
+    (nil))
+;; End of basic block 6, registers live:
+ (nil)
+
+
+;; Function newmem (newmem)
+
+68 registers.
+
+Register 58 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 59 used 2 times across 0 insns; set 2 times; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 60 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 61 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 62 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none; pointer.
+
+Register 63 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 64 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 65 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 66 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none; pointer.
+
+7 basic blocks, 9 edges.
+
+Basic block 0 prev -1, next 1, loop_depth 0, count 0, freq 10000, maybe hot.
+Predecessors:  ENTRY [100.0%]  (fallthru,exec)
+Successors:  1 [93.5%]  (fallthru) 3 [6.5%] 
+
+Basic block 1 prev 0, next 2, loop_depth 0, count 0, freq 9355, maybe hot.
+Predecessors:  0 [93.5%]  (fallthru)
+Successors:  2 [1.0%]  (fallthru) 6 [99.0%] 
+
+Basic block 2 prev 1, next 3, loop_depth 0, count 0, freq 94, maybe hot.
+Predecessors:  1 [1.0%]  (fallthru)
+Successors: 
+
+Basic block 3 prev 2, next 4, loop_depth 0, count 0, freq 645, maybe hot.
+Predecessors:  0 [6.5%] 
+Successors:  4 [1.0%]  (fallthru) 5 [99.0%] 
+
+Basic block 4 prev 3, next 5, loop_depth 0, count 0, freq 6.
+Predecessors:  3 [1.0%]  (fallthru)
+Successors: 
+
+Basic block 5 prev 4, next 6, loop_depth 0, count 0, freq 639, maybe hot.
+Predecessors:  3 [99.0%] 
+Successors:  6 [100.0%]  (fallthru)
+
+Basic block 6 prev 5, next -2, loop_depth 0, count 0, freq 9900, maybe hot.
+Predecessors:  1 [99.0%]  5 [100.0%]  (fallthru)
+Successors:  EXIT [100.0%]  (fallthru)
+
+;; Processing block from 1 to 65, 12 sets.
+;; Processing block from 1 to 62, 19 sets.
+;; Processing block from 1 to 45, 28 sets.
+;; Processing block from 46 to 65, 3 sets.
+;; Processing block from 46 to 62, 10 sets.
+;; Processing block from 63 to 65, 1 sets.
+;; Processing block from 66 to 0, 3 sets.
+Deleted 2 trivially dead insns
+
+
+try_optimize_cfg iteration 1
+
+(note 1 0 7 ("./CUtilities.c") 209)
+
+;; Start of basic block 0, registers live: (nil)
+(note 7 1 3 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 3 7 4 0 ./CUtilities.c:209 (set (reg/v:SI 63 [ number ])
+        (reg:SI 5 di [ number ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 4 3 5 0 ./CUtilities.c:209 (set (reg/v:SI 64 [ size ])
+        (reg:SI 4 si [ size ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(note 5 4 9 0 NOTE_INSN_FUNCTION_BEG)
+
+(note 9 5 10 0 ("./CUtilities.c") 211)
+
+(insn 10 9 11 0 ./CUtilities.c:211 (parallel [
+            (set (reg/v:SI 58 [ len ])
+                (mult:SI (reg/v:SI 64 [ size ])
+                    (reg/v:SI 63 [ number ])))
+            (clobber (reg:CC 17 flags))
+        ]) 256 {*mulsi3_1} (nil)
+    (nil))
+
+(note 11 10 12 0 ("./CUtilities.c") 213)
+
+(call_insn/u 12 11 13 0 ./CUtilities.c:213 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("__errno_location") [flags 0x41] <function_decl 0x2b7f6e2d1700 __errno_location>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (nil))
+
+(insn 13 12 14 0 ./CUtilities.c:213 (set (reg:DI 61 [ D.6013 ])
+        (reg:DI 0 ax)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 14 13 15 0 ./CUtilities.c:213 (set (mem:SI (reg:DI 61 [ D.6013 ]) [4 S4 A32])
+        (const_int 0 [0x0])) 40 {*movsi_1} (nil)
+    (nil))
+
+(note 15 14 16 0 ("./CUtilities.c") 215)
+
+(insn 16 15 17 0 ./CUtilities.c:215 (set (reg:CCNO 17 flags)
+        (compare:CCNO (reg/v:SI 58 [ len ])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (nil)
+    (nil))
+
+(jump_insn 17 16 19 0 ./CUtilities.c:215 (set (pc)
+        (if_then_else (le (reg:CCNO 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 45)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 645 [0x285])
+        (nil)))
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 19 17 20 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(note 20 19 21 1 ("./CUtilities.c") 217)
+
+(insn 21 20 22 1 ./CUtilities.c:217 (set (reg:DI 65 [ len ])
+        (sign_extend:DI (reg/v:SI 58 [ len ]))) 115 {extendsidi2_rex64} (nil)
+    (nil))
+
+(insn 22 21 23 1 ./CUtilities.c:217 (set (reg:DI 5 di [ len ])
+        (reg:DI 65 [ len ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(call_insn 23 22 24 1 ./CUtilities.c:217 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("malloc") [flags 0x41] <function_decl 0x2b7f6e05f400 malloc>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ len ]))
+        (nil)))
+
+(insn 24 23 26 1 ./CUtilities.c:217 (set (reg/v/f:DI 59 [ memp ])
+        (reg:DI 0 ax)) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_NOALIAS (reg/f:DI 66)
+        (nil)))
+
+(note 26 24 27 1 ("./CUtilities.c") 219)
+
+(insn 27 26 28 1 ./CUtilities.c:219 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 59 [ memp ])
+            (const_int 0 [0x0]))) 0 {cmpdi_ccno_1_rex64} (nil)
+    (nil))
+
+(jump_insn 28 27 30 1 ./CUtilities.c:219 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 65)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 9900 [0x26ac])
+        (nil)))
+;; End of basic block 1, registers live:
+ (nil)
+
+;; Start of basic block 2, registers live: (nil)
+(note 30 28 31 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(note 31 30 32 2 ("./CUtilities.c") 221)
+
+(insn 32 31 33 2 ./CUtilities.c:221 (set (reg:SI 5 di)
+        (mem:SI (reg:DI 61 [ D.6013 ]) [4 S4 A32])) 40 {*movsi_1} (nil)
+    (nil))
+
+(call_insn 33 32 34 2 ./CUtilities.c:221 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strerror") [flags 0x41] <function_decl 0x2b7f6e2a0000 strerror>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+        (nil)))
+
+(insn 34 33 35 2 ./CUtilities.c:221 (set (reg:DI 60 [ D.6017 ])
+        (reg:DI 0 ax)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 35 34 36 2 ./CUtilities.c:221 (set (reg:DI 2 cx [ D.6017 ])
+        (reg:DI 60 [ D.6017 ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 36 35 37 2 ./CUtilities.c:221 (set (reg:SI 1 dx [ len ])
+        (reg/v:SI 58 [ len ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 37 36 38 2 ./CUtilities.c:221 (set (reg:DI 4 si)
+        (symbol_ref/f:DI ("*.LC3") [flags 0x2] <string_cst 0x2b7f6e4695b0>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 38 37 39 2 ./CUtilities.c:221 (set (reg:DI 5 di [ stderr ])
+        (mem/f/c/i:DI (symbol_ref:DI ("stderr") [flags 0x40] <var_decl 0x2b7f6e1a64d0 stderr>) [14 stderr+0 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 39 38 40 2 ./CUtilities.c:221 (set (reg:QI 0 ax)
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (nil))
+
+(call_insn 40 39 41 2 ./CUtilities.c:221 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("fprintf") [flags 0x41] <function_decl 0x2b7f6e042700 fprintf>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:QI 0 ax))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ stderr ]))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+                (expr_list:REG_DEP_TRUE (use (reg:SI 1 dx [ len ]))
+                    (expr_list:REG_DEP_TRUE (use (reg:DI 2 cx [ D.6017 ]))
+                        (nil)))))))
+
+(note 41 40 42 2 ("./CUtilities.c") 223)
+
+(insn 42 41 43 2 ./CUtilities.c:223 (set (reg:SI 5 di)
+        (const_int 1 [0x1])) 40 {*movsi_1} (nil)
+    (nil))
+
+(call_insn 43 42 44 2 ./CUtilities.c:223 (call (mem:QI (symbol_ref:DI ("exit") [flags 0x41] <function_decl 0x2b7f6e059100 exit>) [0 S1 A8])
+        (const_int 0 [0x0])) 555 {*call_0} (nil)
+    (expr_list:REG_NORETURN (const_int 0 [0x0])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+        (nil)))
+;; End of basic block 2, registers live:
+ (nil)
+
+(barrier 44 43 45)
+
+;; Start of basic block 3, registers live: (nil)
+(code_label 45 44 46 3 108 "" [1 uses])
+
+(note 46 45 47 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(note 47 46 48 3 ("./CUtilities.c") 226)
+
+(insn 48 47 49 3 ./CUtilities.c:226 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v:SI 58 [ len ])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (nil)
+    (nil))
+
+(jump_insn 49 48 51 3 ./CUtilities.c:226 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 62)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 9900 [0x26ac])
+        (nil)))
+;; End of basic block 3, registers live:
+ (nil)
+
+;; Start of basic block 4, registers live: (nil)
+(note 51 49 52 4 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(note 52 51 53 4 ("./CUtilities.c") 228)
+
+(insn 53 52 54 4 ./CUtilities.c:228 (set (reg:SI 1 dx [ len ])
+        (reg/v:SI 58 [ len ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 54 53 55 4 ./CUtilities.c:228 (set (reg:DI 4 si)
+        (symbol_ref/f:DI ("*.LC4") [flags 0x2] <string_cst 0x2b7f6e6293c0>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 55 54 56 4 ./CUtilities.c:228 (set (reg:DI 5 di [ stderr ])
+        (mem/f/c/i:DI (symbol_ref:DI ("stderr") [flags 0x40] <var_decl 0x2b7f6e1a64d0 stderr>) [14 stderr+0 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 56 55 57 4 ./CUtilities.c:228 (set (reg:QI 0 ax)
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (nil))
+
+(call_insn 57 56 58 4 ./CUtilities.c:228 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("fprintf") [flags 0x41] <function_decl 0x2b7f6e042700 fprintf>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:QI 0 ax))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ stderr ]))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+                (expr_list:REG_DEP_TRUE (use (reg:SI 1 dx [ len ]))
+                    (nil))))))
+
+(note 58 57 59 4 ("./CUtilities.c") 229)
+
+(insn 59 58 60 4 ./CUtilities.c:229 (set (reg:SI 5 di)
+        (const_int 1 [0x1])) 40 {*movsi_1} (nil)
+    (nil))
+
+(call_insn 60 59 61 4 ./CUtilities.c:229 (call (mem:QI (symbol_ref:DI ("exit") [flags 0x41] <function_decl 0x2b7f6e059100 exit>) [0 S1 A8])
+        (const_int 0 [0x0])) 555 {*call_0} (nil)
+    (expr_list:REG_NORETURN (const_int 0 [0x0])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+        (nil)))
+;; End of basic block 4, registers live:
+ (nil)
+
+(barrier 61 60 62)
+
+;; Start of basic block 5, registers live: (nil)
+(code_label 62 61 63 5 112 "" [1 uses])
+
+(note 63 62 64 5 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(insn 64 63 65 5 ./CUtilities.c:229 (set (reg/v/f:DI 59 [ memp ])
+        (const_int 0 [0x0])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+;; End of basic block 5, registers live:
+ (nil)
+
+;; Start of basic block 6, registers live: (nil)
+(code_label 65 64 66 6 110 "" [1 uses])
+
+(note 66 65 70 6 [bb 6] NOTE_INSN_BASIC_BLOCK)
+
+(note 70 66 71 6 NOTE_INSN_FUNCTION_END)
+
+(note 71 70 73 6 ("./CUtilities.c") 233)
+
+(insn 73 71 79 6 ./CUtilities.c:233 (set (reg/i:DI 0 ax [ <result> ])
+        (reg/v/f:DI 59 [ memp ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 79 73 0 6 ./CUtilities.c:233 (use (reg/i:DI 0 ax [ <result> ])) -1 (nil)
+    (nil))
+;; End of basic block 6, registers live:
+ (nil)
+
+
+;; Function fileSize (fileSize)
+
+66 registers.
+
+Register 58 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 59 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 60 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 61 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 62 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 63 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none; pointer.
+
+Register 65 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+3 basic blocks, 4 edges.
+
+Basic block 0 prev -1, next 1, loop_depth 0, count 0, freq 10000, maybe hot.
+Predecessors:  ENTRY [100.0%]  (fallthru,exec)
+Successors:  1 [1.0%]  (fallthru) 2 [99.0%] 
+
+Basic block 1 prev 0, next 2, loop_depth 0, count 0, freq 100, maybe hot.
+Predecessors:  0 [1.0%]  (fallthru)
+Successors: 
+
+Basic block 2 prev 1, next -2, loop_depth 0, count 0, freq 9900, maybe hot.
+Predecessors:  0 [99.0%] 
+Successors:  EXIT [100.0%]  (fallthru)
+
+;; Processing block from 1 to 0, 14 sets.
+;; Processing block from 1 to 36, 24 sets.
+;; Processing block from 37 to 0, 4 sets.
+Deleted 1 trivially dead insns
+
+
+try_optimize_cfg iteration 1
+
+(note 1 0 6 ("./CUtilities.c") 142)
+
+;; Start of basic block 0, registers live: (nil)
+(note 6 1 3 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 3 6 4 0 ./CUtilities.c:142 (set (reg/v/f:DI 62 [ fileName ])
+        (reg:DI 5 di [ fileName ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 4 3 8 0 NOTE_INSN_FUNCTION_BEG)
+
+(note 8 4 9 0 ("/usr/include/sys/stat.h") 436)
+
+(insn 9 8 10 0 /usr/include/sys/stat.h:436 (parallel [
+            (set (reg/f:DI 63)
+                (plus:DI (reg/f:DI 20 frame)
+                    (const_int -144 [0xffffffffffffff70])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (nil))
+
+(insn 10 9 11 0 /usr/include/sys/stat.h:436 (set (reg:DI 1 dx)
+        (reg/f:DI 63)) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_EQUAL (plus:DI (reg/f:DI 20 frame)
+            (const_int -144 [0xffffffffffffff70]))
+        (nil)))
+
+(insn 11 10 12 0 /usr/include/sys/stat.h:436 (set (reg:DI 4 si [ fileName ])
+        (reg/v/f:DI 62 [ fileName ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 12 11 13 0 /usr/include/sys/stat.h:436 (set (reg:SI 5 di)
+        (const_int 1 [0x1])) 40 {*movsi_1} (nil)
+    (nil))
+
+(call_insn 13 12 14 0 /usr/include/sys/stat.h:436 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("__xstat") [flags 0x41] <function_decl 0x2b7f6e155a00 __xstat>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si [ fileName ]))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (nil)))))
+
+(insn 14 13 15 0 /usr/include/sys/stat.h:436 (set (reg:SI 58 [ D.8435 ])
+        (reg:SI 0 ax)) 40 {*movsi_1} (nil)
+    (nil))
+
+(note 15 14 16 0 ("./CUtilities.c") 145)
+
+(insn 16 15 17 0 ./CUtilities.c:145 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 58 [ D.8435 ])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (nil)
+    (nil))
+
+(jump_insn 17 16 19 0 ./CUtilities.c:145 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 36)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 9900 [0x26ac])
+        (nil)))
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 19 17 20 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(note 20 19 21 1 ("./CUtilities.c") 147)
+
+(call_insn/u 21 20 22 1 ./CUtilities.c:147 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("__errno_location") [flags 0x41] <function_decl 0x2b7f6e2d1700 __errno_location>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (nil))
+
+(insn 22 21 23 1 ./CUtilities.c:147 (set (reg:DI 60 [ D.5941 ])
+        (reg:DI 0 ax)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 23 22 24 1 ./CUtilities.c:147 (set (reg:SI 5 di)
+        (mem:SI (reg:DI 60 [ D.5941 ]) [4 S4 A32])) 40 {*movsi_1} (nil)
+    (nil))
+
+(call_insn 24 23 25 1 ./CUtilities.c:147 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strerror") [flags 0x41] <function_decl 0x2b7f6e2a0000 strerror>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+        (nil)))
+
+(insn 25 24 26 1 ./CUtilities.c:147 (set (reg:DI 59 [ D.5943 ])
+        (reg:DI 0 ax)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 26 25 27 1 ./CUtilities.c:147 (set (reg:DI 2 cx [ D.5943 ])
+        (reg:DI 59 [ D.5943 ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 27 26 28 1 ./CUtilities.c:147 (set (reg:DI 1 dx [ fileName ])
+        (reg/v/f:DI 62 [ fileName ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 28 27 29 1 ./CUtilities.c:147 (set (reg:DI 4 si)
+        (symbol_ref/f:DI ("*.LC5") [flags 0x2] <string_cst 0x2b7f6e64d910>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 29 28 30 1 ./CUtilities.c:147 (set (reg:DI 5 di [ stderr ])
+        (mem/f/c/i:DI (symbol_ref:DI ("stderr") [flags 0x40] <var_decl 0x2b7f6e1a64d0 stderr>) [14 stderr+0 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 30 29 31 1 ./CUtilities.c:147 (set (reg:QI 0 ax)
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (nil))
+
+(call_insn 31 30 32 1 ./CUtilities.c:147 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("fprintf") [flags 0x41] <function_decl 0x2b7f6e042700 fprintf>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:QI 0 ax))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ stderr ]))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+                (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx [ fileName ]))
+                    (expr_list:REG_DEP_TRUE (use (reg:DI 2 cx [ D.5943 ]))
+                        (nil)))))))
+
+(note 32 31 33 1 ("./CUtilities.c") 148)
+
+(insn 33 32 34 1 ./CUtilities.c:148 (set (reg:SI 5 di)
+        (const_int 1 [0x1])) 40 {*movsi_1} (nil)
+    (nil))
+
+(call_insn 34 33 35 1 ./CUtilities.c:148 (call (mem:QI (symbol_ref:DI ("exit") [flags 0x41] <function_decl 0x2b7f6e059100 exit>) [0 S1 A8])
+        (const_int 0 [0x0])) 555 {*call_0} (nil)
+    (expr_list:REG_NORETURN (const_int 0 [0x0])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+        (nil)))
+;; End of basic block 1, registers live:
+ (nil)
+
+(barrier 35 34 36)
+
+;; Start of basic block 2, registers live: (nil)
+(code_label 36 35 37 2 118 "" [1 uses])
+
+(note 37 36 38 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(insn 38 37 42 2 ./CUtilities.c:148 (set (reg:DI 65 [ fileInfo.st_size ])
+        (mem/s/c:DI (plus:DI (reg/f:DI 20 frame)
+                (const_int -96 [0xffffffffffffffa0])) [15 fileInfo.st_size+0 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 42 38 43 2 NOTE_INSN_FUNCTION_END)
+
+(note 43 42 45 2 ("./CUtilities.c") 152)
+
+(insn 45 43 51 2 ./CUtilities.c:152 (set (reg/i:DI 0 ax [ <result> ])
+        (reg:DI 65 [ fileInfo.st_size ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 51 45 0 2 ./CUtilities.c:152 (use (reg/i:DI 0 ax [ <result> ])) -1 (nil)
+    (nil))
+;; End of basic block 2, registers live:
+ (nil)
+
+
+;; Function chomp (chomp)
+
+76 registers.
+
+Register 58 used 3 times across 0 insns; set 3 times; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 59 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 60 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 61 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 62 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 63 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none; pointer.
+
+Register 64 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 66 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 67 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 68 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 69 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 70 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 71 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 72 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 73 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 74 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+7 basic blocks, 11 edges.
+
+Basic block 0 prev -1, next 1, loop_depth 0, count 0, freq 1545, maybe hot.
+Predecessors:  ENTRY [100.0%]  (fallthru,exec)
+Successors:  5 [5.0%]  1 [95.0%]  (fallthru)
+
+Basic block 1 prev 0, next 2, loop_depth 0, count 0, freq 1468, maybe hot.
+Predecessors:  0 [95.0%]  (fallthru)
+Successors:  3 [100.0%] 
+
+Basic block 2 prev 1, next 3, loop_depth 1, count 0, freq 8455, maybe hot.
+Predecessors:  3 [89.0%] 
+Successors:  5 [5.0%]  (loop_exit) 3 [95.0%]  (fallthru,dfs_back)
+
+Basic block 3 prev 2, next 4, loop_depth 1, count 0, freq 9500, maybe hot.
+Predecessors:  2 [95.0%]  (fallthru,dfs_back) 1 [100.0%] 
+Successors:  2 [89.0%]  4 [11.0%]  (fallthru,loop_exit)
+
+Basic block 4 prev 3, next 5, loop_depth 0, count 0, freq 1045, maybe hot.
+Predecessors:  3 [11.0%]  (fallthru,loop_exit)
+Successors:  6 [100.0%] 
+
+Basic block 5 prev 4, next 6, loop_depth 0, count 0, freq 500, maybe hot.
+Predecessors:  2 [5.0%]  (loop_exit) 0 [5.0%] 
+Successors:  6 [100.0%]  (fallthru)
+
+Basic block 6 prev 5, next -2, loop_depth 0, count 0, freq 1545, maybe hot.
+Predecessors:  5 [100.0%]  (fallthru) 4 [100.0%] 
+Successors:  EXIT [100.0%]  (fallthru)
+
+;; Processing block from 1 to 27, 15 sets.
+;; Processing block from 28 to 36, 11 sets.
+;; Processing block from 37 to 36, 19 sets.
+;; Processing block from 37 to 47, 10 sets.
+;; Processing block from 48 to 50, 1 sets.
+;; Processing block from 51 to 0, 4 sets.
+Deleted 2 trivially dead insns
+
+
+try_optimize_cfg iteration 1
+
+(note 1 0 6 ("./CUtilities.c") 130)
+
+;; Start of basic block 0, registers live: (nil)
+(note 6 1 3 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 3 6 4 0 ./CUtilities.c:130 (set (reg/v/f:DI 64 [ s ])
+        (reg:DI 5 di [ s ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 4 3 8 0 NOTE_INSN_FUNCTION_BEG)
+
+(note 8 4 9 0 ("./CUtilities.c") 131)
+
+(insn 9 8 10 0 ./CUtilities.c:131 (set (reg:DI 5 di [ s ])
+        (reg/v/f:DI 64 [ s ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(call_insn/u 10 9 11 0 ./CUtilities.c:131 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("strlen") [flags 0x41] <function_decl 0x2b7f6e03e500 strlen>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (mem:BLK (scratch) [0 A8]))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ s ]))
+            (nil))))
+
+(insn 11 10 13 0 ./CUtilities.c:131 (set (reg:DI 66)
+        (reg:DI 0 ax)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 13 11 14 0 ./CUtilities.c:131 (parallel [
+            (set (reg/v/f:DI 60 [ last ])
+                (plus:DI (reg:DI 66)
+                    (reg/v/f:DI 64 [ s ])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (nil))
+
+(note 14 13 15 0 ("./CUtilities.c") 132)
+
+(insn 15 14 16 0 ./CUtilities.c:132 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 64 [ s ])
+            (reg/v/f:DI 60 [ last ]))) 2 {cmpdi_1_insn_rex64} (nil)
+    (nil))
+
+(jump_insn 16 15 18 0 ./CUtilities.c:132 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 47)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+        (nil)))
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 18 16 19 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(note 19 18 20 1 ("./CUtilities.c") 130)
+
+(call_insn/u 20 19 21 1 ./CUtilities.c:130 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("__ctype_b_loc") [flags 0x41] <function_decl 0x2b7f6e3d3100 __ctype_b_loc>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (nil)
+    (nil))
+
+(insn 21 20 22 1 ./CUtilities.c:130 (set (reg:DI 59 [ pretmp.296 ])
+        (reg:DI 0 ax)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 22 21 23 1 ("./CUtilities.c") 132)
+
+(insn 23 22 24 1 ./CUtilities.c:132 (set (reg:DI 61 [ D.5925 ])
+        (mem/f:DI (reg:DI 59 [ pretmp.296 ]) [28 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 24 23 70 1 ./CUtilities.c:132 (set (reg/v/f:DI 58 [ last.302 ])
+        (reg/v/f:DI 60 [ last ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 70 24 25 1 NOTE_INSN_LOOP_BEG)
+
+(jump_insn 25 70 26 1 ./CUtilities.c:132 (set (pc)
+        (label_ref 36)) 548 {jump} (nil)
+    (nil))
+;; End of basic block 1, registers live:
+ (nil)
+
+(barrier 26 25 27)
+
+;; Start of basic block 2, registers live: (nil)
+(code_label 27 26 28 2 126 "" [1 uses])
+
+(note 28 27 29 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(insn 29 28 30 2 ./CUtilities.c:132 (parallel [
+            (set (reg:DI 67)
+                (minus:DI (reg/v/f:DI 60 [ last ])
+                    (reg/v/f:DI 64 [ s ])))
+            (clobber (reg:CC 17 flags))
+        ]) 235 {*subdi_1_rex64} (nil)
+    (nil))
+
+(insn 30 29 31 2 ./CUtilities.c:132 (set (reg:DI 69)
+        (const_int 1 [0x1])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 31 30 32 2 ./CUtilities.c:132 (parallel [
+            (set (reg:DI 68)
+                (minus:DI (reg:DI 69)
+                    (reg:DI 67)))
+            (clobber (reg:CC 17 flags))
+        ]) 235 {*subdi_1_rex64} (nil)
+    (nil))
+
+(insn 32 31 33 2 ./CUtilities.c:132 (parallel [
+            (set (reg:DI 70)
+                (plus:DI (reg/v/f:DI 60 [ last ])
+                    (reg:DI 68)))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (nil))
+
+(insn 33 32 34 2 ./CUtilities.c:132 (parallel [
+            (set (reg:DI 71)
+                (plus:DI (reg:DI 70)
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (nil))
+
+(insn 34 33 35 2 ./CUtilities.c:132 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 58 [ last.302 ])
+            (reg:DI 71))) 2 {cmpdi_1_insn_rex64} (nil)
+    (nil))
+
+(jump_insn 35 34 36 2 ./CUtilities.c:132 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 47)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+        (nil)))
+;; End of basic block 2, registers live:
+ (nil)
+
+;; Start of basic block 3, registers live: (nil)
+(code_label 36 35 37 3 125 "" [1 uses])
+
+(note 37 36 38 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(insn 38 37 39 3 ./CUtilities.c:132 (parallel [
+            (set (reg/v/f:DI 58 [ last.302 ])
+                (plus:DI (reg/v/f:DI 58 [ last.302 ])
+                    (const_int -1 [0xffffffffffffffff])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (nil))
+
+(insn 39 38 40 3 ./CUtilities.c:132 (set (reg:DI 72)
+        (sign_extend:DI (mem:QI (reg/v/f:DI 58 [ last.302 ]) [0 S1 A8]))) 117 {extendqidi2} (nil)
+    (nil))
+
+(insn 40 39 41 3 ./CUtilities.c:132 (set (reg:SI 73)
+        (zero_extend:SI (mem:HI (plus:DI (mult:DI (reg:DI 72)
+                        (const_int 2 [0x2]))
+                    (reg:DI 61 [ D.5925 ])) [16 S2 A16]))) 103 {*zero_extendhisi2_movzwl} (nil)
+    (nil))
+
+(insn 41 40 42 3 ./CUtilities.c:132 (parallel [
+            (set (reg:SI 74)
+                (and:SI (reg:SI 73)
+                    (const_int 8192 [0x2000])))
+            (clobber (reg:CC 17 flags))
+        ]) 299 {*andsi_1} (nil)
+    (nil))
+
+(insn 42 41 43 3 ./CUtilities.c:132 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 74)
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (nil)
+    (nil))
+
+(jump_insn 43 42 71 3 ./CUtilities.c:132 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 27)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 8900 [0x22c4])
+        (nil)))
+;; End of basic block 3, registers live:
+ (nil)
+
+(note 71 43 46 3 NOTE_INSN_LOOP_END)
+
+;; Start of basic block 4, registers live: (nil)
+(note 46 71 44 4 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(jump_insn 44 46 45 4 ./CUtilities.c:132 (set (pc)
+        (label_ref 50)) 548 {jump} (nil)
+    (nil))
+;; End of basic block 4, registers live:
+ (nil)
+
+(barrier 45 44 47)
+
+;; Start of basic block 5, registers live: (nil)
+(code_label 47 45 48 5 123 "" [2 uses])
+
+(note 48 47 49 5 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(insn 49 48 50 5 ./CUtilities.c:132 (set (reg/v/f:DI 58 [ last.302 ])
+        (reg/v/f:DI 64 [ s ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+;; End of basic block 5, registers live:
+ (nil)
+
+;; Start of basic block 6, registers live: (nil)
+(code_label 50 49 51 6 127 "" [1 uses])
+
+(note 51 50 52 6 [bb 6] NOTE_INSN_BASIC_BLOCK)
+
+(note 52 51 53 6 ("./CUtilities.c") 134)
+
+(insn 53 52 57 6 ./CUtilities.c:134 (set (mem:QI (plus:DI (reg/v/f:DI 58 [ last.302 ])
+                (const_int 1 [0x1])) [0 S1 A8])
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (nil))
+
+(note 57 53 58 6 NOTE_INSN_FUNCTION_END)
+
+(note 58 57 60 6 ("./CUtilities.c") 136)
+
+(insn 60 58 66 6 ./CUtilities.c:136 (set (reg/i:DI 0 ax [ <result> ])
+        (reg/v/f:DI 64 [ s ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 66 60 0 6 ./CUtilities.c:136 (use (reg/i:DI 0 ax [ <result> ])) -1 (nil)
+    (nil))
+;; End of basic block 6, registers live:
+ (nil)
+
+
+;; Function stringToChar (stringToChar)
+
+69 registers.
+
+Register 58 used 2 times across 0 insns; set 2 times; dies in 0 places; NO_REGS or none; pointer.
+
+Register 59 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 60 used 2 times across 0 insns; set 2 times; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 61 used 2 times across 0 insns; set 2 times; dies in 0 places; 1 bytes; NO_REGS or none.
+
+Register 62 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 63 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 64 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 65 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 66 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 67 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+7 basic blocks, 11 edges.
+
+Basic block 0 prev -1, next 1, loop_depth 0, count 0, freq 975, maybe hot.
+Predecessors:  ENTRY [100.0%]  (fallthru,exec)
+Successors:  1 [95.0%]  (fallthru) 5 [5.0%] 
+
+Basic block 1 prev 0, next 2, loop_depth 0, count 0, freq 926, maybe hot.
+Predecessors:  0 [95.0%]  (fallthru)
+Successors:  2 [100.0%]  (fallthru)
+
+Basic block 2 prev 1, next 3, loop_depth 1, count 0, freq 9500, maybe hot.
+Predecessors:  4 [95.0%]  (dfs_back) 1 [100.0%]  (fallthru)
+Successors:  3 [5.0%]  (fallthru,loop_exit) 4 [95.0%] 
+
+Basic block 3 prev 2, next 4, loop_depth 0, count 0, freq 475, maybe hot.
+Predecessors:  2 [5.0%]  (fallthru,loop_exit)
+Successors:  6 [100.0%] 
+
+Basic block 4 prev 3, next 5, loop_depth 1, count 0, freq 9025, maybe hot.
+Predecessors:  2 [95.0%] 
+Successors:  2 [95.0%]  (dfs_back) 5 [5.0%]  (fallthru,loop_exit)
+
+Basic block 5 prev 4, next 6, loop_depth 0, count 0, freq 500, maybe hot.
+Predecessors:  0 [5.0%]  4 [5.0%]  (fallthru,loop_exit)
+Successors:  6 [100.0%]  (fallthru)
+
+Basic block 6 prev 5, next -2, loop_depth 0, count 0, freq 975, maybe hot.
+Predecessors:  5 [100.0%]  (fallthru) 3 [100.0%] 
+Successors:  EXIT [100.0%]  (fallthru)
+
+;; Processing block from 1 to 20, 8 sets.
+;; Processing block from 21 to 40, 11 sets.
+;; Processing block from 21 to 33, 9 sets.
+;; Processing block from 34 to 40, 5 sets.
+;; Processing block from 41 to 43, 1 sets.
+;; Processing block from 44 to 0, 3 sets.
+Deleted 1 trivially dead insns
+
+
+try_optimize_cfg iteration 1
+
+(note 1 0 6 ("./CUtilities.c") 119)
+
+;; Start of basic block 0, registers live: (nil)
+(note 6 1 3 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 3 6 4 0 ./CUtilities.c:119 (set (reg/v/f:DI 64 [ str ])
+        (reg:DI 5 di [ str ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 4 3 8 0 NOTE_INSN_FUNCTION_BEG)
+
+(note 8 4 9 0 ("./CUtilities.c") 120)
+
+(insn 9 8 10 0 ./CUtilities.c:120 (set (reg:QI 61 [ D.5906 ])
+        (mem:QI (reg/v/f:DI 64 [ str ]) [0 S1 A8])) 55 {*movqi_1} (nil)
+    (nil))
+
+(insn 10 9 11 0 ./CUtilities.c:120 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 61 [ D.5906 ])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (nil)
+    (nil))
+
+(jump_insn 11 10 13 0 ./CUtilities.c:120 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 40)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 500 [0x1f4])
+        (nil)))
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 13 11 14 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(note 14 13 15 1 ("./CUtilities.c") 119)
+
+(call_insn/u 15 14 16 1 ./CUtilities.c:119 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("__ctype_b_loc") [flags 0x41] <function_decl 0x2b7f6e3d3100 __ctype_b_loc>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (nil)
+    (nil))
+
+(insn 16 15 17 1 ./CUtilities.c:119 (set (reg:DI 59 [ pretmp.331 ])
+        (reg:DI 0 ax)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 17 16 18 1 ("./CUtilities.c") 121)
+
+(insn 18 17 19 1 ./CUtilities.c:121 (set (reg:DI 62 [ D.5905 ])
+        (mem/f:DI (reg:DI 59 [ pretmp.331 ]) [28 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 19 18 61 1 ./CUtilities.c:121 (set (reg/f:DI 58 [ ivtmp.335 ])
+        (reg/v/f:DI 64 [ str ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+;; End of basic block 1, registers live:
+ (nil)
+
+(note 61 19 20 2 NOTE_INSN_LOOP_BEG)
+
+;; Start of basic block 2, registers live: (nil)
+(code_label 20 61 21 2 178 "" [1 uses])
+
+(note 21 20 22 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(insn 22 21 23 2 ./CUtilities.c:121 (set (reg:DI 65 [ D.5906 ])
+        (sign_extend:DI (reg:QI 61 [ D.5906 ]))) 117 {extendqidi2} (nil)
+    (nil))
+
+(insn 23 22 24 2 ./CUtilities.c:121 (set (reg:SI 66)
+        (zero_extend:SI (mem:HI (plus:DI (mult:DI (reg:DI 65 [ D.5906 ])
+                        (const_int 2 [0x2]))
+                    (reg:DI 62 [ D.5905 ])) [16 S2 A16]))) 103 {*zero_extendhisi2_movzwl} (nil)
+    (nil))
+
+(insn 24 23 25 2 ./CUtilities.c:121 (parallel [
+            (set (reg:SI 67)
+                (and:SI (reg:SI 66)
+                    (const_int 8192 [0x2000])))
+            (clobber (reg:CC 17 flags))
+        ]) 299 {*andsi_1} (nil)
+    (nil))
+
+(insn 25 24 26 2 ./CUtilities.c:121 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 67)
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (nil)
+    (nil))
+
+(jump_insn 26 25 28 2 ./CUtilities.c:121 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 33)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+        (nil)))
+;; End of basic block 2, registers live:
+ (nil)
+
+;; Start of basic block 3, registers live: (nil)
+(note 28 26 29 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(note 29 28 30 3 ("./CUtilities.c") 122)
+
+(insn 30 29 31 3 ./CUtilities.c:122 (set (reg:SI 60 [ D.5914 ])
+        (sign_extend:SI (reg:QI 61 [ D.5906 ]))) 121 {extendqisi2} (nil)
+    (nil))
+
+(jump_insn 31 30 32 3 ./CUtilities.c:122 (set (pc)
+        (label_ref 43)) 548 {jump} (nil)
+    (nil))
+;; End of basic block 3, registers live:
+ (nil)
+
+(barrier 32 31 33)
+
+;; Start of basic block 4, registers live: (nil)
+(code_label 33 32 34 4 179 "" [1 uses])
+
+(note 34 33 35 4 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(note 35 34 36 4 ("./CUtilities.c") 120)
+
+(insn 36 35 37 4 ./CUtilities.c:120 (set (reg:QI 61 [ D.5906 ])
+        (mem:QI (plus:DI (reg/f:DI 58 [ ivtmp.335 ])
+                (const_int 1 [0x1])) [0 S1 A8])) 55 {*movqi_1} (nil)
+    (nil))
+
+(insn 37 36 38 4 ./CUtilities.c:120 (parallel [
+            (set (reg/f:DI 58 [ ivtmp.335 ])
+                (plus:DI (reg/f:DI 58 [ ivtmp.335 ])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (nil))
+
+(insn 38 37 39 4 ./CUtilities.c:120 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:QI 61 [ D.5906 ])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (nil)
+    (nil))
+
+(jump_insn 39 38 62 4 ./CUtilities.c:120 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 20)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 9500 [0x251c])
+        (nil)))
+;; End of basic block 4, registers live:
+ (nil)
+
+(note 62 39 40 4 NOTE_INSN_LOOP_END)
+
+;; Start of basic block 5, registers live: (nil)
+(code_label 40 62 41 5 176 "" [1 uses])
+
+(note 41 40 42 5 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(insn 42 41 43 5 ./CUtilities.c:120 (set (reg:SI 60 [ D.5914 ])
+        (const_int 32 [0x20])) 40 {*movsi_1} (nil)
+    (nil))
+;; End of basic block 5, registers live:
+ (nil)
+
+;; Start of basic block 6, registers live: (nil)
+(code_label 43 42 44 6 181 "" [1 uses])
+
+(note 44 43 48 6 [bb 6] NOTE_INSN_BASIC_BLOCK)
+
+(note 48 44 49 6 NOTE_INSN_FUNCTION_END)
+
+(note 49 48 51 6 ("./CUtilities.c") 124)
+
+(insn 51 49 57 6 ./CUtilities.c:124 (set (reg/i:SI 0 ax [ <result> ])
+        (reg:SI 60 [ D.5914 ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 57 51 0 6 ./CUtilities.c:124 (use (reg/i:SI 0 ax [ <result> ])) -1 (nil)
+    (nil))
+;; End of basic block 6, registers live:
+ (nil)
+
+
+;; Function isDouble (isDouble)
+
+68 registers.
+
+Register 59 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 60 used 2 times across 0 insns; set 2 times; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 61 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 62 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 63 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none; pointer.
+
+Register 65 used 1 times across 0 insns; set 1 time; dies in 0 places; 1 bytes; NO_REGS or none.
+
+Register 66 used 1 times across 0 insns; set 1 time; dies in 0 places; 1 bytes; NO_REGS or none.
+
+4 basic blocks, 6 edges.
+
+Basic block 0 prev -1, next 1, loop_depth 0, count 0, freq 10000, maybe hot.
+Predecessors:  ENTRY [100.0%]  (fallthru,exec)
+Successors:  1 [10.4%]  (fallthru) 2 [89.6%] 
+
+Basic block 1 prev 0, next 2, loop_depth 0, count 0, freq 1036, maybe hot.
+Predecessors:  0 [10.4%]  (fallthru)
+Successors:  3 [100.0%] 
+
+Basic block 2 prev 1, next 3, loop_depth 0, count 0, freq 8964, maybe hot.
+Predecessors:  0 [89.6%] 
+Successors:  3 [100.0%]  (fallthru)
+
+Basic block 3 prev 2, next -2, loop_depth 0, count 0, freq 10000, maybe hot.
+Predecessors:  1 [100.0%]  2 [100.0%]  (fallthru)
+Successors:  EXIT [100.0%]  (fallthru)
+
+;; Processing block from 1 to 30, 16 sets.
+;; Processing block from 1 to 24, 13 sets.
+;; Processing block from 25 to 30, 6 sets.
+;; Processing block from 31 to 0, 3 sets.
+Deleted 1 trivially dead insns
+
+
+try_optimize_cfg iteration 1
+
+(note 1 0 6 ("./CUtilities.c") 112)
+
+;; Start of basic block 0, registers live: (nil)
+(note 6 1 3 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 3 6 4 0 ./CUtilities.c:112 (set (reg/v/f:DI 62 [ str ])
+        (reg:DI 5 di [ str ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 4 3 8 0 NOTE_INSN_FUNCTION_BEG)
+
+(note 8 4 9 0 ("/usr/include/stdlib.h") 330)
+
+(insn 9 8 10 0 /usr/include/stdlib.h:330 (parallel [
+            (set (reg/f:DI 63)
+                (plus:DI (reg/f:DI 20 frame)
+                    (const_int -8 [0xfffffffffffffff8])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (nil))
+
+(insn 10 9 11 0 /usr/include/stdlib.h:330 (set (reg:SI 1 dx)
+        (const_int 0 [0x0])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 11 10 12 0 /usr/include/stdlib.h:330 (set (reg:DI 4 si)
+        (reg/f:DI 63)) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_EQUAL (plus:DI (reg/f:DI 20 frame)
+            (const_int -8 [0xfffffffffffffff8]))
+        (nil)))
+
+(insn 12 11 13 0 /usr/include/stdlib.h:330 (set (reg:DI 5 di [ str ])
+        (reg/v/f:DI 62 [ str ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(call_insn 13 12 15 0 /usr/include/stdlib.h:330 (set (reg:DF 21 xmm0)
+        (call (mem:QI (symbol_ref:DI ("__strtod_internal") [flags 0x41] <function_decl 0x2b7f6e2f3e00 __strtod_internal>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ str ]))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:SI 1 dx))
+                (nil)))))
+
+(note 15 13 16 0 ("./CUtilities.c") 115)
+
+(insn 16 15 17 0 ./CUtilities.c:115 (set (reg:DI 59 [ eptr.35 ])
+        (mem/c/i:DI (plus:DI (reg/f:DI 20 frame)
+                (const_int -8 [0xfffffffffffffff8])) [12 eptr+0 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 17 16 18 0 ./CUtilities.c:115 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 62 [ str ])
+            (reg:DI 59 [ eptr.35 ]))) 2 {cmpdi_1_insn_rex64} (nil)
+    (nil))
+
+(jump_insn 18 17 20 0 ./CUtilities.c:115 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 24)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 8964 [0x2304])
+        (nil)))
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 20 18 21 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(insn 21 20 22 1 ./CUtilities.c:115 (set (reg:SI 60 [ D.5892 ])
+        (const_int 0 [0x0])) 40 {*movsi_1} (nil)
+    (nil))
+
+(jump_insn 22 21 23 1 ./CUtilities.c:115 (set (pc)
+        (label_ref 30)) 548 {jump} (nil)
+    (nil))
+;; End of basic block 1, registers live:
+ (nil)
+
+(barrier 23 22 24)
+
+;; Start of basic block 2, registers live: (nil)
+(code_label 24 23 25 2 185 "" [1 uses])
+
+(note 25 24 26 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(insn 26 25 27 2 ./CUtilities.c:115 (set (reg:CCZ 17 flags)
+        (compare:CCZ (mem:QI (reg:DI 59 [ eptr.35 ]) [0 S1 A8])
+            (const_int 0 [0x0]))) 9 {*cmpqi_ccno_1} (nil)
+    (nil))
+
+(insn 27 26 28 2 ./CUtilities.c:115 (set (reg:QI 65)
+        (ne:QI (reg:CCZ 17 flags)
+            (const_int 0 [0x0]))) 527 {*setcc_1} (nil)
+    (expr_list:REG_EQUAL (ne:QI (mem:QI (reg:DI 59 [ eptr.35 ]) [0 S1 A8])
+            (const_int 0 [0x0]))
+        (nil)))
+
+(insn 28 27 29 2 ./CUtilities.c:115 (parallel [
+            (set (reg:QI 66)
+                (xor:QI (reg:QI 65)
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 350 {*xorqi_1} (nil)
+    (nil))
+
+(insn 29 28 30 2 ./CUtilities.c:115 (parallel [
+            (set (reg:SI 60 [ D.5892 ])
+                (zero_extend:SI (reg:QI 66)))
+            (clobber (reg:CC 17 flags))
+        ]) 108 {*zero_extendqisi2_movzbw_and} (nil)
+    (nil))
+;; End of basic block 2, registers live:
+ (nil)
+
+;; Start of basic block 3, registers live: (nil)
+(code_label 30 29 31 3 187 "" [1 uses])
+
+(note 31 30 35 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(note 35 31 36 3 NOTE_INSN_FUNCTION_END)
+
+(note 36 35 38 3 ("./CUtilities.c") 116)
+
+(insn 38 36 44 3 ./CUtilities.c:116 (set (reg/i:SI 0 ax [ <result> ])
+        (reg:SI 60 [ D.5892 ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 44 38 0 3 ./CUtilities.c:116 (use (reg/i:SI 0 ax [ <result> ])) -1 (nil)
+    (nil))
+;; End of basic block 3, registers live:
+ (nil)
+
+
+;; Function WriteString (WriteString)
+
+69 registers.
+
+Register 58 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 59 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 60 used 2 times across 0 insns; set 2 times; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 61 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 62 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 63 used 2 times across 0 insns; set 2 times; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 64 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 66 used 1 times across 0 insns; set 1 time; dies in 0 places; 1 bytes; NO_REGS or none.
+
+Register 67 used 1 times across 0 insns; set 1 time; dies in 0 places; 1 bytes; NO_REGS or none.
+
+6 basic blocks, 9 edges.
+
+Basic block 0 prev -1, next 1, loop_depth 0, count 0, freq 10000, maybe hot.
+Predecessors:  ENTRY [100.0%]  (fallthru,exec)
+Successors:  1 [19.0%]  (fallthru) 2 [81.0%] 
+
+Basic block 1 prev 0, next 2, loop_depth 0, count 0, freq 1900, maybe hot.
+Predecessors:  0 [19.0%]  (fallthru)
+Successors:  2 [100.0%]  (fallthru)
+
+Basic block 2 prev 1, next 3, loop_depth 0, count 0, freq 10000, maybe hot.
+Predecessors:  0 [81.0%]  1 [100.0%]  (fallthru)
+Successors:  3 [31.9%]  (fallthru) 4 [68.0%] 
+
+Basic block 3 prev 2, next 4, loop_depth 0, count 0, freq 3195, maybe hot.
+Predecessors:  2 [31.9%]  (fallthru)
+Successors:  5 [100.0%] 
+
+Basic block 4 prev 3, next 5, loop_depth 0, count 0, freq 6805, maybe hot.
+Predecessors:  2 [68.0%] 
+Successors:  5 [100.0%]  (fallthru)
+
+Basic block 5 prev 4, next -2, loop_depth 0, count 0, freq 10000, maybe hot.
+Predecessors:  3 [100.0%]  4 [100.0%]  (fallthru)
+Successors:  EXIT [100.0%]  (fallthru)
+
+;; Processing block from 1 to 40, 21 sets.
+;; Processing block from 1 to 30, 14 sets.
+;; Processing block from 1 to 15, 5 sets.
+;; Processing block from 16 to 40, 17 sets.
+;; Processing block from 16 to 30, 10 sets.
+;; Processing block from 31 to 40, 10 sets.
+;; Processing block from 41 to 0, 3 sets.
+Deleted 2 trivially dead insns
+
+
+try_optimize_cfg iteration 1
+
+(note 1 0 7 ("./CUtilities.c") 105)
+
+;; Start of basic block 0, registers live: (nil)
+(note 7 1 3 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 3 7 4 0 ./CUtilities.c:105 (set (reg/v/f:DI 62 [ fp ])
+        (reg:DI 5 di [ fp ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 4 3 5 0 ./CUtilities.c:105 (set (reg/v/f:DI 63 [ str ])
+        (reg:DI 4 si [ str ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 5 4 9 0 NOTE_INSN_FUNCTION_BEG)
+
+(note 9 5 10 0 ("./CUtilities.c") 106)
+
+(insn 10 9 11 0 ./CUtilities.c:106 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 63 [ str ])
+            (const_int 0 [0x0]))) 0 {cmpdi_ccno_1_rex64} (nil)
+    (nil))
+
+(jump_insn 11 10 13 0 ./CUtilities.c:106 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 15)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 8100 [0x1fa4])
+        (nil)))
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 13 11 14 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(insn 14 13 15 1 ./CUtilities.c:106 (set (reg/v/f:DI 63 [ str ])
+        (symbol_ref/f:DI ("*.LC6") [flags 0x2] <string_cst 0x2b7f6e6eb240>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+;; End of basic block 1, registers live:
+ (nil)
+
+;; Start of basic block 2, registers live: (nil)
+(code_label 15 14 16 2 190 "" [1 uses])
+
+(note 16 15 17 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(note 17 16 18 2 ("./CUtilities.c") 107)
+
+(insn 18 17 19 2 ./CUtilities.c:107 (set (reg:DI 4 si [ fp ])
+        (reg/v/f:DI 62 [ fp ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 19 18 20 2 ./CUtilities.c:107 (set (reg:DI 5 di [ str ])
+        (reg/v/f:DI 63 [ str ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(call_insn 20 19 21 2 ./CUtilities.c:107 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("fputs") [flags 0x41] <function_decl 0x2b7f6e042f00 fputs>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ str ]))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si [ fp ]))
+            (nil))))
+
+(insn 21 20 23 2 ./CUtilities.c:107 (set (reg:SI 64)
+        (reg:SI 0 ax)) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 23 21 24 2 ./CUtilities.c:107 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 64)
+            (const_int -1 [0xffffffffffffffff]))) 5 {*cmpsi_1_insn} (nil)
+    (nil))
+
+(jump_insn 24 23 26 2 ./CUtilities.c:107 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 30)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 6805 [0x1a95])
+        (nil)))
+;; End of basic block 2, registers live:
+ (nil)
+
+;; Start of basic block 3, registers live: (nil)
+(note 26 24 27 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(insn 27 26 28 3 ./CUtilities.c:107 (set (reg:SI 60 [ D.5882 ])
+        (const_int 0 [0x0])) 40 {*movsi_1} (nil)
+    (nil))
+
+(jump_insn 28 27 29 3 ./CUtilities.c:107 (set (pc)
+        (label_ref 40)) 548 {jump} (nil)
+    (nil))
+;; End of basic block 3, registers live:
+ (nil)
+
+(barrier 29 28 30)
+
+;; Start of basic block 4, registers live: (nil)
+(code_label 30 29 31 4 192 "" [1 uses])
+
+(note 31 30 32 4 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(insn 32 31 33 4 ./CUtilities.c:107 (set (reg:DI 4 si [ fp ])
+        (reg/v/f:DI 62 [ fp ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 33 32 34 4 ./CUtilities.c:107 (set (reg:SI 5 di)
+        (const_int 0 [0x0])) 40 {*movsi_1} (nil)
+    (nil))
+
+(call_insn 34 33 35 4 ./CUtilities.c:107 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("_IO_putc") [flags 0x41] <function_decl 0x2b7f6e196a00 _IO_putc>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si [ fp ]))
+            (nil))))
+
+(insn 35 34 36 4 ./CUtilities.c:107 (set (reg:SI 58 [ D.5887 ])
+        (reg:SI 0 ax)) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 36 35 37 4 ./CUtilities.c:107 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 58 [ D.5887 ])
+            (const_int -1 [0xffffffffffffffff]))) 5 {*cmpsi_1_insn} (nil)
+    (nil))
+
+(insn 37 36 38 4 ./CUtilities.c:107 (set (reg:QI 66)
+        (eq:QI (reg:CCZ 17 flags)
+            (const_int 0 [0x0]))) 527 {*setcc_1} (nil)
+    (expr_list:REG_EQUAL (eq:QI (reg:SI 58 [ D.5887 ])
+            (const_int -1 [0xffffffffffffffff]))
+        (nil)))
+
+(insn 38 37 39 4 ./CUtilities.c:107 (parallel [
+            (set (reg:QI 67)
+                (xor:QI (reg:QI 66)
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 350 {*xorqi_1} (nil)
+    (nil))
+
+(insn 39 38 40 4 ./CUtilities.c:107 (parallel [
+            (set (reg:SI 60 [ D.5882 ])
+                (zero_extend:SI (reg:QI 67)))
+            (clobber (reg:CC 17 flags))
+        ]) 108 {*zero_extendqisi2_movzbw_and} (nil)
+    (nil))
+;; End of basic block 4, registers live:
+ (nil)
+
+;; Start of basic block 5, registers live: (nil)
+(code_label 40 39 41 5 194 "" [1 uses])
+
+(note 41 40 45 5 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(note 45 41 46 5 NOTE_INSN_FUNCTION_END)
+
+(note 46 45 48 5 ("./CUtilities.c") 108)
+
+(insn 48 46 54 5 ./CUtilities.c:108 (set (reg/i:SI 0 ax [ <result> ])
+        (reg:SI 60 [ D.5882 ])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 54 48 0 5 ./CUtilities.c:108 (use (reg/i:SI 0 ax [ <result> ])) -1 (nil)
+    (nil))
+;; End of basic block 5, registers live:
+ (nil)
+
+
+;; Function ReadString (ReadString)
+
+76 registers.
+
+Register 58 used 2 times across 0 insns; set 2 times; user var; dies in 0 places; NO_REGS or none.
+
+Register 59 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 60 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; 1 bytes; NO_REGS or none.
+
+Register 61 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 62 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none; pointer.
+
+Register 63 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 64 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 65 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 66 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 67 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 68 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none; pointer.
+
+Register 69 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 70 used 1 times across 0 insns; set 1 time; dies in 0 places; 1 bytes; NO_REGS or none.
+
+Register 71 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 72 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 74 used 1 times across 0 insns; set 1 time; dies in 0 places; 1 bytes; NO_REGS or none.
+
+Register 75 used 1 times across 0 insns; set 1 time; dies in 0 places; 1 bytes; NO_REGS or none.
+
+6 basic blocks, 9 edges.
+
+Basic block 0 prev -1, next 1, loop_depth 0, count 0, freq 1145, maybe hot.
+Predecessors:  ENTRY [100.0%]  (fallthru,exec)
+Successors:  1 [100.0%]  (fallthru)
+
+Basic block 1 prev 0, next 2, loop_depth 1, count 0, freq 10000, maybe hot.
+Predecessors:  4 [89.0%]  (dfs_back) 0 [100.0%]  (fallthru)
+Successors:  2 [50.0%]  (fallthru) 4 [50.0%] 
+
+Basic block 2 prev 1, next 3, loop_depth 1, count 0, freq 5000, maybe hot.
+Predecessors:  1 [50.0%]  (fallthru)
+Successors:  3 [1.0%]  (fallthru,loop_exit) 4 [99.0%] 
+
+Basic block 3 prev 2, next 4, loop_depth 0, count 0, freq 50, maybe hot.
+Predecessors:  2 [1.0%]  (fallthru,loop_exit)
+Successors: 
+
+Basic block 4 prev 3, next 5, loop_depth 1, count 0, freq 9950, maybe hot.
+Predecessors:  1 [50.0%]  2 [99.0%] 
+Successors:  1 [89.0%]  (dfs_back) 5 [11.0%]  (fallthru,loop_exit)
+
+Basic block 5 prev 4, next -2, loop_depth 0, count 0, freq 1095, maybe hot.
+Predecessors:  4 [11.0%]  (fallthru,loop_exit)
+Successors:  EXIT [100.0%]  (fallthru)
+
+;; Processing block from 1 to 11, 4 sets.
+;; Processing block from 12 to 47, 28 sets.
+;; Processing block from 48 to 0, 23 sets.
+Deleted 2 trivially dead insns
+
+
+try_optimize_cfg iteration 1
+
+(note 1 0 8 ("./CUtilities.c") 79)
+
+;; Start of basic block 0, registers live: (nil)
+(note 8 1 3 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 3 8 4 0 ./CUtilities.c:79 (set (reg/v/f:DI 65 [ fp ])
+        (reg:DI 5 di [ fp ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 4 3 5 0 ./CUtilities.c:79 (set (reg/v/f:DI 66 [ buff ])
+        (reg:DI 4 si [ buff ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 5 4 6 0 ./CUtilities.c:79 (set (reg/v/f:DI 67 [ size ])
+        (reg:DI 1 dx [ size ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 6 5 10 0 NOTE_INSN_FUNCTION_BEG)
+
+(insn 10 6 87 0 ./CUtilities.c:79 (set (reg/v:DI 58 [ cnt.430 ])
+        (const_int 0 [0x0])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+;; End of basic block 0, registers live:
+ (nil)
+
+(note 87 10 11 1 NOTE_INSN_LOOP_BEG)
+
+;; Start of basic block 1, registers live: (nil)
+(code_label 11 87 12 1 197 "" [1 uses])
+
+(note 12 11 13 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(note 13 12 14 1 ("./CUtilities.c") 84)
+
+(insn 14 13 15 1 ./CUtilities.c:84 (set (reg:DI 63 [ D.5866 ])
+        (mem:DI (reg/v/f:DI 67 [ size ]) [15 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 15 14 16 1 ./CUtilities.c:84 (set (reg:CC 17 flags)
+        (compare:CC (reg:DI 63 [ D.5866 ])
+            (reg/v:DI 58 [ cnt.430 ]))) 2 {cmpdi_1_insn_rex64} (nil)
+    (nil))
+
+(jump_insn 16 15 18 1 ./CUtilities.c:84 (set (pc)
+        (if_then_else (gtu (reg:CC 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 47)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 5000 [0x1388])
+        (nil)))
+;; End of basic block 1, registers live:
+ (nil)
+
+;; Start of basic block 2, registers live: (nil)
+(note 18 16 19 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(note 19 18 20 2 ("./CUtilities.c") 86)
+
+(insn 20 19 21 2 ./CUtilities.c:86 (parallel [
+            (set (reg:DI 59 [ temp.429 ])
+                (ashift:DI (reg:DI 63 [ D.5866 ])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 409 {*ashldi3_1_rex64} (nil)
+    (nil))
+
+(insn 21 20 22 2 ./CUtilities.c:86 (set (mem:DI (reg/v/f:DI 67 [ size ]) [15 S8 A64])
+        (reg:DI 59 [ temp.429 ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 22 21 23 2 ("./CUtilities.c") 87)
+
+(insn 23 22 24 2 ./CUtilities.c:87 (set (reg:DI 4 si [ temp.429 ])
+        (reg:DI 59 [ temp.429 ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 24 23 25 2 ./CUtilities.c:87 (set (reg:DI 5 di)
+        (mem/f:DI (reg/v/f:DI 66 [ buff ]) [12 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(call_insn 25 24 26 2 ./CUtilities.c:87 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("realloc") [flags 0x41] <function_decl 0x2b7f6e316100 realloc>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si [ temp.429 ]))
+            (nil))))
+
+(insn 26 25 28 2 ./CUtilities.c:87 (set (reg/f:DI 68)
+        (reg:DI 0 ax)) 81 {*movdi_1_rex64} (nil)
+    (expr_list:REG_NOALIAS (reg/f:DI 68)
+        (nil)))
+
+(insn 28 26 29 2 ./CUtilities.c:87 (set (mem/f:DI (reg/v/f:DI 66 [ buff ]) [12 S8 A64])
+        (reg/f:DI 68)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 29 28 30 2 ./CUtilities.c:87 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/f:DI 68)
+            (const_int 0 [0x0]))) 0 {cmpdi_ccno_1_rex64} (nil)
+    (nil))
+
+(jump_insn 30 29 32 2 ./CUtilities.c:87 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 47)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 9900 [0x26ac])
+        (nil)))
+;; End of basic block 2, registers live:
+ (nil)
+
+;; Start of basic block 3, registers live: (nil)
+(note 32 30 33 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(insn 33 32 34 3 ./CUtilities.c:87 (set (reg:DI 2 cx [ stderr ])
+        (mem/f/c/i:DI (symbol_ref:DI ("stderr") [flags 0x40] <var_decl 0x2b7f6e1a64d0 stderr>) [14 stderr+0 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 34 33 35 3 ./CUtilities.c:87 (set (reg:DI 1 dx)
+        (const_int 14 [0xe])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 35 34 36 3 ./CUtilities.c:87 (set (reg:DI 4 si)
+        (const_int 1 [0x1])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 36 35 37 3 ./CUtilities.c:87 (set (reg:DI 5 di)
+        (symbol_ref/f:DI ("*.LC7") [flags 0x2] <string_cst 0x2b7f6e708e40>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(call_insn 37 36 38 3 ./CUtilities.c:87 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("fwrite") [flags 0x41] <function_decl 0x2b7f6e044400 __builtin_fwrite>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                (expr_list:REG_DEP_TRUE (use (reg:DI 2 cx [ stderr ]))
+                    (nil))))))
+
+(insn 38 37 39 3 ./CUtilities.c:87 (set (reg:SI 2 cx)
+        (const_int 87 [0x57])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 39 38 40 3 ./CUtilities.c:87 (set (reg:DI 1 dx)
+        (symbol_ref/f:DI ("*.LC8") [flags 0x2] <string_cst 0x2b7f6e708ec0>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 40 39 41 3 ./CUtilities.c:87 (set (reg:DI 4 si)
+        (symbol_ref/f:DI ("*.LC9") [flags 0x2] <string_cst 0x2b7f6e708f00>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 41 40 42 3 ./CUtilities.c:87 (set (reg:DI 5 di [ stderr ])
+        (mem/f/c/i:DI (symbol_ref:DI ("stderr") [flags 0x40] <var_decl 0x2b7f6e1a64d0 stderr>) [14 stderr+0 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 42 41 43 3 ./CUtilities.c:87 (set (reg:QI 0 ax)
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (nil))
+
+(call_insn 43 42 44 3 ./CUtilities.c:87 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("fprintf") [flags 0x41] <function_decl 0x2b7f6e042700 fprintf>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:QI 0 ax))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ stderr ]))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+                (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                    (expr_list:REG_DEP_TRUE (use (reg:SI 2 cx))
+                        (nil)))))))
+
+(insn 44 43 45 3 ./CUtilities.c:87 (set (reg:SI 5 di)
+        (const_int 1 [0x1])) 40 {*movsi_1} (nil)
+    (nil))
+
+(call_insn 45 44 46 3 ./CUtilities.c:87 (call (mem:QI (symbol_ref:DI ("exit") [flags 0x41] <function_decl 0x2b7f6e059100 exit>) [0 S1 A8])
+        (const_int 0 [0x0])) 555 {*call_0} (nil)
+    (expr_list:REG_NORETURN (const_int 0 [0x0])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+        (nil)))
+;; End of basic block 3, registers live:
+ (nil)
+
+(barrier 46 45 47)
+
+;; Start of basic block 4, registers live: (nil)
+(code_label 47 46 48 4 198 "" [2 uses])
+
+(note 48 47 49 4 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(note 49 48 50 4 ("./CUtilities.c") 90)
+
+(insn 50 49 51 4 ./CUtilities.c:90 (set (reg:DI 5 di [ fp ])
+        (reg/v/f:DI 65 [ fp ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(call_insn 51 50 52 4 ./CUtilities.c:90 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("_IO_getc") [flags 0x41] <function_decl 0x2b7f6e196900 _IO_getc>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ fp ]))
+        (nil)))
+
+(insn 52 51 53 4 ./CUtilities.c:90 (set (reg:SI 61 [ D.5872 ])
+        (reg:SI 0 ax)) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 53 52 54 4 ./CUtilities.c:90 (set (reg/v:QI 60 [ c ])
+        (subreg:QI (reg:SI 61 [ D.5872 ]) 0)) 55 {*movqi_1} (nil)
+    (nil))
+
+(note 54 53 55 4 ("./CUtilities.c") 91)
+
+(insn 55 54 56 4 ./CUtilities.c:91 (set (reg:DI 69)
+        (mem/f:DI (reg/v/f:DI 66 [ buff ]) [12 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 56 55 57 4 ./CUtilities.c:91 (set (mem:QI (plus:DI (reg:DI 69)
+                (reg/v:DI 58 [ cnt.430 ])) [0 S1 A8])
+        (subreg:QI (reg:SI 61 [ D.5872 ]) 0)) 55 {*movqi_1} (nil)
+    (nil))
+
+(insn 57 56 58 4 ./CUtilities.c:91 (parallel [
+            (set (reg/v:DI 58 [ cnt.430 ])
+                (plus:DI (reg/v:DI 58 [ cnt.430 ])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 203 {*adddi_1_rex64} (nil)
+    (nil))
+
+(note 58 57 59 4 ("./CUtilities.c") 82)
+
+(insn 59 58 60 4 ./CUtilities.c:82 (parallel [
+            (set (reg:QI 70)
+                (plus:QI (reg/v:QI 60 [ c ])
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 222 {*addqi_1_lea} (nil)
+    (nil))
+
+(insn 60 59 61 4 ./CUtilities.c:82 (set (reg:CC 17 flags)
+        (compare:CC (reg:QI 70)
+            (const_int 1 [0x1]))) 10 {*cmpqi_1} (nil)
+    (nil))
+
+(jump_insn 61 60 88 4 ./CUtilities.c:82 (set (pc)
+        (if_then_else (gtu (reg:CC 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 11)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 8900 [0x22c4])
+        (nil)))
+;; End of basic block 4, registers live:
+ (nil)
+
+(note 88 61 63 4 NOTE_INSN_LOOP_END)
+
+;; Start of basic block 5, registers live: (nil)
+(note 63 88 64 5 [bb 5] NOTE_INSN_BASIC_BLOCK)
+
+(note 64 63 65 5 ("./CUtilities.c") 94)
+
+(insn 65 64 66 5 ./CUtilities.c:94 (set (reg:DI 71)
+        (mem/f:DI (reg/v/f:DI 66 [ buff ]) [12 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 66 65 67 5 ./CUtilities.c:94 (set (mem:QI (plus:DI (plus:DI (reg/v:DI 58 [ cnt.430 ])
+                    (reg:DI 71))
+                (const_int -1 [0xffffffffffffffff])) [0 S1 A8])
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (nil))
+
+(insn 67 66 68 5 ./CUtilities.c:94 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v:QI 60 [ c ])
+            (const_int -1 [0xffffffffffffffff]))) 10 {*cmpqi_1} (nil)
+    (nil))
+
+(insn 68 67 69 5 ./CUtilities.c:94 (set (reg:QI 74)
+        (eq:QI (reg:CCZ 17 flags)
+            (const_int 0 [0x0]))) 527 {*setcc_1} (nil)
+    (expr_list:REG_EQUAL (eq:QI (reg/v:QI 60 [ c ])
+            (const_int -1 [0xffffffffffffffff]))
+        (nil)))
+
+(insn 69 68 70 5 ./CUtilities.c:94 (parallel [
+            (set (reg:QI 75)
+                (xor:QI (reg:QI 74)
+                    (const_int 1 [0x1])))
+            (clobber (reg:CC 17 flags))
+        ]) 350 {*xorqi_1} (nil)
+    (nil))
+
+(insn 70 69 74 5 ./CUtilities.c:94 (parallel [
+            (set (reg:SI 72)
+                (zero_extend:SI (reg:QI 75)))
+            (clobber (reg:CC 17 flags))
+        ]) 108 {*zero_extendqisi2_movzbw_and} (nil)
+    (nil))
+
+(note 74 70 75 5 NOTE_INSN_FUNCTION_END)
+
+(note 75 74 77 5 ("./CUtilities.c") 99)
+
+(insn 77 75 83 5 ./CUtilities.c:99 (set (reg/i:SI 0 ax [ <result> ])
+        (reg:SI 72)) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 83 77 0 5 ./CUtilities.c:99 (use (reg/i:SI 0 ax [ <result> ])) -1 (nil)
+    (nil))
+;; End of basic block 5, registers live:
+ (nil)
+
+
+;; Function FileOpen (FileOpen)
+
+63 registers.
+
+Register 58 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 59 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none; pointer.
+
+Register 60 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 61 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+3 basic blocks, 4 edges.
+
+Basic block 0 prev -1, next 1, loop_depth 0, count 0, freq 10000, maybe hot.
+Predecessors:  ENTRY [100.0%]  (fallthru,exec)
+Successors:  1 [1.0%]  (fallthru) 2 [99.0%] 
+
+Basic block 1 prev 0, next 2, loop_depth 0, count 0, freq 100, maybe hot.
+Predecessors:  0 [1.0%]  (fallthru)
+Successors: 
+
+Basic block 2 prev 1, next -2, loop_depth 0, count 0, freq 9900, maybe hot.
+Predecessors:  0 [99.0%] 
+Successors:  EXIT [100.0%]  (fallthru)
+
+;; Processing block from 1 to 0, 11 sets.
+;; Processing block from 1 to 39, 25 sets.
+;; Processing block from 40 to 0, 3 sets.
+Deleted 1 trivially dead insns
+
+
+try_optimize_cfg iteration 1
+
+(note 1 0 7 ("./CUtilities.c") 65)
+
+;; Start of basic block 0, registers live: (nil)
+(note 7 1 3 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 3 7 4 0 ./CUtilities.c:65 (set (reg/v/f:DI 60 [ file ])
+        (reg:DI 5 di [ file ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 4 3 5 0 ./CUtilities.c:65 (set (reg/v/f:DI 61 [ mode ])
+        (reg:DI 4 si [ mode ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 5 4 9 0 NOTE_INSN_FUNCTION_BEG)
+
+(note 9 5 10 0 ("./CUtilities.c") 66)
+
+(insn 10 9 11 0 ./CUtilities.c:66 (set (reg:DI 4 si [ mode ])
+        (reg/v/f:DI 61 [ mode ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 11 10 12 0 ./CUtilities.c:66 (set (reg:DI 5 di [ file ])
+        (reg/v/f:DI 60 [ file ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(call_insn 12 11 13 0 ./CUtilities.c:66 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("fopen") [flags 0x41] <function_decl 0x2b7f6e1aa400 fopen>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ file ]))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si [ mode ]))
+            (nil))))
+
+(insn 13 12 14 0 ./CUtilities.c:66 (set (reg/v/f:DI 58 [ retval ])
+        (reg:DI 0 ax)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 14 13 15 0 ("./CUtilities.c") 67)
+
+(insn 15 14 16 0 ./CUtilities.c:67 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 58 [ retval ])
+            (const_int 0 [0x0]))) 0 {cmpdi_ccno_1_rex64} (nil)
+    (nil))
+
+(jump_insn 16 15 18 0 ./CUtilities.c:67 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 39)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 9900 [0x26ac])
+        (nil)))
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 18 16 19 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(note 19 18 20 1 ("./CUtilities.c") 69)
+
+(insn 20 19 21 1 ./CUtilities.c:69 (set (reg:DI 2 cx [ file ])
+        (reg/v/f:DI 60 [ file ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 21 20 22 1 ./CUtilities.c:69 (set (reg:DI 1 dx)
+        (symbol_ref/f:DI ("*.LC10") [flags 0x2] <string_cst 0x2b7f6e720680>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 22 21 23 1 ./CUtilities.c:69 (set (reg:DI 4 si)
+        (const_int 1024 [0x400])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 23 22 24 1 ./CUtilities.c:69 (set (reg:DI 5 di)
+        (symbol_ref:DI ("Message") [flags 0x2] <var_decl 0x2b7f6e4416e0 Message>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 24 23 25 1 ./CUtilities.c:69 (set (reg:QI 0 ax)
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (nil))
+
+(call_insn 25 24 26 1 ./CUtilities.c:69 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("snprintf") [flags 0x41] <function_decl 0x2b7f6e046700 snprintf>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:QI 0 ax))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+                (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                    (expr_list:REG_DEP_TRUE (use (reg:DI 2 cx [ file ]))
+                        (nil)))))))
+
+(note 26 25 27 1 ("./CUtilities.c") 70)
+
+(insn 27 26 28 1 ./CUtilities.c:70 (set (reg:DI 5 di)
+        (symbol_ref:DI ("Message") [flags 0x2] <var_decl 0x2b7f6e4416e0 Message>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(call_insn 28 27 29 1 ./CUtilities.c:70 (call (mem:QI (symbol_ref:DI ("perror") [flags 0x41] <function_decl 0x2b7f6e262000 perror>) [0 S1 A8])
+        (const_int 0 [0x0])) 555 {*call_0} (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(note 29 28 30 1 ("./CUtilities.c") 71)
+
+(insn 30 29 31 1 ./CUtilities.c:71 (set (reg:SI 2 cx)
+        (const_int 71 [0x47])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 31 30 32 1 ./CUtilities.c:71 (set (reg:DI 1 dx)
+        (symbol_ref/f:DI ("*.LC8") [flags 0x2] <string_cst 0x2b7f6e708ec0>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 32 31 33 1 ./CUtilities.c:71 (set (reg:DI 4 si)
+        (symbol_ref/f:DI ("*.LC9") [flags 0x2] <string_cst 0x2b7f6e708f00>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 33 32 34 1 ./CUtilities.c:71 (set (reg:DI 5 di [ stderr ])
+        (mem/f/c/i:DI (symbol_ref:DI ("stderr") [flags 0x40] <var_decl 0x2b7f6e1a64d0 stderr>) [14 stderr+0 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 34 33 35 1 ./CUtilities.c:71 (set (reg:QI 0 ax)
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (nil))
+
+(call_insn 35 34 36 1 ./CUtilities.c:71 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("fprintf") [flags 0x41] <function_decl 0x2b7f6e042700 fprintf>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:QI 0 ax))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ stderr ]))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+                (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                    (expr_list:REG_DEP_TRUE (use (reg:SI 2 cx))
+                        (nil)))))))
+
+(insn 36 35 37 1 ./CUtilities.c:71 (set (reg:SI 5 di)
+        (const_int 1 [0x1])) 40 {*movsi_1} (nil)
+    (nil))
+
+(call_insn 37 36 38 1 ./CUtilities.c:71 (call (mem:QI (symbol_ref:DI ("exit") [flags 0x41] <function_decl 0x2b7f6e059100 exit>) [0 S1 A8])
+        (const_int 0 [0x0])) 555 {*call_0} (nil)
+    (expr_list:REG_NORETURN (const_int 0 [0x0])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+        (nil)))
+;; End of basic block 1, registers live:
+ (nil)
+
+(barrier 38 37 39)
+
+;; Start of basic block 2, registers live: (nil)
+(code_label 39 38 40 2 207 "" [1 uses])
+
+(note 40 39 44 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(note 44 40 45 2 NOTE_INSN_FUNCTION_END)
+
+(note 45 44 47 2 ("./CUtilities.c") 74)
+
+(insn 47 45 53 2 ./CUtilities.c:74 (set (reg/i:DI 0 ax [ <result> ])
+        (reg/v/f:DI 58 [ retval ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 53 47 0 2 ./CUtilities.c:74 (use (reg/i:DI 0 ax [ <result> ])) -1 (nil)
+    (nil))
+;; End of basic block 2, registers live:
+ (nil)
+
+
+;; Function FileClose (FileClose)
+
+61 registers.
+
+Register 58 used 1 times across 0 insns; set 1 time; dies in 0 places; 4 bytes; NO_REGS or none.
+
+Register 59 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 60 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+6 basic blocks, 8 edges.
+
+Basic block 0 prev -1, next 1, loop_depth 0, count 0, freq 10000, maybe hot.
+Predecessors:  ENTRY [100.0%]  (fallthru,exec)
+Successors:  1 [1.0%]  (fallthru) 5 [99.0%] 
+
+Basic block 1 prev 0, next 2, loop_depth 0, count 0, freq 100, maybe hot.
+Predecessors:  0 [1.0%]  (fallthru)
+Successors:  2 [19.0%]  (fallthru) 3 [81.0%] 
+
+Basic block 2 prev 1, next 3, loop_depth 0, count 0, freq 19, maybe hot.
+Predecessors:  1 [19.0%]  (fallthru)
+Successors:  4 [100.0%] 
+
+Basic block 3 prev 2, next 4, loop_depth 0, count 0, freq 81, maybe hot.
+Predecessors:  1 [81.0%] 
+Successors:  4 [100.0%]  (fallthru)
+
+Basic block 4 prev 3, next 5, loop_depth 0, count 0, freq 100, maybe hot.
+Predecessors:  2 [100.0%]  3 [100.0%]  (fallthru)
+Successors: 
+
+Basic block 5 prev 4, next -2, loop_depth 0, count 0, freq 9900, maybe hot.
+Predecessors:  0 [99.0%] 
+Successors:  EXIT [100.0%]  (fallthru)
+
+;; Processing block from 1 to 0, 7 sets.
+;; Processing block from 1 to 39, 15 sets.
+;; Processing block from 1 to 30, 16 sets.
+;; Processing block from 31 to 39, 6 sets.
+;; Processing block from 40 to 61, 11 sets.
+
+
+try_optimize_cfg iteration 1
+
+(note 1 0 7 ("./CUtilities.c") 48)
+
+;; Start of basic block 0, registers live: (nil)
+(note 7 1 3 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 3 7 4 0 ./CUtilities.c:48 (set (reg/v/f:DI 59 [ fp ])
+        (reg:DI 5 di [ fp ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 4 3 5 0 ./CUtilities.c:48 (set (reg/v/f:DI 60 [ file ])
+        (reg:DI 4 si [ file ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 5 4 9 0 NOTE_INSN_FUNCTION_BEG)
+
+(note 9 5 10 0 ("./CUtilities.c") 49)
+
+(insn 10 9 11 0 ./CUtilities.c:49 (set (reg:DI 5 di [ fp ])
+        (reg/v/f:DI 59 [ fp ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(call_insn 11 10 12 0 ./CUtilities.c:49 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("fclose") [flags 0x41] <function_decl 0x2b7f6e1aa000 fclose>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ fp ]))
+        (nil)))
+
+(insn 12 11 13 0 ./CUtilities.c:49 (set (reg:SI 58 [ D.5846 ])
+        (reg:SI 0 ax)) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 13 12 14 0 ./CUtilities.c:49 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg:SI 58 [ D.5846 ])
+            (const_int 0 [0x0]))) 3 {*cmpsi_ccno_1} (nil)
+    (nil))
+
+(jump_insn 14 13 16 0 ./CUtilities.c:49 (set (pc)
+        (if_then_else (eq (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref:DI 61)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 9900 [0x26ac])
+        (nil)))
+;; End of basic block 0, registers live:
+ (nil)
+
+;; Start of basic block 1, registers live: (nil)
+(note 16 14 17 1 [bb 1] NOTE_INSN_BASIC_BLOCK)
+
+(note 17 16 18 1 ("./CUtilities.c") 51)
+
+(insn 18 17 19 1 ./CUtilities.c:51 (set (reg:CCZ 17 flags)
+        (compare:CCZ (reg/v/f:DI 60 [ file ])
+            (const_int 0 [0x0]))) 0 {cmpdi_ccno_1_rex64} (nil)
+    (nil))
+
+(jump_insn 19 18 21 1 ./CUtilities.c:51 (set (pc)
+        (if_then_else (ne (reg:CCZ 17 flags)
+                (const_int 0 [0x0]))
+            (label_ref 30)
+            (pc))) 533 {*jcc_1} (nil)
+    (expr_list:REG_BR_PROB (const_int 8100 [0x1fa4])
+        (nil)))
+;; End of basic block 1, registers live:
+ (nil)
+
+;; Start of basic block 2, registers live: (nil)
+(note 21 19 22 2 [bb 2] NOTE_INSN_BASIC_BLOCK)
+
+(note 22 21 23 2 ("./CUtilities.c") 52)
+
+(insn 23 22 24 2 ./CUtilities.c:52 (set (reg:DI 1 dx)
+        (symbol_ref/f:DI ("*.LC11") [flags 0x2] <string_cst 0x2b7f6e72bb80>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 24 23 25 2 ./CUtilities.c:52 (set (reg:DI 4 si)
+        (const_int 1024 [0x400])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 25 24 26 2 ./CUtilities.c:52 (set (reg:DI 5 di)
+        (symbol_ref:DI ("Message") [flags 0x2] <var_decl 0x2b7f6e4416e0 Message>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 26 25 27 2 ./CUtilities.c:52 (set (reg:QI 0 ax)
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (nil))
+
+(call_insn 27 26 28 2 ./CUtilities.c:52 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("snprintf") [flags 0x41] <function_decl 0x2b7f6e046700 snprintf>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:QI 0 ax))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+                (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                    (nil))))))
+
+(jump_insn 28 27 29 2 ./CUtilities.c:52 (set (pc)
+        (label_ref 39)) 548 {jump} (nil)
+    (nil))
+;; End of basic block 2, registers live:
+ (nil)
+
+(barrier 29 28 30)
+
+;; Start of basic block 3, registers live: (nil)
+(code_label 30 29 31 3 214 "" [1 uses])
+
+(note 31 30 32 3 [bb 3] NOTE_INSN_BASIC_BLOCK)
+
+(note 32 31 33 3 ("./CUtilities.c") 54)
+
+(insn 33 32 34 3 ./CUtilities.c:54 (set (reg:DI 2 cx [ file ])
+        (reg/v/f:DI 60 [ file ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 34 33 35 3 ./CUtilities.c:54 (set (reg:DI 1 dx)
+        (symbol_ref/f:DI ("*.LC12") [flags 0x2] <string_cst 0x2b7f6e72bcc0>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 35 34 36 3 ./CUtilities.c:54 (set (reg:DI 4 si)
+        (const_int 1024 [0x400])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 36 35 37 3 ./CUtilities.c:54 (set (reg:DI 5 di)
+        (symbol_ref:DI ("Message") [flags 0x2] <var_decl 0x2b7f6e4416e0 Message>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 37 36 38 3 ./CUtilities.c:54 (set (reg:QI 0 ax)
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (nil))
+
+(call_insn 38 37 39 3 ./CUtilities.c:54 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("snprintf") [flags 0x41] <function_decl 0x2b7f6e046700 snprintf>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:QI 0 ax))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+                (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                    (expr_list:REG_DEP_TRUE (use (reg:DI 2 cx [ file ]))
+                        (nil)))))))
+;; End of basic block 3, registers live:
+ (nil)
+
+;; Start of basic block 4, registers live: (nil)
+(code_label 39 38 40 4 216 "" [1 uses])
+
+(note 40 39 41 4 [bb 4] NOTE_INSN_BASIC_BLOCK)
+
+(note 41 40 42 4 ("./CUtilities.c") 55)
+
+(insn 42 41 43 4 ./CUtilities.c:55 (set (reg:DI 5 di)
+        (symbol_ref:DI ("Message") [flags 0x2] <var_decl 0x2b7f6e4416e0 Message>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(call_insn 43 42 44 4 ./CUtilities.c:55 (call (mem:QI (symbol_ref:DI ("perror") [flags 0x41] <function_decl 0x2b7f6e262000 perror>) [0 S1 A8])
+        (const_int 0 [0x0])) 555 {*call_0} (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di))
+        (nil)))
+
+(note 44 43 45 4 ("./CUtilities.c") 56)
+
+(insn 45 44 46 4 ./CUtilities.c:56 (set (reg:SI 2 cx)
+        (const_int 56 [0x38])) 40 {*movsi_1} (nil)
+    (nil))
+
+(insn 46 45 47 4 ./CUtilities.c:56 (set (reg:DI 1 dx)
+        (symbol_ref/f:DI ("*.LC8") [flags 0x2] <string_cst 0x2b7f6e708ec0>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 47 46 48 4 ./CUtilities.c:56 (set (reg:DI 4 si)
+        (symbol_ref/f:DI ("*.LC9") [flags 0x2] <string_cst 0x2b7f6e708f00>)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 48 47 49 4 ./CUtilities.c:56 (set (reg:DI 5 di [ stderr ])
+        (mem/f/c/i:DI (symbol_ref:DI ("stderr") [flags 0x40] <var_decl 0x2b7f6e1a64d0 stderr>) [14 stderr+0 S8 A64])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 49 48 50 4 ./CUtilities.c:56 (set (reg:QI 0 ax)
+        (const_int 0 [0x0])) 55 {*movqi_1} (nil)
+    (nil))
+
+(call_insn 50 49 51 4 ./CUtilities.c:56 (set (reg:SI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("fprintf") [flags 0x41] <function_decl 0x2b7f6e042700 fprintf>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (nil)
+    (expr_list:REG_DEP_TRUE (use (reg:QI 0 ax))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ stderr ]))
+            (expr_list:REG_DEP_TRUE (use (reg:DI 4 si))
+                (expr_list:REG_DEP_TRUE (use (reg:DI 1 dx))
+                    (expr_list:REG_DEP_TRUE (use (reg:SI 2 cx))
+                        (nil)))))))
+
+(insn 51 50 52 4 ./CUtilities.c:56 (set (reg:SI 5 di)
+        (const_int 1 [0x1])) 40 {*movsi_1} (nil)
+    (nil))
+
+(call_insn 52 51 53 4 ./CUtilities.c:56 (call (mem:QI (symbol_ref:DI ("exit") [flags 0x41] <function_decl 0x2b7f6e059100 exit>) [0 S1 A8])
+        (const_int 0 [0x0])) 555 {*call_0} (nil)
+    (expr_list:REG_NORETURN (const_int 0 [0x0])
+        (expr_list:REG_EH_REGION (const_int 0 [0x0])
+            (nil)))
+    (expr_list:REG_DEP_TRUE (use (reg:SI 5 di))
+        (nil)))
+;; End of basic block 4, registers live:
+ (nil)
+
+(barrier 53 52 56)
+
+(note 56 53 57 NOTE_INSN_FUNCTION_END)
+
+(note 57 56 61 ("./CUtilities.c") 58)
+
+;; Start of basic block 5, registers live: (nil)
+(code_label 61 57 64 5 217 "" [1 uses])
+
+(note 64 61 0 5 [bb 5] NOTE_INSN_BASIC_BLOCK)
+;; End of basic block 5, registers live:
+ (nil)
+
+
+;; Function FileCheck (FileCheck)
+
+61 registers.
+
+Register 58 used 1 times across 0 insns; set 1 time; dies in 0 places; NO_REGS or none.
+
+Register 59 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+Register 60 used 1 times across 0 insns; set 1 time; user var; dies in 0 places; NO_REGS or none; pointer.
+
+1 basic blocks, 2 edges.
+
+Basic block 0 prev -1, next -2, loop_depth 0, count 0, freq 10000, maybe hot.
+Predecessors:  ENTRY [100.0%]  (fallthru,exec)
+Successors:  EXIT [100.0%]  (ab,sibcall)
+
+;; Processing block from 1 to 0, 10 sets.
+
+
+try_optimize_cfg iteration 1
+
+(note 1 0 7 ("./CUtilities.c") 39)
+
+;; Start of basic block 0, registers live: (nil)
+(note 7 1 3 0 [bb 0] NOTE_INSN_BASIC_BLOCK)
+
+(insn 3 7 4 0 ./CUtilities.c:39 (set (reg/v/f:DI 59 [ file ])
+        (reg:DI 5 di [ file ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 4 3 5 0 ./CUtilities.c:39 (set (reg/v/f:DI 60 [ mode ])
+        (reg:DI 4 si [ mode ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(note 5 4 9 0 NOTE_INSN_FUNCTION_BEG)
+
+(note 9 5 10 0 ("./CUtilities.c") 40)
+
+(insn 10 9 11 0 ./CUtilities.c:40 (set (reg:DI 4 si [ mode ])
+        (reg/v/f:DI 60 [ mode ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 11 10 12 0 ./CUtilities.c:40 (set (reg:DI 5 di [ file ])
+        (reg/v/f:DI 59 [ file ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(call_insn 12 11 13 0 ./CUtilities.c:40 (set (reg:DI 0 ax)
+        (call (mem:QI (symbol_ref:DI ("FileOpen") [flags 0x3] <function_decl 0x2b7f6e3cc600 FileOpen>) [0 S1 A8])
+            (const_int 0 [0x0]))) 769 {*call_value_0_rex64} (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ file ]))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si [ mode ]))
+            (nil))))
+
+(insn 13 12 14 0 ./CUtilities.c:40 (set (reg:DI 58 [ D.5841 ])
+        (reg:DI 0 ax)) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 14 13 15 0 ./CUtilities.c:40 (set (reg:DI 4 si [ file ])
+        (reg/v/f:DI 59 [ file ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(insn 15 14 16 0 ./CUtilities.c:40 (set (reg:DI 5 di [ D.5841 ])
+        (reg:DI 58 [ D.5841 ])) 81 {*movdi_1_rex64} (nil)
+    (nil))
+
+(call_insn/j 16 15 17 0 ./CUtilities.c:40 (call (mem:QI (symbol_ref:DI ("FileClose") [flags 0x3] <function_decl 0x2b7f6e3cc400 FileClose>) [0 S1 A8])
+        (const_int 0 [0x0])) 555 {*call_0} (nil)
+    (expr_list:REG_EH_REGION (const_int 0 [0x0])
+        (nil))
+    (expr_list:REG_DEP_TRUE (use (reg:DI 5 di [ D.5841 ]))
+        (expr_list:REG_DEP_TRUE (use (reg:DI 4 si [ file ]))
+            (nil))))
+;; End of basic block 0, registers live:
+ (nil)
+
+(barrier 17 16 18)
+
+(note 18 17 19 NOTE_INSN_FUNCTION_END)
+
+(note 19 18 0 ("./CUtilities.c") 41)
+

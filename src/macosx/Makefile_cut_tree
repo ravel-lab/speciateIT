@@ -1,0 +1,103 @@
+
+#############################################################################
+#              Makefile for cut_tree
+#############################################################################
+
+# Copyright (C) 2017 Pawel Gajer pgajer@gmail.com and Jacques Ravel jravel@som.umaryland.edu
+
+# Permission to use, copy, modify, and distribute this software and its
+# documentation with or without modifications and for any purpose and
+# without fee is hereby granted, provided that any copyright notices
+# appear in all copies and that both those copyright notices and this
+# permission notice appear in supporting documentation, and that the
+# names of the contributors or copyright holders not be used in
+# advertising or publicity pertaining to distribution of the software
+# without specific prior permission.
+
+# THE CONTRIBUTORS AND COPYRIGHT HOLDERS OF THIS SOFTWARE DISCLAIM ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL THE
+# CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY SPECIAL, INDIRECT
+# OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+# OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+# OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE
+# OR PERFORMANCE OF THIS SOFTWARE.
+
+####### Compiler, tools and options
+
+CC            = clang #gcc #gcc-4.0
+CXX           = clang #g++ #g++-4.0
+LINK          = clang #g++
+LDFLAGS       = -std=c++11 -lc++abi -lstdc++
+FLAGS         = -g -Wall -D__SIM_SSE3 -msse3 -O2 -D_GNU_SOURCE -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -O2 # -g -O2  -Wunused-parameter
+CFLAGS        = $(FLAGS)
+CXXFLAGS      = $(FLAGS)
+INCPATH       = #-Isrc
+LIBS          = # -lm # -L../../lib -lkmerstats
+AR            = ar cq
+RANLIB        = ranlib -s
+TAR           = tar -cf
+COMPRESS      = gzip -9f
+COPY          = cp -f
+SED           = sed
+COPY_FILE     = cp -f
+COPY_DIR      = cp -f -R
+INSTALL_FILE  = $(COPY_FILE)
+INSTALL_DIR   = $(COPY_DIR)
+INSTALL_PROGRAM = $(COPY_FILE)
+DEL_FILE      = rm -f
+SYMLINK       = ln -sf
+DEL_DIR       = rmdir
+MOVE          = mv -f
+CHK_DIR_EXISTS= test -d
+MKDIR         = mkdir -p
+
+####### Files
+
+SRCDIR  = .
+BINDIR  = ../bin
+BUILDDIR= .build
+
+create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))
+create-bin-dir := $(shell $(CHK_DIR_EXISTS) $(BINDIR) || $(MKDIR) $(BINDIR))
+
+OBJECTS = $(BUILDDIR)/cut_tree.o \
+       	  $(BUILDDIR)/Newick.o \
+          $(BUILDDIR)/IOCUtilities.o \
+          $(BUILDDIR)/IOCppUtilities.o \
+          $(BUILDDIR)/CppUtilities.o \
+          $(BUILDDIR)/CUtilities.o \
+          $(BUILDDIR)/strings.o \
+
+####### Build rules
+
+cut_tree: $(OBJECTS)
+	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/cut_tree
+
+$(BUILDDIR)/cut_tree.o: cut_tree.cc Newick.hh Newick.cc IOCUtilities.h IOCUtilities.c IOCppUtilities.cc
+	$(CXX) -c $(FLAGS) $(INCPATH) -I$(SRCDIR) -o $(BUILDDIR)/cut_tree.o cut_tree.cc
+
+$(BUILDDIR)/Newick.o: Newick.hh Newick.cc
+	$(CXX) -c $(FLAGS) $(INCPATH) -o $(BUILDDIR)/Newick.o Newick.cc
+
+$(BUILDDIR)/IOCUtilities.o: IOCUtilities.h IOCUtilities.c
+	$(CC) -c $(FLAGS) $(INCPATH) -o $(BUILDDIR)/IOCUtilities.o IOCUtilities.c
+
+$(BUILDDIR)/IOCppUtilities.o: $(SRCDIR)/IOCppUtilities.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/IOCppUtilities.o $(SRCDIR)/IOCppUtilities.cc
+
+$(BUILDDIR)/CppUtilities.o: $(SRCDIR)/CppUtilities.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/CppUtilities.o $(SRCDIR)/CppUtilities.cc
+
+$(BUILDDIR)/strings.o: $(SRCDIR)/strings.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/strings.o $(SRCDIR)/strings.cc
+
+$(BUILDDIR)/CUtilities.o: $(SRCDIR)/CUtilities.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o $(BUILDDIR)/CUtilities.o $(SRCDIR)/CUtilities.c
+
+
+clean:
+	rm -f $(BUILDDIR)/*.o
+
+clean-all:
+	rm -rf $(BUILDDIR) $(BINDIR)/cut_tree
