@@ -17,10 +17,10 @@ This software runs on **Linux** or **MacOSX**. See specific executables within b
 2. Download vSpeciateDB (https://doi.org/10.6084/m9.figshare.25254229.v3) and place into "vSpeciateDB_models".
 3. Unzip vSpeciateDB directories.  
 
-   cd /path/to/speciateIT  
-   unzip vSpeciateDB_models/vSpeciateIT_V1V3  
-   unzip vSpeciateDB_models/vSpeciateIT_V3V4  
-   unzip vSpeciateDB_models/vSpeciateIT_V4V4
+   cd /path/to/speciateIT/vSpeciateDB_models
+   unzip vSpeciateIT_V1V3  
+   unzip vSpeciateIT_V3V4  
+   unzip vSpeciateIT_V4V4
 
 4. Add classify to PATH or copy correct executable to your bin:
 
