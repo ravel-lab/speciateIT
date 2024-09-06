@@ -10,7 +10,7 @@ Holm, Johanna (2024). speciateIT: vSpeciateDB Models. figshare. Dataset. https:/
 This software runs on **Linux** or **MacOSX**. See specific executables within bin. 
 
 1. Clone repository.
-2. Download vSpeciateDB (https://doi.org/10.6084/m9.figshare.25254229.v1) and place into "vSpeciateDB_models".
+2. Download vSpeciateDB and place into "vSpeciateDB_models": <iframe src="https://widgets.figshare.com/articles/25254229/embed?show_title=1" width="568" height="351" allowfullscreen frameborder="0"></iframe>.
 3. Unzip vSpeciateDB directories.  
 
    cd /path/to/speciateIT  
