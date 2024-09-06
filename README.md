@@ -4,13 +4,13 @@
 SpeciateIT is an algorithm capable of fast, accurate individual sequence taxonomic classification. vSpeciateDB are models built from custom sets of reference sequences for classifying vaginal microbiota. Using a model guide tree and 7th order Markov Chain models to represent bacterial species trained on taxonomy-adjusted amplicon specific regions sequences, speciateIT requires little computational resources, and can quickly process large sequence datasets. SpeciateIT models for the vaginal microbiota include training sets for 16S rRNA gene V1-V3, V3-V4, and V4 regions sequences. "Cat Maps" are provided for each region to indicate which species are indistinguishable at the targeted variable regions.
 
 ### vSpeciateDB:
-Holm, Johanna (2024). speciateIT: vSpeciateDB Models. figshare. Dataset. https://doi.org/10.6084/m9.figshare.25254229.v1
+Holm, Johanna (2024). speciateIT: vSpeciateDB Models. figshare. Dataset. https://doi.org/10.6084/m9.figshare.25254229.v3
 
 ### To install:
 This software runs on **Linux** or **MacOSX**. See specific executables within bin. 
 
 1. Clone repository.
-2. Download vSpeciateDB and place into "vSpeciateDB_models": <iframe src="https://widgets.figshare.com/articles/25254229/embed?show_title=1" width="568" height="351" allowfullscreen frameborder="0"></iframe>.
+2. Download vSpeciateDB (https://doi.org/10.6084/m9.figshare.25254229.v3) and place into "vSpeciateDB_models".
 3. Unzip vSpeciateDB directories.  
 
    cd /path/to/speciateIT  
@@ -26,9 +26,7 @@ This software runs on **Linux** or **MacOSX**. See specific executables within b
 
    NOTE1: May require "sudo" to access /usr/local/bin
    sudo make all  
-   NOTE2: All Makefile's are configured for macosx. If you are on linux machine,
-   change CC, CXX and LINK to gcc, g++ and g++, respectively. You may also need to
-   modify LDFLAGS.
+   NOTE2: All Makefile's are configured for either linux or macosx. 
 
 6. Add classify to PATH:
 
