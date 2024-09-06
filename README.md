@@ -22,17 +22,7 @@ This software runs on **Linux** or **MacOSX**. See specific executables within b
    unzip vSpeciateDB_models/vSpeciateIT_V3V4  
    unzip vSpeciateDB_models/vSpeciateIT_V4V4
 
-5. From parent directory of cloned repository ("speciateIT" or location of "Makefile")
-   
-   make all
-   
-   This will compile all classification scripts.
-
-   NOTE1: May require "sudo" to access /usr/local/bin
-   sudo make all  
-   NOTE2: All Makefile's are configured for either linux or macosx. 
-
-6. Add classify to PATH:
+4. Add classify to PATH:
 
    export PATH="/path/to/speciateIT/bin/:$PATH"
 
@@ -64,5 +54,16 @@ ASV6	Lactobacillus_crispatus	0.965138	50
 ASV7	Lactobacillus_iners	0.973368	50  
 ASV8	Fannyhessea_vaginae	0.984829	24  
 ASV9	Leptotrichia_shahii	0.916945	26  
-ASV10	Megasphaera_lornae	0.973400	27  
+ASV10	Megasphaera_lornae	0.973400	27 
+
+TO COMPILE FROM SOURCE: From src directories (either macosx or linux) of cloned repository.
+
+   make all
+
+   This will compile all classification scripts.
+
+   NOTE1: May require "sudo" to access /usr/local/bin
+   sudo make all
+   NOTE2: All Makefile's are configured for either linux or macosx.
+
 </pre>
