@@ -22,9 +22,9 @@ This software runs on **Linux** or **MacOSX**. See specific executables within b
    unzip vSpeciateDB_models/vSpeciateIT_V3V4  
    unzip vSpeciateDB_models/vSpeciateIT_V4V4
 
-4. Add classify to PATH:
+4. Add classify to PATH or copy correct executable to your bin:
 
-   export PATH="/path/to/speciateIT/bin/:$PATH"
+   export PATH="/path/to/speciateIT/bin/OS/:$PATH"
 
 ### To use: 
 
