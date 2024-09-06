@@ -6,6 +6,10 @@ SpeciateIT is an algorithm capable of fast, accurate individual sequence taxonom
 ### vSpeciateDB:
 Holm, Johanna (2024). speciateIT: vSpeciateDB Models. figshare. Dataset. https://doi.org/10.6084/m9.figshare.25254229.v3
 
+### Requirements: 
+- **RAM**: Minimum 1 GB for classification. 
+- **Storage**: Minimum 7.5 GB (each set of models is 2.5 GP uncompressed). 
+
 ### To install:
 This software runs on **Linux** or **MacOSX**. See specific executables within bin. 
 
