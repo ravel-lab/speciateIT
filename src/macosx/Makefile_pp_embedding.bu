@@ -1,6 +1,6 @@
 
 #############################################################################
-# Makefile for building est_error_thlds.cc
+# Makefile for building pp_embedding.cc
 #############################################################################
 
 # Copyright (C) 2017 Pawel Gajer pgajer@gmail.com and Jacques Ravel jravel@som.umaryland.edu
@@ -29,7 +29,7 @@ CC            = clang #gcc #gcc-4.0
 CXX           = clang #g++ #g++-4.0
 LINK          = clang #g++
 LDFLAGS       = -std=c++11 -lc++abi -lstdc++
-FLAGS         = -std=c++1z -g -Wall -D__SIM_SSE3 -msse3 -O2 -D_GNU_SOURCE -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -O2 # -g -O2  -Wunused-parameter
+FLAGS         = -g -Wall -D__SIM_SSE3 -msse3 -O2 -D_GNU_SOURCE -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -O2 # -g -O2  -Wunused-parameter
 CFLAGS        = $(FLAGS)
 CXXFLAGS      = $(FLAGS)
 INCPATH       = -Isrc
@@ -55,13 +55,13 @@ MKDIR         = mkdir -p
 ####### Files
 
 SRCDIR  = .
-BINDIR  = ../../bin/macosx
+BINDIR  = ../bin
 BUILDDIR= .build
 
 create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))
 create-bin-dir := $(shell $(CHK_DIR_EXISTS) $(BINDIR) || $(MKDIR) $(BINDIR))
 
-OBJECTS = $(BUILDDIR)/est_error_thlds.o \
+OBJECTS = $(BUILDDIR)/pp_embedding.o \
           $(BUILDDIR)/IOCUtilities.o \
           $(BUILDDIR)/IOCppUtilities.o \
           $(BUILDDIR)/MarkovChains.o \
@@ -69,18 +69,18 @@ OBJECTS = $(BUILDDIR)/est_error_thlds.o \
           $(BUILDDIR)/CppUtilities.o \
           $(BUILDDIR)/strings.o \
           $(BUILDDIR)/CStatUtilities.o \
-          $(BUILDDIR)/CppStatUtilities.o \
+     	  $(BUILDDIR)/CppStatUtilities.o \
           $(BUILDDIR)/StatUtilities.o \
           $(BUILDDIR)/DNAsequence.o \
           $(BUILDDIR)/Newick.o \
 
 ####### Build rules
 
-est_error_thlds: $(OBJECTS)
-	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/est_error_thlds
+pp_embedding: $(OBJECTS)
+	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/pp_embedding
 
-$(BUILDDIR)/est_error_thlds.o: $(SRCDIR)/est_error_thlds.cc
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/est_error_thlds.o $(SRCDIR)/est_error_thlds.cc
+$(BUILDDIR)/pp_embedding.o: $(SRCDIR)/pp_embedding.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/pp_embedding.o $(SRCDIR)/pp_embedding.cc
 
 $(BUILDDIR)/IOCppUtilities.o: $(SRCDIR)/IOCppUtilities.cc
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/IOCppUtilities.o $(SRCDIR)/IOCppUtilities.cc

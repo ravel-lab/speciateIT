@@ -55,7 +55,7 @@ MKDIR         = mkdir -p
 ####### Files
 
 SRCDIR  = .
-BINDIR  = ../bin
+BINDIR  = ../../bin/macosx
 BUILDDIR= .build
 
 create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))

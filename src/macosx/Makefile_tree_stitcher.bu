@@ -1,6 +1,6 @@
 
 #############################################################################
-#      Makefile for building vicut
+#              Makefile for tree_stitcher
 #############################################################################
 
 # Copyright (C) 2017 Pawel Gajer pgajer@gmail.com and Jacques Ravel jravel@som.umaryland.edu
@@ -31,9 +31,9 @@ LINK          = clang #g++
 LDFLAGS       = -std=c++11 -lc++abi -lstdc++
 FLAGS         = -g -Wall -D__SIM_SSE3 -msse3 -O2 -D_GNU_SOURCE -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -O2 # -g -O2  -Wunused-parameter
 CFLAGS        = $(FLAGS)
-CXXFLAGS      = -std=c++11 $(FLAGS)
-INCPATH       = -Isrc
-LIBS          = -lm # -pthread -L../../lib -lkmerstats
+CXXFLAGS      = $(FLAGS)
+INCPATH       = -I../src
+LIBS          = # -lm # -L../../lib -lkmerstats
 AR            = ar cq
 RANLIB        = ranlib -s
 TAR           = tar -cf
@@ -52,38 +52,35 @@ MOVE          = mv -f
 CHK_DIR_EXISTS= test -d
 MKDIR         = mkdir -p
 
-####### Files
-
 SRCDIR  = .
-BINDIR  = ../../bin/macosx
+BINDIR  = ../bin
 BUILDDIR= .build
 
 create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))
 create-bin-dir := $(shell $(CHK_DIR_EXISTS) $(BINDIR) || $(MKDIR) $(BINDIR))
 
-OBJECTS = $(BUILDDIR)/vicut.o \
-	  	  $(BUILDDIR)/IOUtilities.o \
-	  	  $(BUILDDIR)/IOCppUtilities.o \
-	  	  $(BUILDDIR)/Newick.o \
-          $(BUILDDIR)/strings.o \
+OBJECTS = $(BUILDDIR)/tree_stitcher.o \
+          $(BUILDDIR)/Newick.o \
+          $(BUILDDIR)/IOCUtilities.o \
+          $(BUILDDIR)/IOCppUtilities.o \
           $(BUILDDIR)/CppUtilities.o \
-          $(BUILDDIR)/CUtilities.o
+          $(BUILDDIR)/CUtilities.o \
+          $(BUILDDIR)/strings.o
 
+tree_stitcher: $(OBJECTS)
+	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/tree_stitcher
 
-vicut: $(OBJECTS)
-	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/vicut
+$(BUILDDIR)/tree_stitcher.o: tree_stitcher.cc
+	$(CXX) -c $(FLAGS) $(INCPATH) -I$(SRCDIR) -o $(BUILDDIR)/tree_stitcher.o tree_stitcher.cc
 
-$(BUILDDIR)/vicut.o: vicut.cc $(SRCDIR)/IOUtilities.c $(SRCDIR)/IOCppUtilities.cc
-	$(CXX) -c $(CXXFLAGS) -I$(SRCDIR) $(INCPATH) -o $(BUILDDIR)/vicut.o vicut.cc
+$(BUILDDIR)/Newick.o: Newick.hh Newick.cc
+	$(CXX) -c $(FLAGS) $(INCPATH) -o $(BUILDDIR)/Newick.o Newick.cc
 
-$(BUILDDIR)/IOUtilities.o: $(SRCDIR)/IOUtilities.c
-	$(CC) -c $(FLAGS) -o $(BUILDDIR)/IOUtilities.o $(SRCDIR)/IOUtilities.c
+$(BUILDDIR)/IOCUtilities.o: IOCUtilities.h IOCUtilities.c
+	$(CC) -c $(FLAGS) $(INCPATH) -o $(BUILDDIR)/IOCUtilities.o IOCUtilities.c
 
-$(BUILDDIR)/IOCppUtilities.o: $(SRCDIR)/IOCppUtilities.cc $(SRCDIR)/IOUtilities.c
-	$(CXX) -c $(FLAGS) -o $(BUILDDIR)/IOCppUtilities.o $(SRCDIR)/IOCppUtilities.cc
-
-$(BUILDDIR)/Newick.o: $(SRCDIR)/Newick.cc
-	$(CXX) -c $(FLAGS) -o $(BUILDDIR)/Newick.o $(SRCDIR)/Newick.cc
+$(BUILDDIR)/IOCppUtilities.o: IOCppUtilities.cc IOCppUtilities.hh
+	$(CXX) -c $(FLAGS) $(INCPATH) -o $(BUILDDIR)/IOCppUtilities.o IOCppUtilities.cc
 
 $(BUILDDIR)/CppUtilities.o: CppUtilities.cc CppUtilities.hh
 	$(CXX) -c $(FLAGS) $(INCPATH) -o $(BUILDDIR)/CppUtilities.o CppUtilities.cc
@@ -96,3 +93,6 @@ $(BUILDDIR)/strings.o: strings.cc
 
 clean:
 	rm -f $(BUILDDIR)/*.o
+
+clean-all:
+	rm -rf $(BUILDDIR) $(BINDIR)/readNewick

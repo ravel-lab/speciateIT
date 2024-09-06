@@ -53,7 +53,7 @@ CHK_DIR_EXISTS= test -d
 MKDIR         = mkdir -p
 
 SRCDIR  = .
-BINDIR  = ../bin
+BINDIR  = ../../bin/macosx
 BUILDDIR= .build
 
 create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))

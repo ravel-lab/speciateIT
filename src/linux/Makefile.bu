@@ -1,9 +1,9 @@
 
 #############################################################################
-# Makefile for building est_error_thlds.cc
+# Makefile for building classify
 #############################################################################
 
-# Copyright (C) 2017 Pawel Gajer pgajer@gmail.com and Jacques Ravel jravel@som.umaryland.edu
+# Copyright (C) 2016 Pawel Gajer pgajer@gmail.com and Jacques Ravel jravel@som.umaryland.edu
 
 # Permission to use, copy, modify, and distribute this software and its
 # documentation with or without modifications and for any purpose and
@@ -25,14 +25,13 @@
 
 ####### Compiler, tools and options
 
-CC            = clang #gcc #gcc-4.0
-CXX           = clang #g++ #g++-4.0
-LINK          = clang #g++
-LDFLAGS       = -std=c++11 -lc++abi -lstdc++
-FLAGS         = -std=c++1z -g -Wall -D__SIM_SSE3 -msse3 -O2 -D_GNU_SOURCE -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -O2 # -g -O2  -Wunused-parameter
-CFLAGS        = $(FLAGS)
-CXXFLAGS      = $(FLAGS)
+CC            = gcc #gcc-4.0
+CXX           = g++ #g++-4.0
+FLAGS         = -g # -fopenmp # -O2 # -g -O2
+CFLAGS        = $(FLAGS) -Wall -D__SIM_SSE3 -O2 -D_GNU_SOURCE -dynamic -msse3 -fomit-frame-pointer -funroll-loops # -D_USE_PTHREADS
+CXXFLAGS      = $(FLAGS) -Wall -D__SIM_SSE3 -O2 -D_GNU_SOURCE -dynamic -msse3 -fomit-frame-pointer -funroll-loops # -D_USE_PTHREADS
 INCPATH       = -Isrc
+LINK          = g++
 LIBS          = -lm # -L../../lib -lkmerstats
 AR            = ar cq
 RANLIB        = ranlib -s
@@ -54,33 +53,34 @@ MKDIR         = mkdir -p
 
 ####### Files
 
+create-build-dir := $(shell $(CHK_DIR_EXISTS) .build || $(MKDIR) .build)
+
 SRCDIR  = .
-BINDIR  = ../../bin/macosx
+BINDIR  = ../bin
 BUILDDIR= .build
 
 create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))
-create-bin-dir := $(shell $(CHK_DIR_EXISTS) $(BINDIR) || $(MKDIR) $(BINDIR))
 
-OBJECTS = $(BUILDDIR)/est_error_thlds.o \
+OBJECTS = $(BUILDDIR)/classify.o \
           $(BUILDDIR)/IOCUtilities.o \
           $(BUILDDIR)/IOCppUtilities.o \
-          $(BUILDDIR)/MarkovChains.o \
+          $(BUILDDIR)/MarkovChains2.o \
           $(BUILDDIR)/CUtilities.o \
           $(BUILDDIR)/CppUtilities.o \
           $(BUILDDIR)/strings.o \
           $(BUILDDIR)/CStatUtilities.o \
-          $(BUILDDIR)/CppStatUtilities.o \
+	  $(BUILDDIR)/CppStatUtilities.o \
           $(BUILDDIR)/StatUtilities.o \
           $(BUILDDIR)/DNAsequence.o \
-          $(BUILDDIR)/Newick.o \
+	  $(BUILDDIR)/Newick.o \
 
 ####### Build rules
 
-est_error_thlds: $(OBJECTS)
-	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/est_error_thlds
+classify: $(OBJECTS)
+	$(CXX) $(FLAGS) $(OBJECTS) -o $(BINDIR)/classify
 
-$(BUILDDIR)/est_error_thlds.o: $(SRCDIR)/est_error_thlds.cc
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/est_error_thlds.o $(SRCDIR)/est_error_thlds.cc
+$(BUILDDIR)/classify.o: $(SRCDIR)/classify.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/classify.o $(SRCDIR)/classify.cc
 
 $(BUILDDIR)/IOCppUtilities.o: $(SRCDIR)/IOCppUtilities.cc
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/IOCppUtilities.o $(SRCDIR)/IOCppUtilities.cc
@@ -113,7 +113,7 @@ $(BUILDDIR)/Newick.o: $(SRCDIR)/Newick.hh $(SRCDIR)/Newick.cc
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/Newick.o $(SRCDIR)/Newick.cc
 
 
-$(BUILDDIR)/MarkovChains.o: $(SRCDIR)/MarkovChains.cc $(SRCDIR)/MarkovChains.hh \
+$(BUILDDIR)/MarkovChains2.o: $(SRCDIR)/MarkovChains2.cc $(SRCDIR)/MarkovChains2.hh \
 			$(SRCDIR)/CUtilities.h \
 			$(SRCDIR)/CUtilities.c \
 			$(SRCDIR)/CppUtilities.hh \
@@ -122,7 +122,7 @@ $(BUILDDIR)/MarkovChains.o: $(SRCDIR)/MarkovChains.cc $(SRCDIR)/MarkovChains.hh 
 			$(SRCDIR)/strings.cc \
 			$(SRCDIR)/DNAsequence.hh \
 			$(SRCDIR)/DNAsequence.cc
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/MarkovChains.o $(SRCDIR)/MarkovChains.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/MarkovChains2.o $(SRCDIR)/MarkovChains2.cc
 
 
 

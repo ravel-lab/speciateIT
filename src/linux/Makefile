@@ -56,7 +56,7 @@ MKDIR         = mkdir -p
 create-build-dir := $(shell $(CHK_DIR_EXISTS) .build || $(MKDIR) .build)
 
 SRCDIR  = .
-BINDIR  = ../bin
+BINDIR  = ../../bin/linux
 BUILDDIR= .build
 
 create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))

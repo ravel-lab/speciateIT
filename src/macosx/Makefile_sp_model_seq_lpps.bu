@@ -29,9 +29,9 @@ CC            = clang #gcc #gcc-4.0
 CXX           = clang #g++ #g++-4.0
 LINK          = clang #g++
 LDFLAGS       = -std=c++11 -lc++abi -lstdc++
-FLAGS         = -std=c++1z -g -Wall -D__SIM_SSE3 -msse3 -O2 -D_GNU_SOURCE -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -O2 # -g -O2  -Wunused-parameter
+FLAGS         = -g -D__SIM_SSE3 # -Wall -dynamic -fomit-frame-pointer -funroll-loops -D__AVX -pedantic -Wunused -Wunused-variable -Wunused-value -Wunused-function -Wunused-label -Wredundant-decls -Wreturn-type # -D_USE_PTHREADS # -fopenmp # -msse3 -O2 # -D_GNU_SOURCE -g -O2 -D__SIM_SSE3 -Wunused-parameter
 CFLAGS        = $(FLAGS)
-CXXFLAGS      = $(FLAGS)
+CXXFLAGS      = -std=c++1z $(FLAGS)
 INCPATH       = -Isrc
 LIBS          = -lm # -L../../lib -lkmerstats
 AR            = ar cq
@@ -55,13 +55,13 @@ MKDIR         = mkdir -p
 ####### Files
 
 SRCDIR  = .
-BINDIR  = ../../bin/macosx
+BINDIR  = ../bin
 BUILDDIR= .build
 
 create-build-dir := $(shell $(CHK_DIR_EXISTS) $(BUILDDIR) || $(MKDIR) $(BUILDDIR))
 create-bin-dir := $(shell $(CHK_DIR_EXISTS) $(BINDIR) || $(MKDIR) $(BINDIR))
 
-OBJECTS = $(BUILDDIR)/est_error_thlds.o \
+OBJECTS = $(BUILDDIR)/sp_model_seq_lpps.o \
           $(BUILDDIR)/IOCUtilities.o \
           $(BUILDDIR)/IOCppUtilities.o \
           $(BUILDDIR)/MarkovChains.o \
@@ -76,11 +76,11 @@ OBJECTS = $(BUILDDIR)/est_error_thlds.o \
 
 ####### Build rules
 
-est_error_thlds: $(OBJECTS)
-	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/est_error_thlds
+sp_model_seq_lpps: $(OBJECTS)
+	$(LINK) $(OBJECTS) $(LDFLAGS) -o $(BINDIR)/sp_model_seq_lpps
 
-$(BUILDDIR)/est_error_thlds.o: $(SRCDIR)/est_error_thlds.cc
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/est_error_thlds.o $(SRCDIR)/est_error_thlds.cc
+$(BUILDDIR)/sp_model_seq_lpps.o: $(SRCDIR)/sp_model_seq_lpps.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/sp_model_seq_lpps.o $(SRCDIR)/sp_model_seq_lpps.cc
 
 $(BUILDDIR)/IOCppUtilities.o: $(SRCDIR)/IOCppUtilities.cc
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(BUILDDIR)/IOCppUtilities.o $(SRCDIR)/IOCppUtilities.cc
