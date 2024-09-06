@@ -45,6 +45,7 @@ classify -d vSpeciateDB_models/vSpeciateIT_V3V4 -i test.fasta -o test
 
 more test/MC_order7_results.txt
 <pre>
+Seq	Classification		pp		nDecisions
 ASV1	Lactobacillus_iners	0.970448	50  
 ASV2	Lactobacillus_crispatus	0.974671	50  
 ASV3	Lactobacillus_mulieris	0.976813	50  
