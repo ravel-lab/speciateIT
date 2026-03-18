@@ -2,7 +2,6 @@ packages/
 data/
 .build/
 tmp/
-bin/
 R/vaginal_species/.Rhistory
 docs/*.aux
 docs/*.log
@@ -14,3 +13,16 @@ src_tests/*_test
 R/rLpps_vs_observed_llps/pics/
 presentations/
 src/Archives/
+Postal_all_runs_dada2_abundance_table_w_taxa_modified.csv
+MC_order7_results.txt
+test/
+vSpeciateDB_models/vSpeciateIT_V1V3
+vSpeciateDB_models/vSpeciateIT_V1V9
+vSpeciateDB_models/vSpeciateIT_V3V4
+vSpeciateDB_models/vSpeciateIT_V4V4
+vSpeciateDB_models/.DS_Store
+src/.DS_Store
+test_count_table_speciateIT.csv
+.DS_Store
+bin/.DS_Store
+vSpeciateDB_models/.DS_Store
