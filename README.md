@@ -1,23 +1,25 @@
 ![speciateit_logo](https://user-images.githubusercontent.com/17168205/40029457-bf249c04-57b2-11e8-9d2e-85e4ea6f3d0c.png)
 
-### Summary:
+# Summary:
+
 SpeciateIT is an algorithm capable of fast, accurate individual sequence taxonomic classification. vSpeciateDB are models built from custom sets of reference sequences for classifying vaginal microbiota. Using a model guide tree and 7th order Markov Chain models to represent bacterial species trained on taxonomy-adjusted amplicon specific regions sequences, speciateIT requires little computational resources, and can quickly process large sequence datasets. SpeciateIT models for the vaginal microbiota include training sets for 16S rRNA gene V1-V3, V3-V4, and V4 regions sequences. "Cat Maps" are provided for each region to indicate which species are indistinguishable at the targeted variable regions.
 
-### Why use speciateIT?
+# Why use speciateIT?
 
 SpeciateIT with vSpeciateDB provided more species-level assignments than other methods including the DADA2 implementation of the RDP classifier which provided species level assignments, when possible (function: addSpecies)
 
 ![figure2](manuscript/figure2.webp)
 
-### How to install?
+# How to install?
 
 See the [Wiki](https://github.com/ravel-lab/speciateIT/wiki) for installation and tutorial.
 
+# speciateIT manuscript
 
-### speciateIT manuscript
 Holm JB, Gajer P, Ravel J. SpeciateIT and vSpeciateDB: novel, fast, and accurate per sequence 16S rRNA gene taxonomic classification of vaginal microbiota. BMC Bioinformatics. 2024 Sep 27;25(1):313. doi: 10.1186/s12859-024-05930-3. PMID: 39333850; PMCID: PMC11437924.
 
-### vSpeciateDB:
+# vSpeciateDB:
+
 Holm, Johanna (2024). speciateIT: vSpeciateDB Models. figshare. Dataset. https://doi.org/10.6084/m9.figshare.25254229
 
 
