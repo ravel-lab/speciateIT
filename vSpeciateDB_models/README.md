@@ -3,5 +3,6 @@
 
    cd /path/to/speciateIT
    unzip vSpeciateDB_models/vSpeciateIT_V1V3
+   unzip vSpeciateDB_models/vSpeciateIT_V1V9
    unzip vSpeciateDB_models/vSpeciateIT_V3V4
    unzip vSpeciateDB_models/vSpeciateIT_V4V4
