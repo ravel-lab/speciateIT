@@ -9,6 +9,10 @@ SpeciateIT with vSpeciateDB provided more species-level assignments than other m
 
 ![figure2](manuscript/figure2.webp)
 
+### How to install?
+
+See the [Wiki](https://github.com/ravel-lab/speciateIT/wiki) for installation and tutorial.
+
 
 ### speciateIT manuscript
 Holm JB, Gajer P, Ravel J. SpeciateIT and vSpeciateDB: novel, fast, and accurate per sequence 16S rRNA gene taxonomic classification of vaginal microbiota. BMC Bioinformatics. 2024 Sep 27;25(1):313. doi: 10.1186/s12859-024-05930-3. PMID: 39333850; PMCID: PMC11437924.
